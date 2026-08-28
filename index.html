@@ -1,0 +1,2660 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acquerello Pro | Advanced Masterclass - 13 Moduli</title>
+    <style>
+        :root {
+            --primary: #1e293b;
+            --accent: #0ea5e9;
+            --bg-color: #f8fafc;
+            --surface: #ffffff;
+            --text-main: #334155;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --success: #10b981;
+            --danger: #ef4444;
+            --danger-bg: rgba(239, 68, 68, 0.08);
+            --warning: #b45309;
+            --warning-bg: rgba(217, 119, 6, 0.1);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="dark"] {
+            --primary: #e2e8f0;
+            --accent: #38bdf8;
+            --bg-color: #0f172a;
+            --surface: #1e293b;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --danger: #f87171;
+            --danger-bg: rgba(248, 113, 113, 0.1);
+            --warning: #fbbf24;
+            --warning-bg: rgba(251, 191, 36, 0.1);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        /* Top Navigation */
+        .topbar {
+            position: fixed;
+            top: 0; left: 320px; right: 0;
+            height: 60px;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 0 30px;
+            z-index: 10;
+            transition: var(--transition);
+        }
+
+        .theme-toggle {
+            background: none;
+            border: 2px solid var(--border);
+            color: var(--text-main);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.55);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-box {
+            background: var(--surface);
+            color: var(--text-main);
+            border-radius: 12px;
+            max-width: 480px;
+            width: 100%;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-box h2 { color: var(--primary); margin-bottom: 15px; font-size: 1.3rem; }
+        .modal-box p { margin-bottom: 12px; line-height: 1.6; font-size: 0.98rem; }
+        .modal-box ol { padding-left: 22px; margin-bottom: 15px; line-height: 1.8; font-size: 0.98rem; }
+        .modal-box a.modal-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--accent);
+            font-weight: 700;
+            text-decoration: none;
+            border: 2px solid var(--accent);
+            padding: 8px 16px;
+            border-radius: 20px;
+            margin-bottom: 18px;
+            transition: var(--transition);
+        }
+        .modal-box a.modal-link:hover { background: var(--accent); color: #fff; }
+        .modal-box input[type="text"] {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg-color);
+            color: var(--text-main);
+            font-size: 0.95rem;
+            margin-bottom: 18px;
+        }
+        .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+        .modal-actions button { padding: 10px 20px; border-radius: 20px; font-weight: 600; cursor: pointer; transition: var(--transition); border: 2px solid var(--border); background: none; color: var(--text-main); }
+        .modal-actions button.modal-save { background: var(--accent); border-color: var(--accent); color: #fff; }
+        .modal-actions button.modal-danger { color: var(--danger); border-color: var(--danger); }
+        .modal-actions button.modal-danger:hover { background: var(--danger); color: #fff; }
+        .modal-actions button:hover { transform: translateY(-1px); }
+
+        /* Sidebar Navigation */
+        #sidebar {
+            width: 320px;
+            flex-shrink: 0;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            z-index: 20;
+            transition: var(--transition);
+        }
+
+        body.sidebar-hidden #sidebar {
+            width: 0;
+            border-right: none;
+        }
+        body.sidebar-hidden .topbar {
+            left: 0;
+        }
+        .sidebar-toggle-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .brand {
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #0ea5e9, #2563eb);
+            color: white;
+        }
+
+        .brand h2 { margin: 0; font-size: 1.5rem; font-weight: 700; }
+        .brand p { margin: 5px 0 0 0; opacity: 0.9; font-size: 0.85rem; }
+
+        .progress-container {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .progress-bar-bg {
+            background: var(--border);
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--success);
+            width: 0%;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-list { flex: 1; overflow-y: auto; padding: 10px 0; }
+
+        .nav-group-label {
+            padding: 14px 20px 6px;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+
+        .nav-item {
+            padding: 14px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-muted);
+            transition: var(--transition);
+            border-left: 4px solid transparent;
+            font-size: 0.95rem;
+        }
+
+        .nav-item:hover { background: var(--bg-color); color: var(--text-main); }
+        .nav-item.active {
+            border-left-color: var(--accent);
+            background: var(--bg-color);
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        .status-icon {
+            width: 20px; height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.7rem; color: transparent;
+            transition: var(--transition);
+            flex-shrink: 0;
+            margin-left: 10px;
+        }
+
+        .nav-item .status-icon.completed {
+            border-color: var(--success);
+            background: var(--success);
+            color: white;
+        }
+
+        /* Main Content */
+        #main-content {
+            flex: 1;
+            min-width: 0;
+            padding: 100px 40px 40px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .lesson-container {
+            display: none;
+            max-width: 850px;
+            margin: 0 auto;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .lesson-container.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        h1 { font-size: 2.2rem; color: var(--primary); margin-top: 0; line-height: 1.2; }
+
+        /* Tabs System */
+        .tabs-header { display: flex; gap: 15px; border-bottom: 2px solid var(--border); margin: 30px 0 25px; }
+        .tab-button { background: none; border: none; padding: 12px 20px; font-size: 1.05rem; font-weight: 600; color: var(--text-muted); cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; transition: var(--transition); }
+        .tab-button:hover { color: var(--text-main); }
+        .tab-button.active { color: var(--accent); border-bottom-color: var(--accent); }
+        .tab-content { display: none; animation: fadeIn 0.4s ease; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* AI Analysis Box */
+        .ai-generate-btn { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #0ea5e9, #2563eb); color: white; border: none; padding: 14px 24px; font-size: 1.05rem; font-weight: 600; border-radius: 8px; cursor: pointer; transition: var(--transition); box-shadow: 0 4px 10px rgba(14, 165, 233, 0.2); margin-bottom: 20px; }
+        .ai-generate-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(14, 165, 233, 0.3); }
+        .ai-generate-btn:disabled { background: var(--text-muted); cursor: not-allowed; transform: none; box-shadow: none; }
+        .ai-loading { display: none; color: var(--accent); font-weight: 600; font-size: 1.1rem; margin-bottom: 20px; }
+        .ai-result-box { background: rgba(14, 165, 233, 0.04); border: 1px solid var(--border); border-left: 4px solid var(--accent); padding: 30px; border-radius: 8px; line-height: 1.8; font-size: 1.1rem; color: var(--text-main); display: none; }
+        .ai-result-box h2, .ai-result-box h3 { color: var(--primary); margin-top: 25px; }
+        .ai-result-box ul { padding-left: 20px; }
+        .ai-result-box li { margin-bottom: 10px; }
+        .ai-result-box.error { background: var(--danger-bg); border-left-color: var(--danger); color: var(--text-main); }
+        .ai-result-box.error strong { color: var(--danger); }
+        .ai-retry-btn { display: inline-block; margin-top: 14px; background: none; border: 2px solid var(--danger); color: var(--danger); padding: 8px 18px; border-radius: 20px; font-weight: 600; cursor: pointer; transition: var(--transition); }
+        .ai-retry-btn:hover { background: var(--danger); color: #fff; }
+
+        .module-notes { margin: 30px 0; padding: 20px 24px; background: var(--bg-color); border: 1px dashed var(--border); border-radius: 8px; }
+        .module-notes label { display: flex; align-items: center; justify-content: space-between; font-weight: 700; color: var(--primary); margin-bottom: 10px; }
+        .module-notes .notes-saved-hint { font-weight: 400; font-size: 0.82rem; color: var(--success); opacity: 0; transition: opacity 0.4s ease; }
+        .module-notes .notes-saved-hint.show { opacity: 1; }
+        .module-notes textarea { width: 100%; min-height: 90px; resize: vertical; padding: 12px 14px; border: 2px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text-main); font-family: inherit; font-size: 0.98rem; line-height: 1.5; }
+        .module-notes textarea:focus { outline: none; border-color: var(--accent); }
+
+        .module-nav-buttons { display: flex; justify-content: space-between; gap: 15px; margin-top: 25px; padding-top: 20px; border-top: 1px solid var(--border); }
+        .module-nav-btn { background: none; border: 2px solid var(--border); color: var(--text-main); padding: 10px 20px; border-radius: 20px; font-weight: 600; cursor: pointer; transition: var(--transition); max-width: 47%; text-align: left; }
+        .module-nav-btn.next { text-align: right; margin-left: auto; }
+        .module-nav-btn:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); }
+        @media (max-width: 600px) {
+            .module-nav-btn { font-size: 0.85rem; padding: 8px 14px; }
+        }
+
+        /* Box Analisi Tecnica / Modello Professionale */
+        .art-spec-box {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--accent);
+            padding: 20px 25px;
+            border-radius: 0 8px 8px 0;
+            margin: 20px 0 30px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+        }
+
+        .art-spec-box h4 {
+            margin-top: 0;
+            color: var(--accent);
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .art-spec-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .art-spec-item {
+            font-size: 0.95rem;
+            color: var(--text-main);
+        }
+
+        .art-spec-item strong {
+            display: block;
+            color: var(--primary);
+            margin-bottom: 3px;
+        }
+
+        h3 { font-size: 1.3rem; color: var(--accent); margin-top: 2.5rem; }
+        p { line-height: 1.8; font-size: 1.1rem; color: var(--text-main); margin-bottom: 1.5rem; }
+
+        ul, ol { line-height: 1.8; font-size: 1.1rem; color: var(--text-main); }
+        li { margin-bottom: 12px; }
+
+        ol li::marker { font-weight: bold; color: var(--accent); }
+
+        .pro-tip {
+            background: rgba(14, 165, 233, 0.1);
+            border-left: 4px solid var(--accent);
+            padding: 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 30px 0;
+        }
+
+        .pro-tip strong { color: var(--accent); display: block; margin-bottom: 5px; }
+
+        /* Esercizio propedeutico */
+        .exercise-box {
+            background: var(--warning-bg);
+            border-left: 4px solid var(--warning);
+            padding: 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 30px 0;
+        }
+        .exercise-box strong { color: var(--warning); display: block; margin-bottom: 5px; font-size: 1.02rem; }
+        .exercise-box p:last-child { margin-bottom: 0; }
+
+        /* Errori comuni */
+        .error-box {
+            background: var(--danger-bg);
+            border-left: 4px solid var(--danger);
+            padding: 20px 25px;
+            border-radius: 0 8px 8px 0;
+            margin: 30px 0;
+        }
+        .error-box strong { color: var(--danger); display: block; margin-bottom: 10px; font-size: 1.02rem; }
+        .error-box ul { margin: 0; padding-left: 20px; font-size: 1rem; }
+        .error-box li { margin-bottom: 10px; }
+
+        /* Diagrammi di miscelazione */
+        .mix-diagram {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 35px;
+            align-items: flex-start;
+            margin: 25px 0;
+            padding: 25px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+        .mix-pair { text-align: center; width: 150px; }
+        .mix-circles { position: relative; width: 120px; height: 78px; margin: 0 auto 12px; }
+        .mix-circles .c1, .mix-circles .c2 {
+            position: absolute; top: 0; width: 78px; height: 78px; border-radius: 50%;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+        .mix-circles .c1 { left: 0; }
+        .mix-circles .c2 { left: 42px; mix-blend-mode: multiply; }
+        .mix-label { font-size: 0.85rem; color: var(--text-muted); line-height: 1.45; }
+        .mix-label b { color: var(--text-main); display: block; margin-bottom: 2px; }
+
+        /* Ruota dei colori */
+        .color-wheel-wrap { text-align: center; margin: 25px 0; }
+        .color-wheel {
+            width: 190px; height: 190px; border-radius: 50%; margin: 0 auto;
+            border: 5px solid var(--surface);
+            box-shadow: 0 0 0 1px var(--border), 0 12px 25px rgba(0,0,0,0.12);
+            background: conic-gradient(from 0deg, #e0457b, #e8641c, #f9c74f, #7c9a4a, #009874, #3fa9c9, #34348c, #7e1d3c, #e0457b);
+        }
+        .color-wheel-caption { margin-top: 12px; font-size: 0.9rem; color: var(--text-muted); }
+
+        /* Diagramma velature progressive (glazing) */
+        .layer-diagram {
+            display: flex; flex-wrap: wrap; gap: 30px; align-items: flex-end;
+            margin: 25px 0; padding: 25px;
+            background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+        }
+        .layer-step { text-align: center; width: 140px; }
+        .layer-circle {
+            width: 90px; height: 90px; border-radius: 50%; margin: 0 auto 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+
+        /* Diagramma gestione bordi (hard vs soft) */
+        .edge-diagram {
+            display: flex; flex-wrap: wrap; gap: 30px;
+            margin: 25px 0; padding: 25px;
+            background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+        }
+        .edge-sample { text-align: center; width: 160px; }
+        .edge-shape { width: 140px; height: 90px; margin: 0 auto 12px; }
+        .edge-shape.soft { filter: blur(6px); }
+
+        /* Diagramma grana della carta */
+        .grain-diagram {
+            display: flex; flex-wrap: wrap; gap: 25px;
+            margin: 25px 0; padding: 25px;
+            background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+        }
+        .grain-sample { text-align: center; width: 160px; }
+        .grain-swatch {
+            width: 150px; height: 100px; border-radius: 8px; margin: 0 auto 12px;
+            border: 1px solid var(--border);
+        }
+        .grain-fine { background: #fdfdfb; }
+        .grain-media {
+            background: repeating-linear-gradient(45deg, #f2f0ea, #f2f0ea 3px, #e4e1d6 3px, #e4e1d6 5px);
+        }
+        .grain-grossa {
+            background:
+                radial-gradient(circle at 18% 28%, rgba(0,0,0,0.14) 0 3px, transparent 4px),
+                radial-gradient(circle at 55% 65%, rgba(0,0,0,0.14) 0 3px, transparent 4px),
+                radial-gradient(circle at 82% 22%, rgba(0,0,0,0.14) 0 3px, transparent 4px),
+                radial-gradient(circle at 35% 85%, rgba(0,0,0,0.14) 0 3px, transparent 4px),
+                radial-gradient(circle at 75% 78%, rgba(0,0,0,0.14) 0 3px, transparent 4px),
+                radial-gradient(circle at 8% 60%, rgba(0,0,0,0.1) 0 2px, transparent 3px),
+                #f2f0ea;
+        }
+
+        /* Placeholder foto di riferimento (da sostituire con le tue immagini) */
+        .module-photo-frame {
+            margin: 25px 0;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+        }
+        .module-photo-frame img {
+            width: 100%;
+            height: auto;
+            max-height: 480px;
+            object-fit: cover;
+            display: block;
+        }
+        .module-photo-frame figcaption {
+            padding: 12px 20px;
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border);
+        }
+        .module-photo-frame.img-missing {
+            border: 2px dashed var(--border);
+            background: var(--bg-color);
+            text-align: center;
+            padding: 36px 24px;
+        }
+        .module-photo-frame.img-missing img { display: none; }
+        .module-photo-frame.img-missing figcaption { border-top: none; padding-top: 0; }
+        .photo-placeholder-hint {
+            display: none;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        .module-photo-frame.img-missing .photo-placeholder-hint { display: block; }
+        .photo-placeholder-hint .ph-icon { font-size: 1.8rem; display: block; margin-bottom: 10px; }
+
+        /* Caricamento foto personale (salvata nel browser di chi la carica) */
+        .photo-actions {
+            display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+            padding: 12px 20px;
+            border-top: 1px solid var(--border);
+        }
+        .module-photo-frame.img-missing .photo-actions { border-top: none; justify-content: center; padding-top: 4px; }
+        .photo-upload-btn, .photo-remove-btn {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: var(--border); color: var(--text-main);
+            border: none; padding: 8px 14px; border-radius: 6px;
+            cursor: pointer; font-weight: 600; font-size: 0.85rem; transition: var(--transition);
+        }
+        .photo-upload-btn:hover { background: var(--text-muted); color: white; }
+        .photo-remove-btn { background: var(--danger-bg); color: var(--danger); }
+        .photo-remove-btn:hover { background: var(--danger); color: white; }
+        .photo-hint-text { font-size: 0.8rem; color: var(--text-muted); }
+
+        /* Tabella pigmenti */
+        .table-scroll { overflow-x: auto; margin: 20px 0; }
+        .pigment-table { width: 100%; border-collapse: collapse; font-size: 0.92rem; min-width: 620px; }
+        .pigment-table th {
+            text-align: left; padding: 10px 12px; border-bottom: 2px solid var(--border);
+            color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .pigment-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+        .pigment-swatch {
+            display: inline-block; width: 15px; height: 15px; border-radius: 4px;
+            margin-right: 8px; vertical-align: middle; border: 1px solid rgba(0,0,0,0.15);
+        }
+
+        .btn-complete {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2);
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 30px;
+            margin-bottom: 50px;
+        }
+
+        .btn-complete:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(16, 185, 129, 0.3); }
+
+        /* Interactive Canvas Tool */
+        .interactive-tool {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 30px 0;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+
+        .canvas-container {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        canvas {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: #ffffff;
+            cursor: crosshair;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+            max-width: 100%;
+        }
+
+        .controls { flex: 1; min-width: 250px; }
+
+        .controls label {
+            display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-main);
+        }
+
+        input[type="range"] {
+            width: 100%; margin-bottom: 20px;
+        }
+
+        .btn-clear {
+            background: var(--border); color: var(--text-main);
+            border: none; padding: 8px 16px; border-radius: 4px;
+            cursor: pointer; font-weight: 600; transition: var(--transition);
+        }
+        .btn-clear:hover { background: var(--text-muted); color: white; }
+
+        .lab-palette { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
+        .pigment-btn {
+            width: 36px; height: 36px; border-radius: 50%; border: 3px solid transparent;
+            cursor: pointer; transition: var(--transition); padding: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        }
+        .pigment-btn.selected { border-color: var(--text-main); transform: scale(1.15); }
+        .pigment-name { font-size: 0.8rem; color: var(--text-muted); margin: -8px 0 18px; }
+
+        .wet-toggle { display: flex; gap: 10px; margin-bottom: 18px; }
+        .wet-toggle button {
+            flex: 1; padding: 10px; border-radius: 6px; border: 2px solid var(--border);
+            background: none; color: var(--text-main); cursor: pointer; font-weight: 600; transition: var(--transition);
+        }
+        .wet-toggle button.active { border-color: var(--accent); color: var(--accent); background: rgba(14,165,233,0.08); }
+
+        .lab-hint { font-size: 0.88rem; color: var(--text-muted); margin-top: 15px; font-style: italic; line-height: 1.6; }
+
+        @media (max-width: 768px) {
+            #sidebar { width: 250px; }
+            .topbar {
+                left: 250px;
+                height: auto;
+                min-height: 60px;
+                flex-wrap: wrap;
+                row-gap: 8px;
+                padding: 10px 15px;
+            }
+            .topbar .theme-toggle { padding: 6px 12px; font-size: 0.82rem; }
+            #main-content { padding: 80px 20px 20px; }
+            body.sidebar-hidden #sidebar { width: 0; }
+            body.sidebar-hidden .topbar { left: 0; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="topbar">
+        <button class="theme-toggle sidebar-toggle-btn" id="sidebar-toggle-btn" onclick="toggleSidebar()" style="margin-right: auto;" aria-label="Mostra o nascondi il pannello laterale" title="Mostra o nascondi il pannello laterale">☰ Nascondi menu</button>
+        <button class="theme-toggle" onclick="openBackupModal()" style="margin-right: 15px;">💾 Backup dati</button>
+        <button class="theme-toggle" onclick="promptApiKey()" style="margin-right: 15px;">🔑 Configura API AI</button>
+        <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()">🌓 Tema Scuro</button>
+    </div>
+
+    <div id="sidebar">
+        <div class="brand">
+            <h2>Acquerello Pro</h2>
+            <p>13 Moduli Advanced</p>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-text">
+                <span>Progresso Masterclass</span>
+                <span id="progress-percentage">0%</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div id="progress-bar" class="progress-bar"></div>
+            </div>
+        </div>
+
+        <div class="nav-list">
+            <div class="nav-group-label">Fondamenta</div>
+            <div class="nav-item active" data-target="modulo-1"><span>1. Teoria del Colore e Pigmenti</span><div class="status-icon">✓</div></div>
+            <div class="nav-item" data-target="modulo-2"><span>2. Materiali e Attrezzatura</span><div class="status-icon">✓</div></div>
+            <div class="nav-group-label">Soggetti Avanzati</div>
+            <div class="nav-item" data-target="modulo-3"><span>3. Il Corpo Umano</span><div class="status-icon">✓</div></div>
+            <div class="nav-item" data-target="modulo-4"><span>4. Montagne e Foschia</span><div class="status-icon">✓</div></div>
+            <div class="nav-item" data-target="modulo-5"><span>5. Il Mare in Tempesta</span><div class="status-icon">✓</div></div>
+            <div class="nav-item" data-target="modulo-6"><span>6. Paesaggio Invernale</span><div class="status-icon">✓</div></div>
+            <div class="nav-item" data-target="modulo-7"><span>7. Strada Cittadina</span><div class="status-icon">✓</div></div>
+            <div class="nav-item" data-target="modulo-8"><span>8. Monumenti Storici</span><div class="status-icon">✓</div></div>
+            <div class="nav-item" data-target="modulo-9"><span>9. Animali in Movimento</span><div class="status-icon">✓</div></div>
+            <div class="nav-item" data-target="modulo-10"><span>10. Botanica Avanzata</span><div class="status-icon">✓</div></div>
+            <div class="nav-item" data-target="modulo-11"><span>11. Cielo e Astri</span><div class="status-icon">✓</div></div>
+            <div class="nav-item" data-target="modulo-12"><span>12. Soggetto Libero</span><div class="status-icon">✓</div></div>
+            <div class="nav-group-label">Pratica</div>
+            <div class="nav-item" data-target="modulo-13"><span>13. Lab. Interattivo</span><div class="status-icon">✓</div></div>
+        </div>
+    </div>
+
+    <div id="main-content">
+
+        <!-- Modulo 1: Teoria del Colore -->
+        <div id="modulo-1" class="lesson-container active">
+            <h1>Teoria del Colore e Comportamento dei Pigmenti</h1>
+            <figure class="module-photo-frame" data-photo-key="01-teoria-colore" data-default-src="images/01-teoria-colore.jpg">
+                <img src="images/01-teoria-colore.jpg" alt="Tavola-campionario di grigi e miscele di pigmenti" onerror="this.closest('.module-photo-frame').classList.add('img-missing')">
+                <div class="photo-placeholder-hint">
+                    <span class="ph-icon">🖼️</span>
+                    Nessuna foto impostata per questo modulo.
+                </div>
+                <div class="photo-actions">
+                    <label class="photo-upload-btn">📤 Carica la tua foto<input type="file" accept="image/*" class="photo-input" hidden></label>
+                    <button type="button" class="photo-remove-btn" style="display:none;">🗑️ Rimuovi</button>
+                    <span class="photo-hint-text">Resta salvata solo in questo browser</span>
+                </div>
+                <figcaption>Foto di riferimento: la tua tavola-campionario di grigi e miscele (Modulo 1)</figcaption>
+            </figure>
+
+            <div class="tabs-header">
+                <button class="tab-button active" onclick="switchTab(this, 'accademica-1')">Descrizione Accademica</button>
+                <button class="tab-button" onclick="switchTab(this, 'ia-1')">Analisi IA della tua foto</button>
+            </div>
+
+            <div id="accademica-1" class="tab-content active">
+                <div class="art-spec-box">
+                    <h4>Scheda Tecnica del Modulo</h4>
+                    <div class="art-spec-grid">
+                        <div class="art-spec-item"><strong>Livello:</strong> Fondamenta teoriche, propedeutico a tutti i moduli successivi.</div>
+                        <div class="art-spec-item"><strong>Tempo indicativo:</strong> 45-60 minuti di studio più pratica su tavolozza di prova.</div>
+                        <div class="art-spec-item"><strong>Obiettivo:</strong> prevedere il comportamento di una miscela prima di stenderla sul foglio.</div>
+                    </div>
+                </div>
+                <p>A livello avanzato la differenza tra un acquerello dilettantistico e uno professionale si gioca quasi sempre nella gestione della temperatura cromatica e nella comprensione fisica del pigmento, molto più che nella tecnica del pennello. Prima di affrontare i soggetti di questo corso, è utile un ripasso critico su tre fronti: il comportamento fisico dei pigmenti, la temperatura del colore e la costruzione di grigi vivi tramite complementari.</p>
+
+                <h3>I tre comportamenti fisici del pigmento</h3>
+                <ul>
+                    <li><strong>Pigmenti granulanti</strong> (es. Blu Oltremare PB29, Terra d'Ombra Bruciata PBr7, Blu Ceruleo PB35): particelle pesanti che si depositano nelle insenature della carta a grana grossa, creando texture naturale. Ottimi per pietra, roccia, tessuti ruvidi. Da evitare quando serve una velatura perfettamente liscia, come per l'incarnato o un cielo sereno senza nuvole.</li>
+                    <li><strong>Pigmenti tingenti (stainanti)</strong> (es. Quinacridoni PV19/PR122, Blu di Prussia PB27, ftalo): penetrano in profondità le fibre della carta e non si asportano completamente col lifting. Usali con cautela nelle prime velature se prevedi correzioni; sono invece ideali per glaze finali densi e duraturi che non devono muoversi più.</li>
+                    <li><strong>Pigmenti trasparenti non tingenti</strong> (es. Aureolina, Quinacridone Gold): permettono correzioni facili col pennello umido e mantengono luminosità anche sovrapposti in più strati.</li>
+                </ul>
+
+                <h3>Temperatura del colore e distanza percettiva</h3>
+                <p>Regola base della prospettiva atmosferica: il caldo avanza, il freddo recede. Ma il vero salto di qualità sta nel riconoscere che ogni colore ha un bias interno verso caldo o freddo anche all'interno della stessa famiglia. Il Blu Oltremare è un blu caldo, tendente al violaceo; il Blu di Prussia è un blu freddo, tendente al verde. Questo bias determina quale dei due sceglierai per un cielo sereno di mezzogiorno rispetto a un cielo tempestoso al crepuscolo, molto più del semplice nome "blu" scritto sul tubetto.</p>
+
+                <div class="color-wheel-wrap">
+                    <div class="color-wheel"></div>
+                    <p class="color-wheel-caption">Ruota cromatica di riferimento: i colori opposti (complementari) sono la base per costruire ombre vive senza usare il nero.</p>
+                </div>
+
+                <h3>Miscelare grigi vivi, non nero di tubo</h3>
+                <p>Mescolando due colori complementari si ottengono ombre e grigi molto più ricchi e "vivi" del nero di tubo, che appiattisce otticamente la luce. Il vantaggio ulteriore è che, cambiando le proporzioni della miscela, puoi spostare il grigio risultante verso il caldo o verso il freddo mantenendo il controllo totale sulla temperatura della tua ombra.</p>
+
+                <div class="mix-diagram">
+                    <div class="mix-pair">
+                        <div class="mix-circles">
+                            <div class="c1" style="background:#34348c;"></div>
+                            <div class="c2" style="background:#8a3b12;"></div>
+                        </div>
+                        <div class="mix-label"><b>Oltremare + Terra di Siena</b>Grigio caldo, terroso. Ideale per ombre su pietra o incarnato.</div>
+                    </div>
+                    <div class="mix-pair">
+                        <div class="mix-circles">
+                            <div class="c1" style="background:#12475e;"></div>
+                            <div class="c2" style="background:#7e1d3c;"></div>
+                        </div>
+                        <div class="mix-label"><b>Blu di Prussia + Alizarina</b>Near-black freddo e profondo. Ideale per notti, acqua scura, ombre urbane.</div>
+                    </div>
+                </div>
+
+                <h3>Il principio della velatura (glazing)</h3>
+                <p>La costruzione per strati trasparenti è il meccanismo che userai in quasi ogni modulo del corso: ogni velatura successiva non copre la precedente, la modula. Più strati sovrapponi (sempre su colore già asciutto), più il colore si approfondisce mantenendo la luce che attraversa dal basso, invece di diventare opaco.</p>
+                <div class="layer-diagram">
+                    <div class="layer-step">
+                        <div class="layer-circle" style="background:rgba(224,69,123,0.22);"></div>
+                        <div class="mix-label"><b>Velatura 1</b>Diluitissima, quasi acqua colorata.</div>
+                    </div>
+                    <div class="layer-step">
+                        <div class="layer-circle" style="background:rgba(224,69,123,0.5);"></div>
+                        <div class="mix-label"><b>Velatura 2</b>Più densa, dopo asciugatura completa della prima.</div>
+                    </div>
+                    <div class="layer-step">
+                        <div class="layer-circle" style="background:rgba(224,69,123,0.82);"></div>
+                        <div class="mix-label"><b>Velatura 3</b>Satura, solo nei punti di massima ombra.</div>
+                    </div>
+                </div>
+
+                <div class="exercise-box">
+                    <strong>✏️ Esercizio propedeutico</strong>
+                    <p>Crea una scala di cinque grigi partendo da Blu Oltremare e Terra d'Ombra Bruciata, variando le proporzioni da 80/20 a 20/80. Osserva come il grigio si sposta da freddo-bluastro a caldo-terroso: questa scala sarà il tuo riferimento per tutte le ombre dei moduli successivi.</p>
+                </div>
+
+                <div class="error-box">
+                    <strong>⚠️ Errori comuni</strong>
+                    <ul>
+                        <li>Usare il nero di tubo per le ombre: il risultato è piatto, spento, otticamente "morto" rispetto alla luce circostante.</li>
+                        <li>Ignorare il bias di temperatura dei singoli pigmenti nella stessa famiglia, trattando tutti i blu o tutti i rossi come intercambiabili.</li>
+                        <li>Sovrastimare la potenza tingente di un pigmento e tentarne il lifting completo a strato ormai asciutto: alcuni lasceranno sempre un velo di colore.</li>
+                    </ul>
+                </div>
+
+                <div class="pro-tip">
+                    <strong>Ottimizzazione</strong>
+                    Prima di iniziare ogni modulo di questo corso, controlla la Scheda Tecnica per la palette consigliata: è stata selezionata proprio in base al comportamento fisico dei pigmenti trattato qui.
+                </div>
+            </div>
+
+            <div id="ia-1" class="tab-content">
+                <button class="ai-generate-btn" onclick="analyzePhoto(1, '01-teoria-colore')">✨ Genera analisi specifica per la tua foto</button>
+                <div class="ai-loading" id="ai-loading-1">Analisi in corso con Gemini... ⏳</div>
+                <div class="ai-result-box" id="ai-result-1"></div>
+            </div>
+
+            <button class="btn-complete" onclick="markCompleted('modulo-1')">✓ Segna come completato</button>
+        </div>
+
+        <!-- Modulo 2: Materiali -->
+        <div id="modulo-2" class="lesson-container">
+            <h1>Materiali e Attrezzatura da Studio</h1>
+            <figure class="module-photo-frame" data-photo-key="02-materiali" data-default-src="images/02-materiali.jpg">
+                <img src="images/02-materiali.jpg" alt="Attrezzatura da studio: carte, pennelli, pigmenti" onerror="this.closest('.module-photo-frame').classList.add('img-missing')">
+                <div class="photo-placeholder-hint">
+                    <span class="ph-icon">🖼️</span>
+                    Nessuna foto impostata per questo modulo.
+                </div>
+                <div class="photo-actions">
+                    <label class="photo-upload-btn">📤 Carica la tua foto<input type="file" accept="image/*" class="photo-input" hidden></label>
+                    <button type="button" class="photo-remove-btn" style="display:none;">🗑️ Rimuovi</button>
+                    <span class="photo-hint-text">Resta salvata solo in questo browser</span>
+                </div>
+                <figcaption>Foto di riferimento: la tua attrezzatura da studio</figcaption>
+            </figure>
+
+            <div class="tabs-header">
+                <button class="tab-button active" onclick="switchTab(this, 'accademica-2')">Descrizione Accademica</button>
+                <button class="tab-button" onclick="switchTab(this, 'ia-2')">Analisi IA della tua foto</button>
+            </div>
+
+            <div id="accademica-2" class="tab-content active">
+                <div class="art-spec-box">
+                    <h4>Scheda Tecnica del Modulo</h4>
+                    <div class="art-spec-grid">
+                        <div class="art-spec-item"><strong>Livello:</strong> Fondamenta pratiche, propedeutico a tutti i moduli successivi.</div>
+                        <div class="art-spec-item"><strong>Tempo indicativo:</strong> 30-40 minuti di lettura più costruzione della tavola-campionario.</div>
+                        <div class="art-spec-item"><strong>Obiettivo:</strong> scegliere lo strumento giusto per l'effetto cercato, non per abitudine.</div>
+                    </div>
+                </div>
+                <p>Un pittore avanzato investe nell'attrezzatura in modo mirato: non tutto deve essere costoso, ma alcuni strumenti sono non negoziabili per ottenere i risultati professionali richiesti da questo corso.</p>
+
+                <h3>Carta</h3>
+                <ul>
+                    <li><strong>Peso:</strong> sotto i 300g/m² (140lb) la carta si deforma senza inchiodatura preventiva. Per tutti i soggetti di questo corso lavora a 300g o superiore.</li>
+                    <li><strong>Grana fine / satinata (Hot Press):</strong> superficie liscia, ideale per il dettaglio (ritratto, botanica), ma "spinge" il pigmento in superficie ed è meno perdonante con gli errori.</li>
+                    <li><strong>Grana media (Cold Press / Not):</strong> il compromesso più versatile, adatto alla maggioranza dei soggetti trattati nel corso.</li>
+                    <li><strong>Grana grossa (Rough):</strong> texture pronunciata, ideale per la granulazione (pietra, mare in tempesta, splatter notturni).</li>
+                    <li><strong>Cotone 100% vs cellulosa:</strong> il cotone assorbe in modo più uniforme e perdona meglio i lift ripetuti; la cellulosa è più economica ma con sizing meno costante da foglio a foglio.</li>
+                </ul>
+
+                <div class="grain-diagram">
+                    <div class="grain-sample">
+                        <div class="grain-swatch grain-fine"></div>
+                        <div class="mix-label"><b>Grana fine (Hot Press)</b>Superficie liscia, dettaglio massimo.</div>
+                    </div>
+                    <div class="grain-sample">
+                        <div class="grain-swatch grain-media"></div>
+                        <div class="mix-label"><b>Grana media (Cold Press)</b>Il compromesso più versatile.</div>
+                    </div>
+                    <div class="grain-sample">
+                        <div class="grain-swatch grain-grossa"></div>
+                        <div class="mix-label"><b>Grana grossa (Rough)</b>Texture pronunciata, ideale per la granulazione.</div>
+                    </div>
+                </div>
+
+                <h3>Pennelli</h3>
+                <ul>
+                    <li><strong>Tondo (n. 8-14):</strong> il tuo strumento principale. Da un pennello di qualità (kolinsky o sintetico di fascia alta) dipende la capacità di mantenere una punta fine anche a pancia piena di colore.</li>
+                    <li><strong>Piatto (flat/mop):</strong> per lavature ampie e per la tecnica del dry brush.</li>
+                    <li><strong>Rigger:</strong> linee sottili e continue, per rami, fili d'erba, cavi elettrici, cordami.</li>
+                    <li><strong>Ventaglio (fan brush):</strong> sfumature morbide, texture di fogliame, effetti atmosferici.</li>
+                    <li><strong>Spazzolino da denti usato:</strong> splatter controllato per stelle e texture minute.</li>
+                </ul>
+
+                <h3>Altri strumenti indispensabili</h3>
+                <ul>
+                    <li><strong>Fluido mascheratore</strong> e una saponetta per proteggere la punta del pennello durante l'applicazione.</li>
+                    <li><strong>Tavola inclinabile</strong> per controllare la direzione di scorrimento del pigmento, fondamentale nei moduli su cielo e mare.</li>
+                    <li><strong>Nastro di carta</strong> per bloccare i bordi ed evitare il cockling (imbozzamento) sulle lavature ampie.</li>
+                    <li><strong>Spugna naturale</strong> per lift ampi e texture organiche irregolari.</li>
+                </ul>
+
+                <h3>Indice pigmenti del corso</h3>
+                <p>Riferimento rapido ai pigmenti citati nei moduli successivi, con il loro comportamento fisico secondo la classificazione del Modulo 1.</p>
+                <div class="table-scroll">
+                <table class="pigment-table">
+                    <thead>
+                        <tr><th>Pigmento</th><th>Codice</th><th>Comportamento</th><th>Usato nei moduli</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><span class="pigment-swatch" style="background:#f9c74f;"></span>Giallo di Cadmio</td><td>PY35</td><td>Opaco, semi-granulante</td><td>Strada, Animali</td></tr>
+                        <tr><td><span class="pigment-swatch" style="background:#d4a017;"></span>Ocra Gialla</td><td>PY43</td><td>Granulante, opaco</td><td>Corpo Umano</td></tr>
+                        <tr><td><span class="pigment-swatch" style="background:#e0457b;"></span>Rosa/Rosso Quinacridone</td><td>PV19</td><td>Trasparente, tingente</td><td>Corpo Umano, Botanica</td></tr>
+                        <tr><td><span class="pigment-swatch" style="background:#c2185b;"></span>Magenta Quinacridone</td><td>PR122</td><td>Trasparente, fortemente tingente</td><td>Animali</td></tr>
+                        <tr><td><span class="pigment-swatch" style="background:#3fa9c9;"></span>Blu Ceruleo</td><td>PB35</td><td>Granulante, semi-opaco</td><td>Corpo Umano</td></tr>
+                        <tr><td><span class="pigment-swatch" style="background:#1f5fa8;"></span>Blu Cobalto</td><td>PB28</td><td>Granulante, semi-trasparente</td><td>Montagne, Inverno</td></tr>
+                        <tr><td><span class="pigment-swatch" style="background:#34348c;"></span>Blu Oltremare Francese</td><td>PB29</td><td>Granulante, trasparente</td><td>Montagne, Monumenti, Teoria</td></tr>
+                        <tr><td><span class="pigment-swatch" style="background:#12475e;"></span>Blu di Prussia</td><td>PB27</td><td>Trasparente, fortemente tingente</td><td>Mare, Strada, Astri</td></tr>
+                        <tr><td><span class="pigment-swatch" style="background:#009874;"></span>Verde Smeraldo / Viridian</td><td>PG18</td><td>Trasparente, semi-granulante</td><td>Mare</td></tr>
+                        <tr><td><span class="pigment-swatch" style="background:#8a3b12;"></span>Terra di Siena Bruciata</td><td>PBr7</td><td>Granulante, opaca</td><td>Montagne, Monumenti</td></tr>
+                        <tr><td><span class="pigment-swatch" style="background:#5c3a21;"></span>Terra d'Ombra Bruciata</td><td>PBr7</td><td>Granulante, forte potere coprente</td><td>Corpo Umano, Monumenti</td></tr>
+                        <tr><td><span class="pigment-swatch" style="background:#7e1d3c;"></span>Alizarina Cremisi</td><td>PR206/PV19</td><td>Trasparente, tingente</td><td>Inverno, Astri</td></tr>
+                        <tr><td><span class="pigment-swatch" style="background:#23283b;"></span>Indaco</td><td>PB60 (mix)</td><td>Trasparente scurissimo, semi-granulante</td><td>Astri, Mare</td></tr>
+                        <tr><td><span class="pigment-swatch" style="background:#e8641c;"></span>Arancio di Cadmio</td><td>PO20</td><td>Opaco, granulante</td><td>Animali, Strada</td></tr>
+                        <tr><td><span class="pigment-swatch" style="background:#2b2b28;"></span>Nero Avorio</td><td>PBk9</td><td>Opaco, granulante leggero</td><td>Strada</td></tr>
+                        <tr><td><span class="pigment-swatch" style="background:#f5f5f0;"></span>Bianco Opaco (Gouache)</td><td>PW6/PW4</td><td>Coprente</td><td>Astri</td></tr>
+                    </tbody>
+                </table>
+                </div>
+
+                <div class="exercise-box">
+                    <strong>✏️ Esercizio propedeutico</strong>
+                    <p>Prepara una tavola-campionario con tutti i pigmenti elencati sopra: un tocco in purezza e uno mescolato con Blu Oltremare Francese, per costruire il tuo atlante personale prima di iniziare i moduli sui soggetti.</p>
+                </div>
+
+                <div class="error-box">
+                    <strong>⚠️ Errori comuni</strong>
+                    <ul>
+                        <li>Comprare troppi colori pre-miscelati invece di imparare a mescolarli: limita la comprensione della temperatura e rende ogni tavolozza dipendente dal produttore.</li>
+                        <li>Sottovalutare il peso della carta e lavorare senza inchiodatura su fogli sottili, causando cockling che rovina le lavature ampie.</li>
+                        <li>Usare pennelli sintetici economici per grandi lavature: perdono la capacità di trattenere acqua a metà lavoro, costringendo a interruzioni visibili.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="ia-2" class="tab-content">
+                <button class="ai-generate-btn" onclick="analyzePhoto(2, '02-materiali')">✨ Genera analisi specifica per la tua foto</button>
+                <div class="ai-loading" id="ai-loading-2">Analisi in corso con Gemini... ⏳</div>
+                <div class="ai-result-box" id="ai-result-2"></div>
+            </div>
+
+            <button class="btn-complete" onclick="markCompleted('modulo-2')">✓ Segna come completato</button>
+        </div>
+
+        <!-- Modulo 3: Corpo Umano -->
+        <div id="modulo-3" class="lesson-container">
+            <h1>Il Corpo Umano: Velature e Trasparenze</h1>
+            <figure class="module-photo-frame" data-photo-key="03-corpo-umano" data-default-src="images/03-corpo-umano.jpg">
+                <img src="images/03-corpo-umano.jpg" alt="Incarnato dipinto ad acquerello, velature e trasparenze" onerror="this.closest('.module-photo-frame').classList.add('img-missing')">
+                <div class="photo-placeholder-hint">
+                    <span class="ph-icon">🖼️</span>
+                    Nessuna foto impostata per questo modulo.
+                </div>
+                <div class="photo-actions">
+                    <label class="photo-upload-btn">📤 Carica la tua foto<input type="file" accept="image/*" class="photo-input" hidden></label>
+                    <button type="button" class="photo-remove-btn" style="display:none;">🗑️ Rimuovi</button>
+                    <span class="photo-hint-text">Resta salvata solo in questo browser</span>
+                </div>
+                <figcaption>Foto di riferimento: incarnato dipinto, velature e trasparenze</figcaption>
+            </figure>
+
+            <div class="tabs-header">
+                <button class="tab-button active" onclick="switchTab(this, 'accademica-3')">Descrizione Accademica</button>
+                <button class="tab-button" onclick="switchTab(this, 'ia-3')">Analisi IA della tua foto</button>
+            </div>
+
+            <div id="accademica-3" class="tab-content active">
+                <div class="art-spec-box">
+                    <h4>Scheda Tecnica del Modulo</h4>
+                    <div class="art-spec-grid">
+                        <div class="art-spec-item"><strong>Palette cromatica:</strong> Ocra gialla, Rosa quinacridone, Blu ceruleo (per le ombre fredde).</div>
+                        <div class="art-spec-item"><strong>Carta consigliata:</strong> Arches 300g Extra Fine (Hot Pressed) per definire i piani.</div>
+                        <div class="art-spec-item"><strong>Gestione bordi:</strong> 80% bordi sfumati (soft), contorni netti limitati agli occhi e alle labbra.</div>
+                        <div class="art-spec-item"><strong>Livello:</strong> Avanzato — richiede controllo del timing di asciugatura.</div>
+                        <div class="art-spec-item"><strong>Tempo indicativo:</strong> 2-3 ore, incluse le pause di asciugatura completa.</div>
+                    </div>
+                </div>
+                <p>Dipingere l'incarnato richiede un approccio a strati (glazing). La pelle non è mai di un colore piatto, ma reagisce alla luce e ai capillari sottostanti: ogni velatura che applichi deve avere uno scopo cromatico preciso, non essere un semplice "riempimento".</p>
+
+                <div class="exercise-box">
+                    <strong>✏️ Esercizio propedeutico</strong>
+                    <p>Su un ritaglio di carta identico a quello finale, esegui tre velature sovrapposte di Ocra + Rosa Quinacridone, lasciando asciugare completamente tra una e l'altra. Cronometra i tempi di asciugatura: sono quelli che userai nel dipinto vero.</p>
+                </div>
+
+                <h3>Workflow Step-by-Step</h3>
+                <ol>
+                    <li><strong>Mappatura delle luci:</strong> Esegui un disegno leggero a matita. Identifica le alteluci (punta del naso, zigomi) e lasciale completamente bianche: sono la riserva di luce che nessuna velatura successiva dovrà toccare.</li>
+                    <li><strong>Prima velatura (Temperatura calda):</strong> Prepara un tè molto diluito di Ocra Gialla e una punta di Rosa Quinacridone. Bagna l'intero viso (escludendo le alteluci) e stendi questa lavatura uniforme: stabilisce la temperatura di base su cui costruirai tutto il resto. Lascia asciugare al 100%.</li>
+                    <li><strong>Modellazione dei volumi (Mezzitoni):</strong> Usa lo stesso mix, ma meno diluito. Riapplica nelle zone in ombra (sotto le arcate sopracciliari, lato del naso, sottomento). Ammorbidisci i bordi passando un pennello appena umido sul confine tra colore e carta asciutta, così il volume si legge come forma tridimensionale e non come una macchia piatta.</li>
+                    <li><strong>Temperature fredde:</strong> La pelle diventa più sottile e rivela i vasi sanguigni attorno agli occhi e sulla mascella. Usa una velatura leggerissima di Blu Ceruleo per raffreddare queste aree: è il dettaglio che distingue un incarnato vivo da uno di plastica. Lascia asciugare.</li>
+                    <li><strong>Dettagli e accenti oscuri:</strong> Lavora su carta asciutta con pigmento denso (Terra d'Ombra Bruciata e Blu Oltremare) per definire le narici, la linea delle palpebre e la commessura labiale: sono gli unici punti in cui ti concedi bordi davvero netti.</li>
+                </ol>
+
+                <div class="mix-diagram">
+                    <div class="mix-pair">
+                        <div class="mix-circles">
+                            <div class="c1" style="background:#d4a017;"></div>
+                            <div class="c2" style="background:#e0457b;"></div>
+                        </div>
+                        <div class="mix-label"><b>Ocra + Rosa Quinacridone</b>Base calda dell'incarnato, prima e seconda velatura.</div>
+                    </div>
+                    <div class="mix-pair">
+                        <div class="mix-circles">
+                            <div class="c1" style="background:#5c3a21;"></div>
+                            <div class="c2" style="background:#34348c;"></div>
+                        </div>
+                        <div class="mix-label"><b>Terra d'Ombra + Oltremare</b>Accenti scuri: narici, palpebre, commessura labiale.</div>
+                    </div>
+                </div>
+
+                <div class="edge-diagram">
+                    <div class="edge-sample">
+                        <div class="edge-shape hard" style="background: radial-gradient(circle, rgba(212,160,23,0.9) 0 60%, transparent 61%);"></div>
+                        <div class="mix-label"><b>Bordo netto</b>Solo su occhi e labbra: max 20% della superficie del volto.</div>
+                    </div>
+                    <div class="edge-sample">
+                        <div class="edge-shape soft" style="background: radial-gradient(circle, rgba(212,160,23,0.9) 0 60%, transparent 61%);"></div>
+                        <div class="mix-label"><b>Bordo sfumato</b>Il restante 80%: ammorbidito con pennello umido pulito.</div>
+                    </div>
+                </div>
+
+                <div class="error-box">
+                    <strong>⚠️ Errori comuni</strong>
+                    <ul>
+                        <li>Riapplicare colore prima che la velatura precedente sia asciutta al 100%: crea "fango" cromatico e bordi sporchi al posto di sfumature pulite.</li>
+                        <li>Usare bordi netti ovunque: un incarnato con troppi contorni duri legge come un fumetto, non come pelle.</li>
+                        <li>Dimenticare la temperatura fredda vicino a occhi e mascella, ottenendo un viso monocromatico e piatto.</li>
+                    </ul>
+                </div>
+
+                <div class="pro-tip">
+                    <strong>Ottimizzazione</strong>
+                    Tratta il ritratto come i livelli di un file grafico. Lascia asciugare COMPLETAMENTE (100%) ogni velatura prima di applicare la successiva per non creare "fango".
+                </div>
+            </div>
+
+            <div id="ia-3" class="tab-content">
+                <button class="ai-generate-btn" onclick="analyzePhoto(3, '03-corpo-umano')">✨ Genera analisi specifica per la tua foto</button>
+                <div class="ai-loading" id="ai-loading-3">Analisi in corso con Gemini... ⏳</div>
+                <div class="ai-result-box" id="ai-result-3"></div>
+            </div>
+
+            <button class="btn-complete" onclick="markCompleted('modulo-3')">✓ Segna come completato</button>
+        </div>
+
+        <!-- Modulo 4: Montagne -->
+        <div id="modulo-4" class="lesson-container">
+            <h1>Montagne: Prospettiva Aerea e Atmosfera</h1>
+            <figure class="module-photo-frame" data-photo-key="04-montagne" data-default-src="images/04-montagne.jpg">
+                <img src="images/04-montagne.jpg" alt="Paesaggio montano dipinto ad acquerello, prospettiva aerea" onerror="this.closest('.module-photo-frame').classList.add('img-missing')">
+                <div class="photo-placeholder-hint">
+                    <span class="ph-icon">🖼️</span>
+                    Nessuna foto impostata per questo modulo.
+                </div>
+                <div class="photo-actions">
+                    <label class="photo-upload-btn">📤 Carica la tua foto<input type="file" accept="image/*" class="photo-input" hidden></label>
+                    <button type="button" class="photo-remove-btn" style="display:none;">🗑️ Rimuovi</button>
+                    <span class="photo-hint-text">Resta salvata solo in questo browser</span>
+                </div>
+                <figcaption>Foto di riferimento: paesaggio montano, prospettiva aerea</figcaption>
+            </figure>
+
+            <div class="tabs-header">
+                <button class="tab-button active" onclick="switchTab(this, 'accademica-4')">Descrizione Accademica</button>
+                <button class="tab-button" onclick="switchTab(this, 'ia-4')">Analisi IA della tua foto</button>
+            </div>
+
+            <div id="accademica-4" class="tab-content active">
+                <div class="art-spec-box">
+                    <h4>Scheda Tecnica del Modulo</h4>
+                    <div class="art-spec-grid">
+                        <div class="art-spec-item"><strong>Palette cromatica:</strong> Blu cobalto, Verde oliva desaturato, Terra di siena bruciata.</div>
+                        <div class="art-spec-item"><strong>Carta consigliata:</strong> Fabriano Artistico 300g Grana Grossa (Rough).</div>
+                        <div class="art-spec-item"><strong>Gestione bordi:</strong> Sfumati estremi sullo sfondo per la foschia, netti e materici in primo piano.</div>
+                        <div class="art-spec-item"><strong>Livello:</strong> Avanzato — gestione simultanea di più piani atmosferici.</div>
+                        <div class="art-spec-item"><strong>Tempo indicativo:</strong> 2 ore circa.</div>
+                    </div>
+                </div>
+                <p>L'obiettivo nella pittura di paesaggi collinari montuosi, come gli aspri profili delle Madonie con i loro uliveti, è catturare la sensazione dell'aria e della distanza applicando in pratica il principio di temperatura visto nel Modulo 1: i piani più lontani si raffreddano e desaturano, quelli vicini restano caldi e definiti.</p>
+
+                <div class="exercise-box">
+                    <strong>✏️ Esercizio propedeutico</strong>
+                    <p>Dipingi tre fasce orizzontali di Blu Cobalto a diluizione decrescente dall'alto verso il basso, senza mai fermare il pennello: è il gesto base per costruire un cielo che si schiarisce verso l'orizzonte.</p>
+                </div>
+
+                <h3>Workflow Step-by-Step</h3>
+                <ol>
+                    <li><strong>Il cielo e la base atmosferica:</strong> Bagna la parte superiore del foglio. Applica una miscela di Blu Cobalto e lasciala scendere. Mentre è ancora umida, stendi una lavatura grigio-azzurra leggerissima dove si troveranno le montagne più lontane, così il primo crinale nasce già "avvolto" nell'aria.</li>
+                    <li><strong>Crinali in lontananza (Bagnato su umido):</strong> Prima che il cielo sia del tutto asciutto, inserisci le montagne di sfondo. I bordi si sfumeranno naturalmente creando l'illusione della foschia, senza bisogno di sfumare manualmente col pennello.</li>
+                    <li><strong>Piani intermedi e texture:</strong> Lascia asciugare. Lavora ora sui monti a media distanza usando verdi desaturati e Terre. Usa pennellate frammentate per suggerire la vegetazione, lasciando trasparire il colore di base: la saturazione qui deve restare inferiore a quella del primo piano.</li>
+                    <li><strong>Fabbricati in primo piano:</strong> Se è presente una costruzione (es. un rifugio in pietra), dipingila su carta asciutta usando pigmenti caldi (Terre di Siena) e bordi estremamente netti. Questo contrasto focale — caldo/netto contro freddo/sfumato — è ciò che spinge davvero l'elemento in avanti, non solo la sua dimensione.</li>
+                    <li><strong>Nebbia nelle valli:</strong> Per creare foschia tra due crinali, stendi la montagna scura e, subito dopo, usa un pennello pulito e umido per asportare e sfumare il colore alla sua base.</li>
+                </ol>
+
+                <div class="mix-diagram">
+                    <div class="mix-pair">
+                        <div class="mix-circles">
+                            <div class="c1" style="background:#1f5fa8;"></div>
+                            <div class="c2" style="background:#8a3b12;"></div>
+                        </div>
+                        <div class="mix-label"><b>Cobalto + Terra di Siena</b>Verde-grigio desaturato per i crinali a media distanza.</div>
+                    </div>
+                    <div class="mix-pair">
+                        <div class="mix-circles">
+                            <div class="c1" style="background:#8a3b12;"></div>
+                            <div class="c2" style="background:#5c3a21;"></div>
+                        </div>
+                        <div class="mix-label"><b>Terra di Siena + Terra d'Ombra</b>Toni caldi per il rifugio o gli edifici in primo piano.</div>
+                    </div>
+                </div>
+
+                <div class="edge-diagram">
+                    <div class="edge-sample">
+                        <div class="edge-shape soft" style="background: radial-gradient(circle, rgba(31,95,168,0.85) 0 60%, transparent 61%);"></div>
+                        <div class="mix-label"><b>Crinali lontani</b>Bordi sfumati al massimo, persi nella foschia.</div>
+                    </div>
+                    <div class="edge-sample">
+                        <div class="edge-shape hard" style="background: radial-gradient(circle, rgba(138,59,18,0.9) 0 60%, transparent 61%);"></div>
+                        <div class="mix-label"><b>Rifugio in primo piano</b>Bordi netti e materici: lo fanno avanzare.</div>
+                    </div>
+                </div>
+
+                <div class="error-box">
+                    <strong>⚠️ Errori comuni</strong>
+                    <ul>
+                        <li>Dare la stessa saturazione a tutti i piani: annulla la profondità anche se il disegno prospettico è corretto.</li>
+                        <li>Sfumare manualmente col pennello i crinali di sfondo invece di sfruttare il bagnato su bagnato: il risultato è meccanico e riconoscibile.</li>
+                        <li>Aspettare troppo per l'asportazione della nebbia nelle valli: se il colore è già fissato, il lift lascia un alone invece di una sfumatura pulita.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="ia-4" class="tab-content">
+                <button class="ai-generate-btn" onclick="analyzePhoto(4, '04-montagne')">✨ Genera analisi specifica per la tua foto</button>
+                <div class="ai-loading" id="ai-loading-4">Analisi in corso con Gemini... ⏳</div>
+                <div class="ai-result-box" id="ai-result-4"></div>
+            </div>
+
+            <button class="btn-complete" onclick="markCompleted('modulo-4')">✓ Segna come completato</button>
+        </div>
+
+        <!-- Modulo 5: Mare -->
+        <div id="modulo-5" class="lesson-container">
+            <h1>Il Mare in Tempesta: Dry Brush e Movimento</h1>
+            <figure class="module-photo-frame" data-photo-key="05-mare" data-default-src="images/05-mare.jpg">
+                <img src="images/05-mare.jpg" alt="Mare in tempesta dipinto ad acquerello, dry brush" onerror="this.closest('.module-photo-frame').classList.add('img-missing')">
+                <div class="photo-placeholder-hint">
+                    <span class="ph-icon">🖼️</span>
+                    Nessuna foto impostata per questo modulo.
+                </div>
+                <div class="photo-actions">
+                    <label class="photo-upload-btn">📤 Carica la tua foto<input type="file" accept="image/*" class="photo-input" hidden></label>
+                    <button type="button" class="photo-remove-btn" style="display:none;">🗑️ Rimuovi</button>
+                    <span class="photo-hint-text">Resta salvata solo in questo browser</span>
+                </div>
+                <figcaption>Foto di riferimento: mare in tempesta, dry brush</figcaption>
+            </figure>
+
+            <div class="tabs-header">
+                <button class="tab-button active" onclick="switchTab(this, 'accademica-5')">Descrizione Accademica</button>
+                <button class="tab-button" onclick="switchTab(this, 'ia-5')">Analisi IA della tua foto</button>
+            </div>
+
+            <div id="accademica-5" class="tab-content active">
+                <div class="art-spec-box">
+                    <h4>Scheda Tecnica del Modulo</h4>
+                    <div class="art-spec-grid">
+                        <div class="art-spec-item"><strong>Palette cromatica:</strong> Verde smeraldo, Turchese, Blu di Prussia, Indaco scuro.</div>
+                        <div class="art-spec-item"><strong>Carta consigliata:</strong> Saunders Waterford 300g Grana Torchon.</div>
+                        <div class="art-spec-item"><strong>Gestione bordi:</strong> Dinamici, combinazione di colpi secchi orizzontali e sfumature verticali.</div>
+                        <div class="art-spec-item"><strong>Livello:</strong> Esperto — richiede velocità di esecuzione e decisioni rapide.</div>
+                        <div class="art-spec-item"><strong>Tempo indicativo:</strong> 90 minuti, a sessioni rapide e concentrate.</div>
+                    </div>
+                </div>
+                <p>Il mare non è blu, è uno specchio in movimento. Per catturare la violenza di un'onda bisogna agire con rapidità, combinando bagnato su bagnato e pennello asciutto, accettando che alcune decisioni vadano prese in pochi secondi mentre la carta è ancora reattiva.</p>
+
+                <div class="exercise-box">
+                    <strong>✏️ Esercizio propedeutico</strong>
+                    <p>Allena il dry brush a parte: carica un pennello piatto, asciugalo quasi del tutto su un panno, e fallo scorrere su un ritaglio di carta ruvida con angolazioni diverse. Trova la pressione minima che lascia comunque una texture leggibile.</p>
+                </div>
+
+                <h3>Workflow Step-by-Step</h3>
+                <ol>
+                    <li><strong>Preservare la schiuma:</strong> Analizza la direzione della schiuma dell'onda che si infrange. Puoi applicare fluido mascheratore per proteggere i bianchi più assoluti, oppure dipingervi con cura intorno (spazio negativo): la scelta dipende da quanto è complesso il contorno della schiuma.</li>
+                    <li><strong>Il cielo tempestoso:</strong> Lavora bagnato su bagnato usando grigi caldi e Indaco per creare nuvole drammatiche. La direzione delle pennellate nel cielo dovrebbe contrastare la diagonale dell'onda per creare tensione compositiva, non solo atmosferica.</li>
+                    <li><strong>Il corpo dell'onda:</strong> La luce attraversa l'onda un istante prima che si infranga. Applica Verde Smeraldo e Turchese brillante al centro dell'onda, fondendolo con Blu di Prussia e Indaco scuro alla sua base per dargli peso: questo è il punto focale cromatico dell'intero dipinto.</li>
+                    <li><strong>Effetto Dry Brush per la spuma:</strong> Lascia asciugare la base. Carica un pennello piatto di colore denso, asciugalo su un panno, e fallo scorrere orizzontalmente raschiando la grana della carta ruvida. Il colore si aggrapperà solo ai rilievi, creando un realistico pulviscolo d'acqua senza bisogno di dettagliare ogni goccia.</li>
+                </ol>
+
+                <div class="mix-diagram">
+                    <div class="mix-pair">
+                        <div class="mix-circles">
+                            <div class="c1" style="background:#009874;"></div>
+                            <div class="c2" style="background:#2fb6a5;"></div>
+                        </div>
+                        <div class="mix-label"><b>Smeraldo + Turchese</b>Centro luminoso dell'onda, dove la luce la attraversa.</div>
+                    </div>
+                    <div class="mix-pair">
+                        <div class="mix-circles">
+                            <div class="c1" style="background:#12475e;"></div>
+                            <div class="c2" style="background:#23283b;"></div>
+                        </div>
+                        <div class="mix-label"><b>Prussia + Indaco</b>Base scura e pesante dell'onda, dove si infrange.</div>
+                    </div>
+                </div>
+
+                <div class="error-box">
+                    <strong>⚠️ Errori comuni</strong>
+                    <ul>
+                        <li>Ritoccare troppo l'onda dopo la prima stesura: il mare perde freschezza e diventa "lavorato", visibilmente ricostruito a posteriori.</li>
+                        <li>Applicare il dry brush su carta ancora umida: il colore si spande invece di aggrapparsi solo ai rilievi, vanificando l'effetto spuma.</li>
+                        <li>Far coincidere la direzione delle pennellate del cielo con quella dell'onda: la composizione perde tensione e si appiattisce.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="ia-5" class="tab-content">
+                <button class="ai-generate-btn" onclick="analyzePhoto(5, '05-mare')">✨ Genera analisi specifica per la tua foto</button>
+                <div class="ai-loading" id="ai-loading-5">Analisi in corso con Gemini... ⏳</div>
+                <div class="ai-result-box" id="ai-result-5"></div>
+            </div>
+
+            <button class="btn-complete" onclick="markCompleted('modulo-5')">✓ Segna come completato</button>
+        </div>
+
+        <!-- Modulo 6: Inverno -->
+        <div id="modulo-6" class="lesson-container">
+            <h1>Paesaggio Invernale: Dominare lo Spazio Negativo</h1>
+            <figure class="module-photo-frame" data-photo-key="06-inverno" data-default-src="images/06-inverno.jpg">
+                <img src="images/06-inverno.jpg" alt="Paesaggio invernale dipinto ad acquerello, spazio negativo" onerror="this.closest('.module-photo-frame').classList.add('img-missing')">
+                <div class="photo-placeholder-hint">
+                    <span class="ph-icon">🖼️</span>
+                    Nessuna foto impostata per questo modulo.
+                </div>
+                <div class="photo-actions">
+                    <label class="photo-upload-btn">📤 Carica la tua foto<input type="file" accept="image/*" class="photo-input" hidden></label>
+                    <button type="button" class="photo-remove-btn" style="display:none;">🗑️ Rimuovi</button>
+                    <span class="photo-hint-text">Resta salvata solo in questo browser</span>
+                </div>
+                <figcaption>Foto di riferimento: paesaggio invernale, spazio negativo</figcaption>
+            </figure>
+
+            <div class="tabs-header">
+                <button class="tab-button active" onclick="switchTab(this, 'accademica-6')">Descrizione Accademica</button>
+                <button class="tab-button" onclick="switchTab(this, 'ia-6')">Analisi IA della tua foto</button>
+            </div>
+
+            <div id="accademica-6" class="tab-content active">
+                <div class="art-spec-box">
+                    <h4>Scheda Tecnica del Modulo</h4>
+                    <div class="art-spec-grid">
+                        <div class="art-spec-item"><strong>Palette cromatica:</strong> Blu cobalto chiaro, Lavanda, Verde scuro, Alizarina.</div>
+                        <div class="art-spec-item"><strong>Carta consigliata:</strong> Arches 300g Grana Sanguigna o Media.</div>
+                        <div class="art-spec-item"><strong>Gestione bordi:</strong> Rigidi e definiti sui tronchi scuri, morbidissimi e dissolti sulla neve illuminata.</div>
+                        <div class="art-spec-item"><strong>Livello:</strong> Avanzato — la difficoltà è tutta nella pianificazione preventiva.</div>
+                        <div class="art-spec-item"><strong>Tempo indicativo:</strong> 1,5-2 ore.</div>
+                    </div>
+                </div>
+                <p>Nell'acquerello, la neve non si dipinge. Si scolpisce lo spazio attorno ad essa. Il bianco del foglio è il tuo bene più prezioso, e ogni pennellata che dai altrove è in realtà una decisione su dove NON mettere colore.</p>
+
+                <div class="exercise-box">
+                    <strong>✏️ Esercizio propedeutico</strong>
+                    <p>Su un foglio di prova, disegna a matita 5 forme di neve immaginarie (cumuli, rami innevati) e dipingi solo lo sfondo scuro attorno ad esse, senza toccarle mai. Valuta quanto le forme "innevate" risultano credibili solo per contrasto.</p>
+                </div>
+
+                <h3>Workflow Step-by-Step</h3>
+                <ol>
+                    <li><strong>Progettazione dei bianchi:</strong> Non bagnare il foglio nelle aree dove vuoi neve intatta. Delimita visivamente i tetti, i campi innevati e i rami spogli: questa è la fase più importante dell'intero modulo, perché ogni errore qui non è più correggibile in seguito.</li>
+                    <li><strong>Colorare le ombre della neve:</strong> La neve in ombra riflette il cielo. Applica lavature leggerissime e trasparenti di Blu Cobalto o Lavanda per dipingere le ondulazioni del terreno innevato, mantenendo sempre una luminosità altissima.</li>
+                    <li><strong>Contrasto del bosco di sfondo:</strong> Dipingi la vegetazione dietro le aree innevate mentre la carta è umida, usando tinte scurissime (Verde scuro mescolato con Indaco o Alizarina). Il forte contrasto farà brillare letteralmente il bianco della carta, molto più di qualsiasi bianco dipinto.</li>
+                    <li><strong>Alberi in primo piano:</strong> Dipingi i tronchi scuri direttamente sul bianco asciutto (bagnato su asciutto). La silhouette netta degli alberi ancorerà il paesaggio e darà un punto di lettura immediato alla composizione.</li>
+                    <li><strong>Neve sui rami:</strong> Lascia la parte superiore dei rami non dipinta, applicando il colore scuro solo sul lato inferiore.</li>
+                </ol>
+
+                <div class="mix-diagram">
+                    <div class="mix-pair">
+                        <div class="mix-circles">
+                            <div class="c1" style="background:#1f5fa8;"></div>
+                            <div class="c2" style="background:#b3a6d9;"></div>
+                        </div>
+                        <div class="mix-label"><b>Cobalto + Lavanda</b>Ombre luminose della neve, sempre molto diluite.</div>
+                    </div>
+                    <div class="mix-pair">
+                        <div class="mix-circles">
+                            <div class="c1" style="background:#234d29;"></div>
+                            <div class="c2" style="background:#7e1d3c;"></div>
+                        </div>
+                        <div class="mix-label"><b>Verde scuro + Alizarina</b>Bosco di sfondo scurissimo, per far risaltare il bianco.</div>
+                    </div>
+                </div>
+
+                <div class="edge-diagram">
+                    <div class="edge-sample">
+                        <div class="edge-shape hard" style="background: radial-gradient(circle, rgba(35,77,41,0.9) 0 60%, transparent 61%);"></div>
+                        <div class="mix-label"><b>Tronchi in primo piano</b>Bordo netto su bianco asciutto: ancora la composizione.</div>
+                    </div>
+                    <div class="edge-sample">
+                        <div class="edge-shape soft" style="background: radial-gradient(circle, rgba(31,95,168,0.6) 0 60%, transparent 61%);"></div>
+                        <div class="mix-label"><b>Ombre sulla neve</b>Bordi dissolti, quasi impercettibili.</div>
+                    </div>
+                </div>
+
+                <div class="error-box">
+                    <strong>⚠️ Errori comuni</strong>
+                    <ul>
+                        <li>Iniziare a dipingere senza aver pianificato a matita ogni area di bianco: si finisce per "rubare" involontariamente spazio alla neve.</li>
+                        <li>Scurire troppo poco il bosco di sfondo: senza un contrasto reale, il bianco della carta legge come "non finito" e non come neve luminosa.</li>
+                        <li>Dipingere ombre di neve troppo sature: la neve in ombra resta comunque molto chiara, non un grigio medio.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="ia-6" class="tab-content">
+                <button class="ai-generate-btn" onclick="analyzePhoto(6, '06-inverno')">✨ Genera analisi specifica per la tua foto</button>
+                <div class="ai-loading" id="ai-loading-6">Analisi in corso con Gemini... ⏳</div>
+                <div class="ai-result-box" id="ai-result-6"></div>
+            </div>
+
+            <button class="btn-complete" onclick="markCompleted('modulo-6')">✓ Segna come completato</button>
+        </div>
+
+        <!-- Modulo 7: Strada Cittadina -->
+        <div id="modulo-7" class="lesson-container">
+            <h1>Strada Cittadina: Prospettiva e Riflessi</h1>
+            <figure class="module-photo-frame" data-photo-key="07-strada" data-default-src="images/07-strada.jpg">
+                <img src="images/07-strada.jpg" alt="Strada cittadina dipinta ad acquerello, riflessi sull'asfalto bagnato" onerror="this.closest('.module-photo-frame').classList.add('img-missing')">
+                <div class="photo-placeholder-hint">
+                    <span class="ph-icon">🖼️</span>
+                    Nessuna foto impostata per questo modulo.
+                </div>
+                <div class="photo-actions">
+                    <label class="photo-upload-btn">📤 Carica la tua foto<input type="file" accept="image/*" class="photo-input" hidden></label>
+                    <button type="button" class="photo-remove-btn" style="display:none;">🗑️ Rimuovi</button>
+                    <span class="photo-hint-text">Resta salvata solo in questo browser</span>
+                </div>
+                <figcaption>Foto di riferimento: strada cittadina, riflessi sull'asfalto bagnato</figcaption>
+            </figure>
+
+            <div class="tabs-header">
+                <button class="tab-button active" onclick="switchTab(this, 'accademica-7')">Descrizione Accademica</button>
+                <button class="tab-button" onclick="switchTab(this, 'ia-7')">Analisi IA della tua foto</button>
+            </div>
+
+            <div id="accademica-7" class="tab-content active">
+                <div class="art-spec-box">
+                    <h4>Scheda Tecnica del Modulo</h4>
+                    <div class="art-spec-grid">
+                        <div class="art-spec-item"><strong>Palette cromatica:</strong> Grigio neutro, Giallo cadmio, Arancione bruciato, Nero avorio.</div>
+                        <div class="art-spec-item"><strong>Carta consigliata:</strong> Saunders Waterford 300g Grana Media.</div>
+                        <div class="art-spec-item"><strong>Gestione bordi:</strong> Verticali netti per i riflessi della pioggia, masse urbane fuse bagnato su bagnato.</div>
+                        <div class="art-spec-item"><strong>Livello:</strong> Avanzato — richiede sintesi delle forme, non descrizione letterale.</div>
+                        <div class="art-spec-item"><strong>Tempo indicativo:</strong> 2 ore circa.</div>
+                    </div>
+                </div>
+                <p>L'asfalto bagnato dopo la pioggia in una città trafficata richiede di unificare le forme complesse attraverso ombre comuni e riflessi verticali: la scena reale è caotica, il tuo compito è semplificarla senza perdere la sensazione di movimento.</p>
+
+                <div class="exercise-box">
+                    <strong>✏️ Esercizio propedeutico</strong>
+                    <p>Disegna dieci sagome di persone/auto ridotte a semplici blocchi di valore (chiaro/medio/scuro), senza alcun dettaglio interno. È l'abilità di sintesi che userai per popolare la strada senza appesantirla.</p>
+                </div>
+
+                <h3>Workflow Step-by-Step</h3>
+                <ol>
+                    <li><strong>Traccia prospettica:</strong> Definisci l'orizzonte e il punto di fuga. Disegna gli edifici e le silhouette delle automobili e dei pedoni come forme uniche e non dettagliate: il dettaglio arriverà solo alla fine, su pochissimi elementi chiave.</li>
+                    <li><strong>Lavatura iniziale e bagliori:</strong> Stendi un colore di base caldissimo (Giallo Cadmio o Arancione) nei punti dove si troveranno i fari delle auto e le vetrine. Poi bagna il cielo e l'asfalto, fondendo grigi freddi, evitando le aree calde appena create: questa riserva di colore caldo sarà la sorgente luminosa di tutta la scena.</li>
+                    <li><strong>I riflessi sull'asfalto bagnato:</strong> Mentre l'asfalto è ancora molto umido (fase "a specchio"), traccia linee verticali decise e dirette verso il basso, trascinando i colori caldi dei fari nel grigio dell'asfalto: è il gesto singolo che rende l'asfalto credibilmente bagnato.</li>
+                    <li><strong>Costruzione architettonica:</strong> Lascia asciugare. Dipingi i volumi degli edifici in penombra unificando auto e palazzi sotto una singola grande campitura scura, evitando di isolare ogni edificio con un contorno proprio.</li>
+                    <li><strong>Dettagli e vitalità:</strong> Aggiungi silhouette dure di persone con ombre che si allungano verso l'osservatore. Schizza piccole gocce di acqua o colore bianco opaco per simulare caos e pioggia.</li>
+                </ol>
+
+                <div class="mix-diagram">
+                    <div class="mix-pair">
+                        <div class="mix-circles">
+                            <div class="c1" style="background:#8a8f94;"></div>
+                            <div class="c2" style="background:#12475e;"></div>
+                        </div>
+                        <div class="mix-label"><b>Grigio neutro + Blu di Prussia</b>Asfalto e cielo urbano, freddi e uniformi.</div>
+                    </div>
+                    <div class="mix-pair">
+                        <div class="mix-circles">
+                            <div class="c1" style="background:#f9c74f;"></div>
+                            <div class="c2" style="background:#e8641c;"></div>
+                        </div>
+                        <div class="mix-label"><b>Giallo Cadmio + Arancio</b>Riserva calda per fari e vetrine, protetta fin dall'inizio.</div>
+                    </div>
+                </div>
+
+                <div class="error-box">
+                    <strong>⚠️ Errori comuni</strong>
+                    <ul>
+                        <li>Dettagliare ogni singola auto o persona: il risultato è affollato e confuso invece che dinamico.</li>
+                        <li>Tracciare i riflessi verticali quando l'asfalto è già asciutto: le linee restano dure e isolate invece di fondersi nella lavatura.</li>
+                        <li>Dimenticare di proteggere le zone calde (fari, vetrine) prima della lavatura grigia: si perdono i punti luce più efficaci della composizione.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="ia-7" class="tab-content">
+                <button class="ai-generate-btn" onclick="analyzePhoto(7, '07-strada')">✨ Genera analisi specifica per la tua foto</button>
+                <div class="ai-loading" id="ai-loading-7">Analisi in corso con Gemini... ⏳</div>
+                <div class="ai-result-box" id="ai-result-7"></div>
+            </div>
+
+            <button class="btn-complete" onclick="markCompleted('modulo-7')">✓ Segna come completato</button>
+        </div>
+
+        <!-- Modulo 8: Monumento -->
+        <div id="modulo-8" class="lesson-container">
+            <h1>Monumenti Storici: Pietra e Granulazione</h1>
+            <figure class="module-photo-frame" data-photo-key="08-monumenti" data-default-src="images/08-monumenti.jpg">
+                <img src="images/08-monumenti.jpg" alt="Monumento storico dipinto ad acquerello, granulazione della pietra" onerror="this.closest('.module-photo-frame').classList.add('img-missing')">
+                <div class="photo-placeholder-hint">
+                    <span class="ph-icon">🖼️</span>
+                    Nessuna foto impostata per questo modulo.
+                </div>
+                <div class="photo-actions">
+                    <label class="photo-upload-btn">📤 Carica la tua foto<input type="file" accept="image/*" class="photo-input" hidden></label>
+                    <button type="button" class="photo-remove-btn" style="display:none;">🗑️ Rimuovi</button>
+                    <span class="photo-hint-text">Resta salvata solo in questo browser</span>
+                </div>
+                <figcaption>Foto di riferimento: monumento storico, granulazione della pietra</figcaption>
+            </figure>
+
+            <div class="tabs-header">
+                <button class="tab-button active" onclick="switchTab(this, 'accademica-8')">Descrizione Accademica</button>
+                <button class="tab-button" onclick="switchTab(this, 'ia-8')">Analisi IA della tua foto</button>
+            </div>
+
+            <div id="accademica-8" class="tab-content active">
+                <div class="art-spec-box">
+                    <h4>Scheda Tecnica del Modulo</h4>
+                    <div class="art-spec-grid">
+                        <div class="art-spec-item"><strong>Palette cromatica:</strong> Blu oltremare francese, Terra d'ombra bruciata, Ocra naturale.</div>
+                        <div class="art-spec-item"><strong>Carta consigliata:</strong> Arches 300g Grana Grossa (Rough).</div>
+                        <div class="art-spec-item"><strong>Gestione bordi:</strong> Rigidi sull'architettura illuminata, texture granulare sedimentaria nelle ombre.</div>
+                        <div class="art-spec-item"><strong>Livello:</strong> Avanzato — richiede rigore nel disegno prospettico.</div>
+                        <div class="art-spec-item"><strong>Tempo indicativo:</strong> 2-2,5 ore.</div>
+                    </div>
+                </div>
+                <p>Catturare l'antichità di un castello o di un complesso architettonico storico, come le mura del Wawel a Cracovia, richiede pigmenti specifici che simulino l'erosione: è qui che i pigmenti granulanti visti nel Modulo 1 diventano protagonisti assoluti, non un semplice accessorio tecnico.</p>
+
+                <div class="exercise-box">
+                    <strong>✏️ Esercizio propedeutico</strong>
+                    <p>Prepara una miscela succosa di Blu Oltremare e Terra d'Ombra Bruciata e stendila su un ritaglio di carta ruvida inclinato a 45°, lasciandola asciugare senza toccarla. Osserva dove si deposita il pigmento: è lì che la texture della pietra apparirà più credibile.</p>
+                </div>
+
+                <h3>Workflow Step-by-Step</h3>
+                <ol>
+                    <li><strong>Disegno rigoroso:</strong> La prospettiva architettonica non perdona. Traccia archi, colonne e cornicioni assicurandoti che i rapporti di scala siano perfetti: un errore prospettico qui è molto più evidente che in un paesaggio naturale.</li>
+                    <li><strong>Lavatura dorata di base:</strong> Applica una lavatura leggera di Ocra o Terra di Siena Naturale per dare la base di luce solare alla pietra. Lascia asciugare completamente.</li>
+                    <li><strong>Ombre granulari (Il segreto materico):</strong> Prepara una miscela succosa di Blu Oltremare Francese e Terra d'Ombra Bruciata (pigmenti fortemente sedimentari). Applica le ombre del monumento su carta ruvida e lasciala asciugare in orizzontale. I pigmenti si separeranno creando la texture tipica della pietra porosa e dei licheni, un effetto che nessun pennello potrebbe riprodurre manualmente.</li>
+                    <li><strong>Contrasti di profondità:</strong> Scurisci drasticamente l'interno delle finestre, degli archi e le ombre portate dai cornicioni per dare peso e volume alla struttura.</li>
+                    <li><strong>Dettagli lineari:</strong> Usa la punta di un pennello piccolo (o un tiralinee) per suggerire, in modo molto irregolare, qualche fuga dei mattoni o spaccature nella pietra: l'irregolarità è ciò che comunica il tempo trascorso.</li>
+                </ol>
+
+                <div class="mix-diagram">
+                    <div class="mix-pair">
+                        <div class="mix-circles">
+                            <div class="c1" style="background:#d4a017;"></div>
+                            <div class="c2" style="background:#8a3b12;"></div>
+                        </div>
+                        <div class="mix-label"><b>Ocra + Terra di Siena</b>Base dorata della pietra, sotto il sole.</div>
+                    </div>
+                    <div class="mix-pair">
+                        <div class="mix-circles">
+                            <div class="c1" style="background:#34348c;"></div>
+                            <div class="c2" style="background:#5c3a21;"></div>
+                        </div>
+                        <div class="mix-label"><b>Oltremare + Terra d'Ombra</b>Ombre granulari: il "segreto" della texture di pietra.</div>
+                    </div>
+                </div>
+
+                <div class="error-box">
+                    <strong>⚠️ Errori comuni</strong>
+                    <ul>
+                        <li>Far asciugare il foglio in piano invece che in orizzontale/inclinato durante la granulazione: i pigmenti sedimentano in modo casuale invece di seguire il flusso desiderato.</li>
+                        <li>Usare una carta troppo liscia per questo soggetto: senza grana grossa, l'effetto granulare tipico della pietra semplicemente non si forma.</li>
+                        <li>Rendere ogni fuga dei mattoni regolare e uniforme: la pietra antica comunica il tempo proprio attraverso l'irregolarità.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="ia-8" class="tab-content">
+                <button class="ai-generate-btn" onclick="analyzePhoto(8, '08-monumenti')">✨ Genera analisi specifica per la tua foto</button>
+                <div class="ai-loading" id="ai-loading-8">Analisi in corso con Gemini... ⏳</div>
+                <div class="ai-result-box" id="ai-result-8"></div>
+            </div>
+
+            <button class="btn-complete" onclick="markCompleted('modulo-8')">✓ Segna come completato</button>
+        </div>
+
+        <!-- Modulo 9: Animali -->
+        <div id="modulo-9" class="lesson-container">
+            <h1>Animali in Movimento: Oche, Piume e Peli</h1>
+            <figure class="module-photo-frame" data-photo-key="09-animali" data-default-src="images/09-animali.jpg">
+                <img src="images/09-animali.jpg" alt="Animale in movimento dipinto ad acquerello, piume e lost & found" onerror="this.closest('.module-photo-frame').classList.add('img-missing')">
+                <div class="photo-placeholder-hint">
+                    <span class="ph-icon">🖼️</span>
+                    Nessuna foto impostata per questo modulo.
+                </div>
+                <div class="photo-actions">
+                    <label class="photo-upload-btn">📤 Carica la tua foto<input type="file" accept="image/*" class="photo-input" hidden></label>
+                    <button type="button" class="photo-remove-btn" style="display:none;">🗑️ Rimuovi</button>
+                    <span class="photo-hint-text">Resta salvata solo in questo browser</span>
+                </div>
+                <figcaption>Foto di riferimento: animale in movimento, piume e lost & found</figcaption>
+            </figure>
+
+            <div class="tabs-header">
+                <button class="tab-button active" onclick="switchTab(this, 'accademica-9')">Descrizione Accademica</button>
+                <button class="tab-button" onclick="switchTab(this, 'ia-9')">Analisi IA della tua foto</button>
+            </div>
+
+            <div id="accademica-9" class="tab-content active">
+                <div class="art-spec-box">
+                    <h4>Scheda Tecnica del Modulo</h4>
+                    <div class="art-spec-grid">
+                        <div class="art-spec-item"><strong>Palette cromatica:</strong> Grigio neutro freddo, Arancione cadmio, Verde profondo, Magenta.</div>
+                        <div class="art-spec-item"><strong>Carta consigliata:</strong> Fabriano Artistico 300g Extra Fine.</div>
+                        <div class="art-spec-item"><strong>Gestione bordi:</strong> Persi e trovati (lost & found) sul ventre dell'animale immerso nell'acqua.</div>
+                        <div class="art-spec-item"><strong>Livello:</strong> Avanzato — la selezione dei dettagli conta più della quantità.</div>
+                        <div class="art-spec-item"><strong>Tempo indicativo:</strong> 1,5 ore.</div>
+                    </div>
+                </div>
+                <p>Il realismo non deriva dal dipingere mille dettagli, ma dal saper selezionare le ombre chiave. Un'oca su un lago fiorito è un esercizio perfetto di contrasto e di economia di mezzi: ogni dettaglio che aggiungi deve guadagnarsi il suo posto.</p>
+
+                <div class="exercise-box">
+                    <strong>✏️ Esercizio propedeutico</strong>
+                    <p>Disegna la stessa sagoma di animale tre volte e prova a "finirla" con 3, 8 e 20 pennellate rispettivamente. Confronta i tre risultati: capirai qual è il numero minimo di segni che comunica ancora forma e volume.</p>
+                </div>
+
+                <h3>Workflow Step-by-Step</h3>
+                <ol>
+                    <li><strong>Isolamento della luce:</strong> Le oche bianche richiedono di lasciare la carta intonsa per le parti illuminate. Se l'ambiente attorno è complesso (acqua scura, fiori riflessi), puoi usare il liquido per mascheratura sui contorni superiori dell'animale.</li>
+                    <li><strong>Il contesto bagnato (Sfondo):</strong> Bagna l'area del lago. Usa verdi profondi e tocchi di Magenta (per riflettere ipotetici fiori). Il colore scuro dell'acqua deve arrivare esattamente fino al bordo bianco della pancia dell'oca: è il contrasto diretto, non un contorno disegnato, a definire la sagoma.</li>
+                    <li><strong>Volumi morbidi (Lost & Found):</strong> Quando lo sfondo è umido, applica l'ombra violacea sul ventre dell'animale. Lascia che il confine inferiore dell'oca si sciolga leggermente nell'acqua, perdendo il bordo netto. Questo la farà apparire "immersa" invece che incollata sopra lo sfondo.</li>
+                    <li><strong>Dettagli focali:</strong> Lascia asciugare. Dipingi il becco arancione saturo e l'occhio scurissimo, lasciando un microscopico puntino bianco nell'occhio per dare la "scintilla di vita".</li>
+                    <li><strong>Texture:</strong> Aggiungi solo 3-4 colpi di pennello a secco (dry brush) sulle ali per suggerire le piume principali. Il cervello umano completerà il resto: è il principio di economia visto nell'esercizio propedeutico applicato al dipinto finale.</li>
+                </ol>
+
+                <div class="mix-diagram">
+                    <div class="mix-pair">
+                        <div class="mix-circles">
+                            <div class="c1" style="background:#1f4d2c;"></div>
+                            <div class="c2" style="background:#c2185b;"></div>
+                        </div>
+                        <div class="mix-label"><b>Verde profondo + Magenta</b>Lago scuro con riflessi floreali, definisce il bordo bianco per contrasto.</div>
+                    </div>
+                    <div class="mix-pair">
+                        <div class="mix-circles">
+                            <div class="c1" style="background:#e8641c;"></div>
+                            <div class="c2" style="background:#2b2b28;"></div>
+                        </div>
+                        <div class="mix-label"><b>Arancio + Nero Avorio</b>Becco saturo e occhio scurissimo, i due dettagli focali.</div>
+                    </div>
+                </div>
+
+                <div class="edge-diagram">
+                    <div class="edge-sample">
+                        <div class="edge-shape hard" style="background: radial-gradient(circle, rgba(43,43,40,0.9) 0 60%, transparent 61%);"></div>
+                        <div class="mix-label"><b>Becco e occhio</b>Bordo trovato: massima nitidezza, punto focale.</div>
+                    </div>
+                    <div class="edge-sample">
+                        <div class="edge-shape soft" style="background: radial-gradient(circle, rgba(43,43,40,0.7) 0 60%, transparent 61%);"></div>
+                        <div class="mix-label"><b>Ventre nell'acqua</b>Bordo perso: si scioglie nello sfondo scuro.</div>
+                    </div>
+                </div>
+
+                <div class="error-box">
+                    <strong>⚠️ Errori comuni</strong>
+                    <ul>
+                        <li>Disegnare un contorno attorno all'animale bianco invece di lasciare che sia lo sfondo scuro a definirlo: il risultato è rigido e "ritagliato".</li>
+                        <li>Aggiungere troppe piume dettagliate: appesantisce la figura e distrae dal punto focale (becco e occhio).</li>
+                        <li>Dimenticare il puntino di luce nell'occhio: senza quello, lo sguardo dell'animale risulta spento anche se il resto è tecnicamente corretto.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="ia-9" class="tab-content">
+                <button class="ai-generate-btn" onclick="analyzePhoto(9, '09-animali')">✨ Genera analisi specifica per la tua foto</button>
+                <div class="ai-loading" id="ai-loading-9">Analisi in corso con Gemini... ⏳</div>
+                <div class="ai-result-box" id="ai-result-9"></div>
+            </div>
+
+            <button class="btn-complete" onclick="markCompleted('modulo-9')">✓ Segna come completato</button>
+        </div>
+
+        <!-- Modulo 10: Botanica -->
+        <div id="modulo-10" class="lesson-container">
+            <h1>Botanica Avanzata: Trasparenze Floreali</h1>
+            <figure class="module-photo-frame" data-photo-key="10-botanica" data-default-src="images/10-botanica.jpg">
+                <img src="images/10-botanica.jpg" alt="Fiori dipinti ad acquerello, trasparenze floreali" onerror="this.closest('.module-photo-frame').classList.add('img-missing')">
+                <div class="photo-placeholder-hint">
+                    <span class="ph-icon">🖼️</span>
+                    Nessuna foto impostata per questo modulo.
+                </div>
+                <div class="photo-actions">
+                    <label class="photo-upload-btn">📤 Carica la tua foto<input type="file" accept="image/*" class="photo-input" hidden></label>
+                    <button type="button" class="photo-remove-btn" style="display:none;">🗑️ Rimuovi</button>
+                    <span class="photo-hint-text">Resta salvata solo in questo browser</span>
+                </div>
+                <figcaption>Foto di riferimento: botanica avanzata, trasparenze floreali</figcaption>
+            </figure>
+
+            <div class="tabs-header">
+                <button class="tab-button active" onclick="switchTab(this, 'accademica-10')">Descrizione Accademica</button>
+                <button class="tab-button" onclick="switchTab(this, 'ia-10')">Analisi IA della tua foto</button>
+            </div>
+
+            <div id="accademica-10" class="tab-content active">
+                <div class="art-spec-box">
+                    <h4>Scheda Tecnica del Modulo</h4>
+                    <div class="art-spec-grid">
+                        <div class="art-spec-item"><strong>Palette cromatica:</strong> Rosa quinacridone, Giallo limone, Lavanda, Verde linfa.</div>
+                        <div class="art-spec-item"><strong>Carta consigliata:</strong> Arches 300g Satinata o Fine.</div>
+                        <div class="art-spec-item"><strong>Gestione bordi:</strong> Sfumati ad anello e bordi negativi netti per far risaltare la retroilluminazione.</div>
+                        <div class="art-spec-item"><strong>Livello:</strong> Avanzato — richiede precisione nel timing del lifting.</div>
+                        <div class="art-spec-item"><strong>Tempo indicativo:</strong> 1,5-2 ore.</div>
+                    </div>
+                </div>
+                <p>I fiori ad acquerello richiedono lo studio della retroilluminazione e della sottrazione del colore per evitare che sembrino pesanti pezzi di plastica: la luminosità del petalo si costruisce sottraendo, non solo aggiungendo pigmento.</p>
+
+                <div class="exercise-box">
+                    <strong>✏️ Esercizio propedeutico</strong>
+                    <p>Stendi una velatura uniforme su un ritaglio di carta e, dopo 30-60 secondi, prova a sollevare una nervatura con un pennello sintetico pulito e umido. Ripeti a diversi intervalli di tempo per trovare la finestra esatta in cui il lifting funziona meglio sulla tua carta.</p>
+                </div>
+
+                <h3>Workflow Step-by-Step</h3>
+                <ol>
+                    <li><strong>Sfondo simultaneo:</strong> Dipingi il fiore e lo sfondo scuro contemporaneamente (bagnato su bagnato). Tirare i pigmenti scuri dello sfondo verso l'esterno evidenzierà lo spazio negativo e il contorno dei petali senza farli sembrare incollati.</li>
+                    <li><strong>La prima velatura luminosa:</strong> Stendi sui petali un giallo limone o un rosa molto diluito. L'obiettivo è riempire la carta mantenendo il 90% della sua luminosità originale: qualsiasi eccesso di pigmento in questa fase è difficile da recuperare.</li>
+                    <li><strong>Costruzione dei piani posteriori:</strong> I petali sul retro sono in ombra. Applica velature di colori freddi (Lavanda o Verde linfa diluito) per spingerli indietro visivamente rispetto ai petali in primissimo piano.</li>
+                    <li><strong>Lifting (Asportazione) per le nervature:</strong> Prima che l'ultimo strato di colore sul petalo principale asciughi del tutto, prendi un pennello sintetico pulito e leggermente umido. Traccialo sul petalo per "cancellare" il pigmento e svelare nervature chiare o bordi arricciati.</li>
+                    <li><strong>Pistilli e centri:</strong> Attendi l'asciugatura totale. Inserisci i dettagli microscopici al centro del fiore con colori densissimi e caldi per creare profondità.</li>
+                </ol>
+
+                <div class="mix-diagram">
+                    <div class="mix-pair">
+                        <div class="mix-circles">
+                            <div class="c1" style="background:#f9c74f;"></div>
+                            <div class="c2" style="background:#e0457b;"></div>
+                        </div>
+                        <div class="mix-label"><b>Giallo limone + Rosa Quinacridone</b>Prima velatura luminosa dei petali in primo piano.</div>
+                    </div>
+                    <div class="mix-pair">
+                        <div class="mix-circles">
+                            <div class="c1" style="background:#b3a6d9;"></div>
+                            <div class="c2" style="background:#7c9a4a;"></div>
+                        </div>
+                        <div class="mix-label"><b>Lavanda + Verde linfa</b>Petali sul retro, spinti indietro nello spazio.</div>
+                    </div>
+                </div>
+
+                <div class="error-box">
+                    <strong>⚠️ Errori comuni</strong>
+                    <ul>
+                        <li>Saturare troppo la prima velatura: il fiore perde la sensazione di luce che lo attraversa e diventa opaco.</li>
+                        <li>Tentare il lifting su un pigmento fortemente tingente (vedi Modulo 1): il risultato è un alone sporco invece di una nervatura pulita.</li>
+                        <li>Dare la stessa saturazione a tutti i petali indipendentemente dal piano: la profondità del fiore scompare.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="ia-10" class="tab-content">
+                <button class="ai-generate-btn" onclick="analyzePhoto(10, '10-botanica')">✨ Genera analisi specifica per la tua foto</button>
+                <div class="ai-loading" id="ai-loading-10">Analisi in corso con Gemini... ⏳</div>
+                <div class="ai-result-box" id="ai-result-10"></div>
+            </div>
+
+            <button class="btn-complete" onclick="markCompleted('modulo-10')">✓ Segna come completato</button>
+        </div>
+
+        <!-- Modulo 11: Cielo -->
+        <div id="modulo-11" class="lesson-container">
+            <h1>Cielo ed Astri: Eclissi e Notti Profonde</h1>
+            <figure class="module-photo-frame" data-photo-key="11-cielo" data-default-src="images/11-cielo.jpg">
+                <img src="images/11-cielo.jpg" alt="Cielo notturno ed eclissi dipinti ad acquerello" onerror="this.closest('.module-photo-frame').classList.add('img-missing')">
+                <div class="photo-placeholder-hint">
+                    <span class="ph-icon">🖼️</span>
+                    Nessuna foto impostata per questo modulo.
+                </div>
+                <div class="photo-actions">
+                    <label class="photo-upload-btn">📤 Carica la tua foto<input type="file" accept="image/*" class="photo-input" hidden></label>
+                    <button type="button" class="photo-remove-btn" style="display:none;">🗑️ Rimuovi</button>
+                    <span class="photo-hint-text">Resta salvata solo in questo browser</span>
+                </div>
+                <figcaption>Foto di riferimento: cielo notturno, eclissi e astri</figcaption>
+            </figure>
+
+            <div class="tabs-header">
+                <button class="tab-button active" onclick="switchTab(this, 'accademica-11')">Descrizione Accademica</button>
+                <button class="tab-button" onclick="switchTab(this, 'ia-11')">Analisi IA della tua foto</button>
+            </div>
+
+            <div id="accademica-11" class="tab-content active">
+                <div class="art-spec-box">
+                    <h4>Scheda Tecnica del Modulo</h4>
+                    <div class="art-spec-grid">
+                        <div class="art-spec-item"><strong>Palette cromatica:</strong> Indaco, Blu di Prussia, Alizarina, Bianco opaco (gouache).</div>
+                        <div class="art-spec-item"><strong>Carta consigliata:</strong> Saunders Waterford 300g Grana Grossa.</div>
+                        <div class="art-spec-item"><strong>Gestione bordi:</strong> Gradienti cosmici diffusi mescolati a spruzzi (splatter) estremamente netti.</div>
+                        <div class="art-spec-item"><strong>Livello:</strong> Esperto — richiede audacia nel caricare pigmento e disciplina nel proteggere i bianchi.</div>
+                        <div class="art-spec-item"><strong>Tempo indicativo:</strong> 1,5 ore, più tempo di asciugatura completa prima dello splatter.</div>
+                    </div>
+                </div>
+                <p>Rappresentare l'oscurità dello spazio (o fenomeni mozzafiato come un'eclissi solare) richiede audacia nel caricare il pigmento e precisione per proteggere la luce pura: è il modulo del corso in cui la fiducia nel gesto conta più del controllo minuto.</p>
+
+                <div class="exercise-box">
+                    <strong>✏️ Esercizio propedeutico</strong>
+                    <p>Su un ritaglio bagnato, lascia cadere gocce pure di Indaco, Blu di Prussia e Alizarina senza mai toccarle col pennello, solo inclinando il foglio. Studia come si fondono da sole: è la stessa tecnica del passaggio 2 del workflow.</p>
+                </div>
+
+                <h3>Workflow Step-by-Step</h3>
+                <ol>
+                    <li><strong>Preparare il disco di luce (Eclissi solare):</strong> Se dipingi l'alone di un'eclissi totale, traccia il cerchio e mascherane esattamente l'interno, oppure bagna tutto il foglio <em>tranne</em> il centro.</li>
+                    <li><strong>Creare il cosmo (Bagnato su bagnato estremo):</strong> Bagna abbondantemente il foglio. Inizia stendendo tocchi di Giallo e Arancio vicino alla corona solare. Allontanandoti, lascia cadere enormi quantità di Indaco puro, Blu di Prussia e Alizarina. Lasciali fondere sulla carta, inclinando la tavola per creare gradienti senza usare il pennello: è il gesto più importante dell'intero modulo.</li>
+                    <li><strong>Sfumare la corona:</strong> Mentre l'alone nero della luna è circondato dallo spazio umido, usa un pennello a ventaglio pulito per sfumare il colore chiaro verso lo scuro profondo dello spazio, simulando l'emissione dei raggi solari bloccati.</li>
+                    <li><strong>Creazione delle stelle (Splatter):</strong> Il segreto per non rovinare tutto: aspetta che il foglio sia asciutto al 100%. Nemmeno minimamente umido. Solo ora, usa un vecchio spazzolino da denti intinto nel bianco opaco (gouache) per schizzare delicatamente le galassie sullo sfondo.</li>
+                    <li><strong>La sagoma nera:</strong> Riempi il cerchio della luna o le montagne in primissimo piano con inchiostro nero o Indaco denso. Il contrasto materico completerà l'effetto drammatico.</li>
+                </ol>
+
+                <div class="mix-diagram">
+                    <div class="mix-pair">
+                        <div class="mix-circles">
+                            <div class="c1" style="background:#23283b;"></div>
+                            <div class="c2" style="background:#12475e;"></div>
+                        </div>
+                        <div class="mix-label"><b>Indaco + Blu di Prussia</b>Corpo profondo dello spazio, lasciato fondere senza pennello.</div>
+                    </div>
+                    <div class="mix-pair">
+                        <div class="mix-circles">
+                            <div class="c1" style="background:#23283b;"></div>
+                            <div class="c2" style="background:#7e1d3c;"></div>
+                        </div>
+                        <div class="mix-label"><b>Indaco + Alizarina</b>Zone di transizione calda vicino alla corona solare.</div>
+                    </div>
+                </div>
+
+                <div class="error-box">
+                    <strong>⚠️ Errori comuni</strong>
+                    <ul>
+                        <li>Fare lo splatter di stelle mentre il foglio non è perfettamente asciutto: le goccioline si spandono in aloni informi invece di restare puntini netti.</li>
+                        <li>Intervenire col pennello per "correggere" i gradienti cosmici: il risultato perde la naturalezza del flusso spontaneo del pigmento.</li>
+                        <li>Sottodosare il pigmento per paura di sbagliare: uno spazio profondo richiede saturazione e densità di colore reali, non tinte timide.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="ia-11" class="tab-content">
+                <button class="ai-generate-btn" onclick="analyzePhoto(11, '11-cielo')">✨ Genera analisi specifica per la tua foto</button>
+                <div class="ai-loading" id="ai-loading-11">Analisi in corso con Gemini... ⏳</div>
+                <div class="ai-result-box" id="ai-result-11"></div>
+            </div>
+
+            <button class="btn-complete" onclick="markCompleted('modulo-11')">✓ Segna come completato</button>
+        </div>
+
+        <!-- Modulo 12: Soggetto Libero -->
+        <div id="modulo-12" class="lesson-container">
+            <h1>Soggetto Libero: Analisi Guidata dall'IA</h1>
+            <p>Uno spazio aperto per qualunque soggetto non coperto dagli altri moduli: carica la foto di riferimento che vuoi dipingere e ricevi un'analisi tecnica generata sulla tua immagine specifica, con lo stesso strumento IA usato negli altri moduli — qui senza una scheda teorica fissa alle spalle, solo l'analisi sul tuo soggetto.</p>
+
+            <figure class="module-photo-frame" data-photo-key="12-libero" data-default-src="images/12-libero.jpg">
+                <img src="images/12-libero.jpg" alt="Soggetto libero scelto dallo studente" onerror="this.closest('.module-photo-frame').classList.add('img-missing')">
+                <div class="photo-placeholder-hint">
+                    <span class="ph-icon">🖼️</span>
+                    Nessuna foto impostata per questo modulo.
+                </div>
+                <div class="photo-actions">
+                    <label class="photo-upload-btn">📤 Carica la tua foto<input type="file" accept="image/*" class="photo-input" hidden></label>
+                    <button type="button" class="photo-remove-btn" style="display:none;">🗑️ Rimuovi</button>
+                    <span class="photo-hint-text">Resta salvata solo in questo browser</span>
+                </div>
+                <figcaption>Il soggetto che hai scelto di dipingere</figcaption>
+            </figure>
+
+            <button class="ai-generate-btn" onclick="analyzePhoto(12, '12-libero')">✨ Genera analisi specifica per la tua foto</button>
+            <div class="ai-loading" id="ai-loading-12">Analisi in corso con Gemini... ⏳</div>
+            <div class="ai-result-box" id="ai-result-12"></div>
+
+            <button class="btn-complete" onclick="markCompleted('modulo-12')">✓ Segna come completato</button>
+        </div>
+
+        <!-- Modulo 13: Lab Interattivo -->
+        <div id="modulo-13" class="lesson-container">
+            <h1>Laboratorio Interattivo: Diffusione e Umidità</h1>
+            <p>Simula il comportamento del pigmento su carta asciutta o bagnata, scegli tra sei pigmenti con comportamento diverso (granulante, tingente, trasparente) e osserva come cambia l'esito della pennellata. È il posto ideale per verificare in pratica quanto letto nel Modulo 1.</p>
+            <div class="interactive-tool">
+                <div class="canvas-container">
+                    <canvas id="watercolorCanvas" width="450" height="350"></canvas>
+                    <div class="controls">
+                        <label>Pigmento selezionato</label>
+                        <div class="lab-palette" id="lab-palette"></div>
+                        <p class="pigment-name" id="pigment-name-label">Blu Oltremare Francese — granulante</p>
+
+                        <label>Foglio</label>
+                        <div class="wet-toggle">
+                            <button id="btn-dry" class="active" onclick="setWetMode(false)">Asciutto</button>
+                            <button id="btn-wet" onclick="setWetMode(true)">Bagnato</button>
+                        </div>
+
+                        <label for="waterAmount">Umidità del pennello: <span id="waterValue">50</span>%</label>
+                        <input type="range" id="waterAmount" min="5" max="100" value="50">
+
+                        <label for="pigmentLoad">Carico di Pigmento: <span id="pigmentValue">60</span>%</label>
+                        <input type="range" id="pigmentLoad" min="10" max="100" value="60">
+                        <br>
+                        <button class="btn-clear" onclick="clearCanvas()">Pulisci Foglio</button>
+                    </div>
+                </div>
+                <p class="lab-hint">Prova: seleziona "Bagnato", scegli un pigmento granulante (es. Blu Oltremare o Terra d'Ombra) e traccia una pennellata lenta. Poi ripeti su "Asciutto" con un pigmento tingente (es. Blu di Prussia) e confronta la nettezza dei bordi.</p>
+            </div>
+
+            <button class="btn-complete" onclick="markCompleted('modulo-13')">✓ Segna come completato</button>
+        </div>
+
+    </div>
+
+    <div class="modal-overlay" id="api-key-modal">
+        <div class="modal-box">
+            <h2>🔑 Configura API Key di Gemini</h2>
+            <p>Per usare l'analisi IA delle foto serve una chiave API gratuita di Google Gemini. Ecco come ottenerla in pochi minuti:</p>
+            <ol>
+                <li>Accedi con un account Google.</li>
+                <li>Apri Google AI Studio e accetta i termini di servizio se richiesto.</li>
+                <li>Clicca su "Create API key" (o "Crea chiave API"): verrà generata subito, gratuitamente.</li>
+                <li>Copia la chiave e incollala qui sotto.</li>
+            </ol>
+            <a class="modal-link" href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer">🔗 Ottieni la tua API Key gratuita su Google AI Studio</a>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Il piano gratuito di Gemini ha dei limiti di utilizzo giornalieri, ma è sufficiente per l'uso previsto in questa app. La chiave resta salvata solo nel tuo browser.</p>
+            <label for="api-key-input" style="display: block; font-weight: 600; margin-bottom: 8px;">Incolla la tua API Key</label>
+            <input type="text" id="api-key-input" placeholder="Incolla qui la tua API Key">
+            <div class="modal-actions" style="justify-content: space-between;">
+                <button type="button" class="modal-danger" onclick="removeApiKey()">🗑️ Rimuovi chiave</button>
+                <div style="display: flex; gap: 10px;">
+                    <button type="button" onclick="closeApiKeyModal()">Annulla</button>
+                    <button type="button" class="modal-save" onclick="saveApiKey()">💾 Salva</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="backup-modal">
+        <div class="modal-box">
+            <h2>💾 Backup dei tuoi dati</h2>
+            <p>Progressi, note personali, foto caricate e analisi IA sono salvati solo in questo browser. Se cambi dispositivo, cancelli la cache o vuoi semplicemente essere al sicuro, esporta un backup e conservalo.</p>
+            <button type="button" class="ai-generate-btn" id="backup-export-btn" style="width: 100%; justify-content: center;" onclick="exportAllData()">⬇️ Esporta i miei dati</button>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Verrà scaricato un file .json con tutti i tuoi dati, inclusa la tua API Key di Gemini: dopo un ripristino sarà già configurata, senza doverla reinserire. Proprio per questo, conserva il file solo per te e non condividerlo con altri.</p>
+            <hr style="border: none; border-top: 1px solid var(--border); margin: 22px 0;">
+            <label for="backup-file-input" style="display: block; font-weight: 600; margin-bottom: 8px;">⬆️ Importa da un file di backup</label>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Attenzione: i dati attuali in questo browser verranno sovrascritti da quelli contenuti nel file importato.</p>
+            <input type="file" id="backup-file-input" accept="application/json,.json" style="margin-bottom: 18px; width: 100%;">
+            <div class="modal-actions">
+                <button type="button" onclick="closeBackupModal()">Chiudi</button>
+                <button type="button" class="modal-save" id="backup-import-btn" onclick="importAllData(document.getElementById('backup-file-input').files[0])">📂 Importa</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            const btn = document.getElementById('theme-btn');
+            if (html.getAttribute('data-theme') === 'light') {
+                html.setAttribute('data-theme', 'dark');
+                btn.innerHTML = '☀️ Tema Chiaro';
+                localStorage.setItem('themeAppPro', 'dark');
+            } else {
+                html.setAttribute('data-theme', 'light');
+                btn.innerHTML = '🌓 Tema Scuro';
+                localStorage.setItem('themeAppPro', 'light');
+            }
+        }
+
+        if (localStorage.getItem('themeAppPro') === 'dark') toggleTheme();
+
+        /* ---------- Pannello laterale: mostra/nascondi per più spazio a schermo ---------- */
+        function updateSidebarToggleLabel() {
+            const btn = document.getElementById('sidebar-toggle-btn');
+            const hidden = document.body.classList.contains('sidebar-hidden');
+            btn.innerHTML = hidden ? '☰ Mostra menu' : '☰ Nascondi menu';
+        }
+
+        function toggleSidebar() {
+            document.body.classList.toggle('sidebar-hidden');
+            const hidden = document.body.classList.contains('sidebar-hidden');
+            localStorage.setItem('sidebarHidden', hidden ? '1' : '0');
+            updateSidebarToggleLabel();
+            // La topbar si sposta con una transizione animata (var(--transition), 0.3s): la sua altezza
+            // effettiva su mobile (dove va a capo) si stabilizza solo a fine animazione, quindi
+            // sincronizziamo sia subito sia di nuovo dopo la transizione per evitare valori intermedi.
+            syncMainContentTopPadding();
+            setTimeout(syncMainContentTopPadding, 320);
+        }
+
+        // Su schermi stretti il pannello, se aperto, lascia troppo poco spazio alla topbar
+        // (i pulsanti in alto rischiano di sovrapporsi). Se lo studente non ha ancora scelto
+        // esplicitamente, su mobile partiamo con il pannello chiuso per dare priorità allo spazio utile.
+        const storedSidebarPref = localStorage.getItem('sidebarHidden');
+        if (storedSidebarPref === '1' || (storedSidebarPref === null && window.innerWidth <= 768)) {
+            document.body.classList.add('sidebar-hidden');
+        }
+        updateSidebarToggleLabel();
+
+        // La topbar può andare a capo su più righe (mobile, con molti pulsanti): la sua altezza
+        // non è fissa, quindi teniamo lo spazio sopra al contenuto sempre sincronizzato con quella reale.
+        function syncMainContentTopPadding() {
+            const topbar = document.querySelector('.topbar');
+            const mainContent = document.getElementById('main-content');
+            if (!topbar || !mainContent) return;
+            const height = topbar.getBoundingClientRect().height;
+            mainContent.style.paddingTop = (height + 25) + 'px';
+        }
+        syncMainContentTopPadding();
+        let resizeSyncTimeout = null;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeSyncTimeout);
+            resizeSyncTimeout = setTimeout(syncMainContentTopPadding, 150);
+        });
+
+        const navItems = document.querySelectorAll('.nav-item');
+        const lessons = document.querySelectorAll('.lesson-container');
+        const moduleOrder = Array.from(navItems).map(item => item.getAttribute('data-target'));
+
+        function activateModule(targetId) {
+            if (!targetId) return;
+            navItems.forEach(nav => nav.classList.toggle('active', nav.getAttribute('data-target') === targetId));
+            lessons.forEach(lesson => lesson.classList.remove('active'));
+
+            setTimeout(() => {
+                const target = document.getElementById(targetId);
+                if (target) target.classList.add('active');
+                document.getElementById('main-content').scrollTop = 0;
+            }, 50);
+        }
+
+        navItems.forEach(item => {
+            item.addEventListener('click', () => activateModule(item.getAttribute('data-target')));
+        });
+
+        /* ---------- Pulsanti "Modulo precedente / successivo" ---------- */
+        function initModuleNavButtons() {
+            document.querySelectorAll('.lesson-container').forEach(container => {
+                if (container.querySelector('.module-nav-buttons')) return;
+                const idx = moduleOrder.indexOf(container.id);
+                if (idx === -1) return;
+                const prevId = idx > 0 ? moduleOrder[idx - 1] : null;
+                const nextId = idx < moduleOrder.length - 1 ? moduleOrder[idx + 1] : null;
+                if (!prevId && !nextId) return;
+
+                const getLabel = (id) => {
+                    const span = document.querySelector('.nav-item[data-target="' + id + '"] span');
+                    return span ? span.textContent : '';
+                };
+
+                const bar = document.createElement('div');
+                bar.className = 'module-nav-buttons';
+                bar.innerHTML =
+                    (prevId ? '<button type="button" class="module-nav-btn prev">← ' + getLabel(prevId) + '</button>' : '<span></span>') +
+                    (nextId ? '<button type="button" class="module-nav-btn next">' + getLabel(nextId) + ' →</button>' : '<span></span>');
+
+                container.appendChild(bar);
+                const prevBtn = bar.querySelector('.module-nav-btn.prev');
+                const nextBtn = bar.querySelector('.module-nav-btn.next');
+                if (prevBtn) prevBtn.addEventListener('click', () => activateModule(prevId));
+                if (nextBtn) nextBtn.addEventListener('click', () => activateModule(nextId));
+            });
+        }
+
+        function markCompleted(lessonId) {
+            let completed = JSON.parse(localStorage.getItem('watercolorProApp')) || {};
+            completed[lessonId] = true;
+            localStorage.setItem('watercolorProApp', JSON.stringify(completed));
+            updateUI();
+        }
+
+        function updateUI() {
+            let completed = JSON.parse(localStorage.getItem('watercolorProApp')) || {};
+            let totalLessons = navItems.length;
+            let completedCount = 0;
+
+            navItems.forEach(item => {
+                const target = item.getAttribute('data-target');
+                const icon = item.querySelector('.status-icon');
+                if (completed[target]) {
+                    icon.classList.add('completed');
+                    completedCount++;
+                }
+            });
+
+            const progressPercentage = Math.round((completedCount / totalLessons) * 100);
+            document.getElementById('progress-bar').style.width = progressPercentage + '%';
+            document.getElementById('progress-percentage').innerText = progressPercentage + '%';
+        }
+
+        /* ---------- Laboratorio Interattivo ---------- */
+        const canvas = document.getElementById('watercolorCanvas');
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        let isDrawing = false;
+        let isWet = false;
+
+        const PIGMENTS = [
+            { name: 'Blu Oltremare Francese', tag: 'granulante', rgb: '52,52,140', dark: '30,30,90' },
+            { name: 'Blu di Prussia', tag: 'tingente', rgb: '18,71,94', dark: '8,40,55' },
+            { name: 'Terra d\'Ombra Bruciata', tag: 'granulante', rgb: '92,58,33', dark: '55,32,15' },
+            { name: 'Rosa Quinacridone', tag: 'trasparente', rgb: '224,69,123', dark: '150,30,75' },
+            { name: 'Verde Smeraldo', tag: 'semi-granulante', rgb: '0,152,116', dark: '0,90,70' },
+            { name: 'Indaco', tag: 'semi-granulante', rgb: '35,40,59', dark: '15,17,28' }
+        ];
+        let currentPigment = PIGMENTS[0];
+
+        const labPalette = document.getElementById('lab-palette');
+        const pigmentNameLabel = document.getElementById('pigment-name-label');
+        if (labPalette) {
+            PIGMENTS.forEach((p, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'pigment-btn' + (i === 0 ? ' selected' : '');
+                btn.style.background = `rgb(${p.rgb})`;
+                btn.title = p.name;
+                btn.onclick = () => {
+                    currentPigment = p;
+                    document.querySelectorAll('.pigment-btn').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    pigmentNameLabel.innerText = `${p.name} — ${p.tag}`;
+                };
+                labPalette.appendChild(btn);
+            });
+        }
+
+        function setWetMode(wet) {
+            isWet = wet;
+            document.getElementById('btn-dry').classList.toggle('active', !wet);
+            document.getElementById('btn-wet').classList.toggle('active', wet);
+            drawPaperTint();
+        }
+
+        function drawPaperTint() {
+            clearCanvasBase();
+            if (isWet) {
+                ctx.fillStyle = 'rgba(180, 200, 220, 0.15)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        function clearCanvasBase() {
+            if(!ctx) return;
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function clearCanvas() {
+            drawPaperTint();
+        }
+        clearCanvas();
+
+        const waterSlider = document.getElementById('waterAmount');
+        const pigmentSlider = document.getElementById('pigmentLoad');
+        const waterValue = document.getElementById('waterValue');
+        const pigmentValue = document.getElementById('pigmentValue');
+
+        if(waterSlider) waterSlider.oninput = function() { waterValue.innerText = this.value; }
+        if(pigmentSlider) pigmentSlider.oninput = function() { pigmentValue.innerText = this.value; }
+
+        function drawGranulation(x, y, radius, opacity) {
+            const speckles = Math.floor(radius * 1.2);
+            for (let i = 0; i < speckles; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const dist = Math.random() * radius;
+                const sx = x + Math.cos(angle) * dist;
+                const sy = y + Math.sin(angle) * dist;
+                ctx.beginPath();
+                ctx.arc(sx, sy, Math.random() * 0.9 + 0.3, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(${currentPigment.dark}, ${opacity * 0.5})`;
+                ctx.fill();
+            }
+        }
+
+        function paintDab(x, y, radius, opacity, soft) {
+            ctx.beginPath();
+            ctx.arc(x, y, radius, 0, Math.PI * 2);
+            const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
+            gradient.addColorStop(0, `rgba(${currentPigment.rgb}, ${opacity})`);
+            gradient.addColorStop(soft ? 0.6 : 0.85, `rgba(${currentPigment.rgb}, ${opacity * 0.6})`);
+            gradient.addColorStop(1, `rgba(${currentPigment.rgb}, 0)`);
+            ctx.fillStyle = gradient;
+            ctx.fill();
+        }
+
+        function drawWatercolorPoint(x, y) {
+            if(!waterSlider) return;
+            const water = parseInt(waterSlider.value);
+            const pigment = parseInt(pigmentSlider.value);
+
+            const baseRadius = (water / 12) + (Math.random() * 4);
+            const radius = isWet ? baseRadius * 1.6 : baseRadius;
+            const opacity = (pigment / 100) * (1 - (water / 160));
+
+            paintDab(x, y, radius, opacity, isWet);
+
+            if (currentPigment.tag === 'granulante' || currentPigment.tag === 'semi-granulante') {
+                if (pigment > 40) drawGranulation(x, y, radius, opacity);
+            }
+
+            if (isWet) {
+                let step = 0;
+                const bleed = setInterval(() => {
+                    step++;
+                    const bleedRadius = radius * (1 + step * 0.35);
+                    const bleedOpacity = opacity * (0.35 - step * 0.08);
+                    if (bleedOpacity <= 0.02 || step >= 4) { clearInterval(bleed); return; }
+                    paintDab(x + (Math.random() - 0.5) * 4, y + (Math.random() - 0.5) * 4, bleedRadius, bleedOpacity, true);
+                }, 130);
+            }
+        }
+
+        function getMousePos(canvas, evt) {
+            var rect = canvas.getBoundingClientRect();
+            return {
+                x: (evt.clientX || evt.touches[0].clientX) - rect.left,
+                y: (evt.clientY || evt.touches[0].clientY) - rect.top
+            };
+        }
+
+        if(canvas) {
+            canvas.addEventListener('mousedown', (e) => {
+                isDrawing = true;
+                const pos = getMousePos(canvas, e);
+                drawWatercolorPoint(pos.x, pos.y);
+            });
+
+            canvas.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                isDrawing = true;
+                const pos = getMousePos(canvas, e);
+                drawWatercolorPoint(pos.x, pos.y);
+            }, {passive: false});
+
+            canvas.addEventListener('mousemove', (e) => {
+                if (!isDrawing) return;
+                const pos = getMousePos(canvas, e);
+                drawWatercolorPoint(pos.x, pos.y);
+            });
+
+            canvas.addEventListener('touchmove', (e) => {
+                if (!isDrawing) return;
+                e.preventDefault();
+                const pos = getMousePos(canvas, e);
+                drawWatercolorPoint(pos.x, pos.y);
+            }, {passive: false});
+
+            canvas.addEventListener('mouseup', () => isDrawing = false);
+            canvas.addEventListener('mouseout', () => isDrawing = false);
+            canvas.addEventListener('touchend', () => isDrawing = false);
+        }
+
+        /* ---------- Note personali per modulo ---------- */
+        function initModuleNotes() {
+            document.querySelectorAll('.lesson-container').forEach(container => {
+                if (container.querySelector('.module-notes')) return;
+                const moduleId = container.id;
+                const key = 'note-' + moduleId;
+
+                const wrapper = document.createElement('div');
+                wrapper.className = 'module-notes';
+                wrapper.innerHTML = '<label>📝 Le mie note personali <span class="notes-saved-hint">Salvato ✓</span></label>' +
+                    '<textarea placeholder="Scrivi qui le tue osservazioni, difficoltà incontrate o idee da ricordare per questo modulo..."></textarea>';
+
+                const completeBtn = container.querySelector('.btn-complete');
+                if (completeBtn && completeBtn.parentNode) {
+                    completeBtn.parentNode.insertBefore(wrapper, completeBtn);
+                } else {
+                    container.appendChild(wrapper);
+                }
+
+                const textarea = wrapper.querySelector('textarea');
+                const hint = wrapper.querySelector('.notes-saved-hint');
+                textarea.value = localStorage.getItem(key) || '';
+
+                let saveTimeout = null;
+                textarea.addEventListener('input', () => {
+                    clearTimeout(saveTimeout);
+                    saveTimeout = setTimeout(() => {
+                        localStorage.setItem(key, textarea.value);
+                        hint.classList.add('show');
+                        setTimeout(() => hint.classList.remove('show'), 1500);
+                    }, 500);
+                });
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', updateUI);
+        updateUI();
+        initModuleNotes();
+        initModuleNavButtons();
+
+        /* ---------- Foto personali via IndexedDB ---------- */
+        const PHOTO_DB_NAME = 'AcquerelloProPhotos';
+        const PHOTO_DB_VERSION = 1;
+        const PHOTO_STORE_NAME = 'modulePhotos';
+        const PHOTO_MAX_DIMENSION = 1800;
+        const PHOTO_JPEG_QUALITY = 0.85;
+        const photoObjectUrls = {};
+
+        let photoDbPromise = null;
+        function openPhotoDb() {
+            if (photoDbPromise) return photoDbPromise;
+            photoDbPromise = new Promise((resolve, reject) => {
+                if (!window.indexedDB) { reject(new Error('IndexedDB non supportato')); return; }
+                const req = indexedDB.open(PHOTO_DB_NAME, PHOTO_DB_VERSION);
+                req.onupgradeneeded = () => {
+                    if (!req.result.objectStoreNames.contains(PHOTO_STORE_NAME)) {
+                        req.result.createObjectStore(PHOTO_STORE_NAME);
+                    }
+                };
+                req.onsuccess = () => resolve(req.result);
+                req.onerror = () => reject(req.error);
+            });
+            return photoDbPromise;
+        }
+
+        function getPhotoBlob(key) {
+            return openPhotoDb().then(db => new Promise((resolve, reject) => {
+                const req = db.transaction(PHOTO_STORE_NAME, 'readonly').objectStore(PHOTO_STORE_NAME).get(key);
+                req.onsuccess = () => resolve(req.result || null);
+                req.onerror = () => reject(req.error);
+            }));
+        }
+
+        function putPhotoBlob(key, blob) {
+            return openPhotoDb().then(db => new Promise((resolve, reject) => {
+                const tx = db.transaction(PHOTO_STORE_NAME, 'readwrite');
+                tx.objectStore(PHOTO_STORE_NAME).put(blob, key);
+                tx.oncomplete = () => resolve();
+                tx.onerror = () => reject(tx.error);
+            }));
+        }
+
+        function deletePhotoBlob(key) {
+            return openPhotoDb().then(db => new Promise((resolve, reject) => {
+                const tx = db.transaction(PHOTO_STORE_NAME, 'readwrite');
+                tx.objectStore(PHOTO_STORE_NAME).delete(key);
+                tx.oncomplete = () => resolve();
+                tx.onerror = () => reject(tx.error);
+            }));
+        }
+
+        function showPhoto(frame, blob) {
+            const key = frame.dataset.photoKey;
+            const oldUrl = photoObjectUrls[key];
+            if (oldUrl) URL.revokeObjectURL(oldUrl);
+            const url = URL.createObjectURL(blob);
+            photoObjectUrls[key] = url;
+            frame.querySelector('img').src = url;
+            frame.classList.remove('img-missing');
+            const removeBtn = frame.querySelector('.photo-remove-btn');
+            if (removeBtn) removeBtn.style.display = '';
+        }
+
+        function applyStoredPhoto(frame) {
+            const key = frame.dataset.photoKey;
+            if (!key) return;
+            getPhotoBlob(key).then(blob => {
+                if (blob) {
+                    showPhoto(frame, blob);
+                } else {
+                    const removeBtn = frame.querySelector('.photo-remove-btn');
+                    if (removeBtn) removeBtn.style.display = 'none';
+                }
+            }).catch(() => {
+                const label = frame.querySelector('.photo-upload-btn');
+                if (label) label.style.display = 'none';
+                const hint = frame.querySelector('.photo-hint-text');
+                if (hint) hint.textContent = 'Caricamento foto non supportato.';
+            });
+        }
+
+        function compressAndStorePhoto(file, frame) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const image = new Image();
+                image.onload = () => {
+                    let width = image.width;
+                    let height = image.height;
+                    if (width > PHOTO_MAX_DIMENSION || height > PHOTO_MAX_DIMENSION) {
+                        const scale = PHOTO_MAX_DIMENSION / Math.max(width, height);
+                        width = Math.round(width * scale);
+                        height = Math.round(height * scale);
+                    }
+                    const c = document.createElement('canvas');
+                    c.width = width;
+                    c.height = height;
+                    c.getContext('2d').drawImage(image, 0, 0, width, height);
+                    c.toBlob((blob) => {
+                        if (!blob) return;
+                        const key = frame.dataset.photoKey;
+                        putPhotoBlob(key, blob)
+                            .then(() => {
+                                showPhoto(frame, blob);
+                                localStorage.removeItem('ai-analysis-' + key);
+                                const resultBox = document.getElementById('ai-result-' + frame.closest('.lesson-container').id.split('-')[1]);
+                                if (resultBox) { resultBox.style.display = 'none'; resultBox.innerHTML = ''; }
+                            })
+                            .catch(() => alert('Errore nel salvataggio foto.'));
+                    }, 'image/jpeg', PHOTO_JPEG_QUALITY);
+                };
+                image.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        document.querySelectorAll('.module-photo-frame[data-photo-key]').forEach(frame => {
+            applyStoredPhoto(frame);
+
+            const input = frame.querySelector('.photo-input');
+            if (input) {
+                input.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (file) compressAndStorePhoto(file, frame);
+                    input.value = '';
+                });
+            }
+
+            const removeBtn = frame.querySelector('.photo-remove-btn');
+            if (removeBtn) {
+                removeBtn.addEventListener('click', () => {
+                    const key = frame.dataset.photoKey;
+                    deletePhotoBlob(key).finally(() => {
+                        const oldUrl = photoObjectUrls[key];
+                        if (oldUrl) { URL.revokeObjectURL(oldUrl); delete photoObjectUrls[key]; }
+                        const img = frame.querySelector('img');
+                        frame.classList.remove('img-missing');
+                        img.src = frame.dataset.defaultSrc;
+                        removeBtn.style.display = 'none';
+                        localStorage.removeItem('ai-analysis-' + key);
+                        const resultBox = document.getElementById('ai-result-' + frame.closest('.lesson-container').id.split('-')[1]);
+                        if (resultBox) { resultBox.style.display = 'none'; resultBox.innerHTML = ''; }
+                    });
+                });
+            }
+        });
+
+        /* ---------- Logica Tabs e AI Gemini API dinamica ---------- */
+        function switchTab(buttonElement, targetId) {
+            const tabsHeader = buttonElement.parentElement;
+            tabsHeader.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            buttonElement.classList.add('active');
+
+            const container = tabsHeader.parentElement;
+            container.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.getElementById(targetId).classList.add('active');
+        }
+
+        function promptApiKey() {
+            const currentKey = localStorage.getItem('geminiApiKey') || '';
+            document.getElementById('api-key-input').value = currentKey;
+            document.getElementById('api-key-modal').classList.add('active');
+        }
+
+        function closeApiKeyModal() {
+            document.getElementById('api-key-modal').classList.remove('active');
+        }
+
+        function saveApiKey() {
+            const key = document.getElementById('api-key-input').value.trim();
+            if (!key) {
+                alert('Inserisci una API Key valida prima di salvare, oppure clicca "Annulla".');
+                return;
+            }
+            localStorage.setItem('geminiApiKey', key);
+            closeApiKeyModal();
+            alert('API Key salvata con successo!');
+        }
+
+        function removeApiKey() {
+            if (!localStorage.getItem('geminiApiKey')) {
+                closeApiKeyModal();
+                return;
+            }
+            if (!confirm('Vuoi davvero rimuovere la API Key salvata? Dovrai reinserirla per usare ancora l\'analisi IA.')) return;
+            localStorage.removeItem('geminiApiKey');
+            localStorage.removeItem('workingGeminiModel');
+            document.getElementById('api-key-input').value = '';
+            closeApiKeyModal();
+            alert('API Key rimossa.');
+        }
+
+        /* ---------- Backup: esporta/importa progressi, note, analisi e foto ---------- */
+        function openBackupModal() {
+            document.getElementById('backup-modal').classList.add('active');
+        }
+
+        function closeBackupModal() {
+            document.getElementById('backup-modal').classList.remove('active');
+        }
+
+        function blobToDataUrl(blob) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result);
+                reader.onerror = () => reject(reader.error);
+                reader.readAsDataURL(blob);
+            });
+        }
+
+        function dataUrlToBlob(dataUrl) {
+            return fetch(dataUrl).then(res => res.blob());
+        }
+
+        function getAllPhotoEntries() {
+            return openPhotoDb().then(db => new Promise((resolve, reject) => {
+                const entries = [];
+                const store = db.transaction(PHOTO_STORE_NAME, 'readonly').objectStore(PHOTO_STORE_NAME);
+                const req = store.openCursor();
+                req.onsuccess = (e) => {
+                    const cursor = e.target.result;
+                    if (cursor) {
+                        entries.push({ key: cursor.key, blob: cursor.value });
+                        cursor.continue();
+                    } else {
+                        resolve(entries);
+                    }
+                };
+                req.onerror = () => reject(req.error);
+            }));
+        }
+
+        async function exportAllData() {
+            const btn = document.getElementById('backup-export-btn');
+            const originalText = btn.textContent;
+            btn.textContent = '⏳ Preparazione backup...';
+            btn.disabled = true;
+            try {
+                const localData = {};
+                for (let i = 0; i < localStorage.length; i++) {
+                    const k = localStorage.key(i);
+                    localData[k] = localStorage.getItem(k);
+                }
+
+                const photoEntries = await getAllPhotoEntries();
+                const photos = [];
+                for (const entry of photoEntries) {
+                    const dataUrl = await blobToDataUrl(entry.blob);
+                    photos.push({ key: entry.key, type: entry.blob.type, dataUrl });
+                }
+
+                const backup = {
+                    app: 'AcquerelloProMasterclass',
+                    version: 1,
+                    exportedAt: new Date().toISOString(),
+                    localStorage: localData,
+                    photos
+                };
+
+                const json = JSON.stringify(backup);
+                const blob = new Blob([json], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                const dateStr = new Date().toISOString().slice(0, 10);
+                a.href = url;
+                a.download = 'acquerello-pro-backup-' + dateStr + '.json';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                setTimeout(() => URL.revokeObjectURL(url), 2000);
+            } catch (e) {
+                alert('Errore durante la creazione del backup: ' + e.message);
+            } finally {
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        async function importAllData(file) {
+            if (!file) {
+                alert('Seleziona prima un file di backup (.json).');
+                return;
+            }
+            if (!confirm('Importando questo file, i progressi, le note, le analisi e le foto attuali in questo browser verranno sovrascritti dai dati nel backup. Continuare?')) return;
+
+            const importBtn = document.getElementById('backup-import-btn');
+            const originalText = importBtn.textContent;
+            importBtn.textContent = '⏳ Importazione...';
+            importBtn.disabled = true;
+            try {
+                const text = await file.text();
+                const backup = JSON.parse(text);
+                if (!backup || backup.app !== 'AcquerelloProMasterclass' || !backup.localStorage) {
+                    throw new Error('Il file selezionato non sembra un backup valido di questa app.');
+                }
+
+                Object.keys(backup.localStorage).forEach(k => {
+                    localStorage.setItem(k, backup.localStorage[k]);
+                });
+
+                if (Array.isArray(backup.photos)) {
+                    for (const p of backup.photos) {
+                        const blob = await dataUrlToBlob(p.dataUrl);
+                        await putPhotoBlob(p.key, blob);
+                    }
+                }
+
+                alert('Backup importato con successo! La pagina verrà ricaricata per applicare le modifiche.');
+                location.reload();
+            } catch (e) {
+                alert('Errore durante l\'importazione: ' + e.message);
+                importBtn.textContent = originalText;
+                importBtn.disabled = false;
+            }
+        }
+
+        async function analyzePhoto(moduleId, photoKey) {
+            const apiKey = localStorage.getItem('geminiApiKey');
+            if (!apiKey) {
+                alert('Per usare questa funzione devi prima configurare la tua API Key di Gemini usando il pulsante in alto.');
+                promptApiKey();
+                return;
+            }
+
+            const blob = await getPhotoBlob(photoKey);
+            if (!blob) {
+                alert('Per favore, carica prima una foto per questo modulo per poterla analizzare.');
+                return;
+            }
+
+            const loadingEl = document.getElementById('ai-loading-' + moduleId);
+            const resultEl = document.getElementById('ai-result-' + moduleId);
+            
+            loadingEl.style.display = 'block';
+            resultEl.style.display = 'none';
+
+            try {
+                const base64data = await new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result.split(',')[1]);
+                    reader.readAsDataURL(blob);
+                });
+
+                const payload = {
+                    contents: [{
+                        parts: [
+                            { text: "Sei un esperto insegnante di acquerello. Analizza questa foto e crea una guida tecnica step-by-step per dipingerla ad acquerello. Includi: 1. Valutazione tonale e compositiva. 2. Palette cromatica consigliata. 3. Guida step-by-step. 4. Suggerimenti per la gestione dei bordi e dell'umidità della carta. Formatta il testo in paragrafi ed elenchi in modo accademico, usando il markup HTML base (<b> o <strong> e <br>) ma senza usare il markdown (**)." },
+                            { inline_data: { mime_type: blob.type, data: base64data } }
+                        ]
+                    }]
+                };
+
+                // Prova prima il modello già noto per funzionare: se c'è, un'unica chiamata basta,
+                // senza dover interrogare ogni volta l'elenco completo dei modelli dell'account.
+                const MAX_FALLBACK_ATTEMPTS = 3; // tetto ai tentativi quando serve cercare un'alternativa
+                const STATIC_FALLBACKS = ['gemini-2.5-flash', 'gemini-2.0-flash'];
+
+                async function tryModel(model) {
+                    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const json = await response.json();
+                    if (!response.ok || json.error) {
+                        throw new Error(json.error ? json.error.message : 'Errore HTTP ' + response.status);
+                    }
+                    return json;
+                }
+
+                let data = null;
+                let success = false;
+                let lastError = '';
+                const attemptedModels = [];
+                const savedModel = localStorage.getItem('workingGeminiModel');
+
+                if (savedModel) {
+                    attemptedModels.push(savedModel);
+                    try {
+                        data = await tryModel(savedModel);
+                        success = true;
+                    } catch (e) {
+                        lastError = e.message;
+                    }
+                }
+
+                // Solo se non c'era un modello salvato, o ha smesso di funzionare, cerca alternative:
+                // qui interroghiamo l'elenco modelli dell'account, ma proviamo al massimo poche opzioni.
+                if (!success) {
+                    let candidates = [];
+                    try {
+                        const modelsRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
+                        if (modelsRes.ok) {
+                            const modelsData = await modelsRes.json();
+                            if (modelsData && modelsData.models) {
+                                candidates = modelsData.models
+                                    .filter(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes('generateContent'))
+                                    .map(m => m.name.replace('models/', ''))
+                                    // privilegia i modelli "flash", più rapidi ed economici, per questo tipo di analisi
+                                    .sort((a, b) => (b.includes('flash') ? 1 : 0) - (a.includes('flash') ? 1 : 0));
+                            }
+                        }
+                    } catch (e) {
+                        console.warn("Impossibile recuperare la lista dinamica dei modelli, uso il fallback standard.", e);
+                    }
+
+                    STATIC_FALLBACKS.forEach(m => { if (!candidates.includes(m)) candidates.push(m); });
+                    const toTry = candidates
+                        .filter(m => !attemptedModels.includes(m))
+                        .slice(0, MAX_FALLBACK_ATTEMPTS);
+
+                    for (const model of toTry) {
+                        attemptedModels.push(model);
+                        try {
+                            data = await tryModel(model);
+                            success = true;
+                            break;
+                        } catch (e) {
+                            lastError = e.message;
+                        }
+                    }
+                }
+
+                if (success) {
+                    localStorage.setItem('workingGeminiModel', attemptedModels[attemptedModels.length - 1]);
+                } else {
+                    throw new Error(`Nessun modello API compatibile trovato per questa chiave (provati: ${attemptedModels.join(', ') || 'nessuno'}). Dettaglio ultimo errore: ${lastError}`);
+                }
+
+                let text = data.candidates[0].content.parts[0].text;
+                text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                text = text.replace(/\n/g, '<br>');
+
+                resultEl.classList.remove('error');
+                resultEl.innerHTML = text;
+                resultEl.style.display = 'block';
+                localStorage.setItem('ai-analysis-' + photoKey, text);
+
+            } catch (error) {
+                showAnalysisError(resultEl, error, moduleId, photoKey);
+            } finally {
+                loadingEl.style.display = 'none';
+            }
+        }
+
+        function classifyGeminiError(error) {
+            const msg = (error && error.message) || '';
+            const low = msg.toLowerCase();
+            if (low.includes('failed to fetch') || low.includes('networkerror') || low.includes('network request failed')) {
+                return 'Impossibile contattare i server di Gemini. Controlla la tua connessione a internet e riprova.';
+            }
+            if (low.includes('429') || low.includes('quota') || low.includes('rate limit') || low.includes('resource_exhausted')) {
+                return 'Hai superato il limite di richieste gratuite consentito da Gemini per oggi. Riprova più tardi, oppure attendi qualche minuto.';
+            }
+            if (low.includes('api key not valid') || low.includes('api_key_invalid') || low.includes('403') || (low.includes('400') && low.includes('key'))) {
+                return 'La tua API Key non risulta valida. Controllala nel pannello "Configura API AI" e correggila se necessario.';
+            }
+            return 'Si è verificato un errore imprevisto durante l\'analisi. Dettaglio tecnico: ' + (msg || 'sconosciuto');
+        }
+
+        function showAnalysisError(resultEl, error, moduleId, photoKey) {
+            const friendlyMsg = classifyGeminiError(error);
+            resultEl.classList.add('error');
+            resultEl.innerHTML = '<strong>⚠️ Analisi non riuscita.</strong><br>' + friendlyMsg +
+                '<br><button type="button" class="ai-retry-btn" onclick="analyzePhoto(' + moduleId + ', \'' + photoKey + '\')">🔄 Riprova</button>';
+            resultEl.style.display = 'block';
+        }
+
+        // Ripristino analisi al caricamento della pagina
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.module-photo-frame[data-photo-key]').forEach(frame => {
+                const key = frame.dataset.photoKey;
+                const savedAnalysis = localStorage.getItem('ai-analysis-' + key);
+                const moduleId = frame.closest('.lesson-container').id.split('-')[1];
+                const resultBox = document.getElementById('ai-result-' + moduleId);
+                
+                if (savedAnalysis && resultBox) {
+                    resultBox.innerHTML = savedAnalysis;
+                    resultBox.style.display = 'block';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
