@@ -2405,6 +2405,17 @@
             }));
         }
 
+        // Aprendo i file HTML localmente (file://), molti browser condividono UN UNICO spazio di
+        // localStorage fra TUTTE le pagine locali aperte, non solo per questa app. Per non includere
+        // (in export) o sovrascrivere (in import) dati di altre tue app/file HTML, tocchiamo solo le
+        // chiavi che sappiamo per certo appartenere a questa masterclass.
+        const OWN_LOCALSTORAGE_KEYS = ['themeAppPro', 'sidebarHidden', 'watercolorProApp', 'geminiApiKey', 'workingGeminiModel'];
+        const OWN_LOCALSTORAGE_PREFIXES = ['note-modulo-', 'ai-analysis-'];
+        function isOwnLocalStorageKey(k) {
+            if (OWN_LOCALSTORAGE_KEYS.includes(k)) return true;
+            return OWN_LOCALSTORAGE_PREFIXES.some(p => k.startsWith(p));
+        }
+
         async function exportAllData() {
             const btn = document.getElementById('backup-export-btn');
             const originalText = btn.textContent;
@@ -2414,7 +2425,9 @@
                 const localData = {};
                 for (let i = 0; i < localStorage.length; i++) {
                     const k = localStorage.key(i);
-                    localData[k] = localStorage.getItem(k);
+                    if (isOwnLocalStorageKey(k)) {
+                        localData[k] = localStorage.getItem(k);
+                    }
                 }
 
                 const photoEntries = await getAllPhotoEntries();
@@ -2470,7 +2483,11 @@
                 }
 
                 Object.keys(backup.localStorage).forEach(k => {
-                    localStorage.setItem(k, backup.localStorage[k]);
+                    // Ignora eventuali chiavi estranee (es. da un vecchio backup creato prima di questa
+                    // correzione): ripristiniamo solo i dati che appartengono davvero a questa app.
+                    if (isOwnLocalStorageKey(k)) {
+                        localStorage.setItem(k, backup.localStorage[k]);
+                    }
                 });
 
                 if (Array.isArray(backup.photos)) {
