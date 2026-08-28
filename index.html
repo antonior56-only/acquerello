@@ -106,7 +106,45 @@
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
             max-height: 90vh;
             overflow-y: auto;
+            position: relative;
         }
+        .modal-close-x {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: var(--bg-color);
+            color: var(--text-main);
+            font-size: 1.1rem;
+            line-height: 1;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+        .modal-close-x:hover { background: var(--danger); color: #fff; }
+        .modal-close-x-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            width: 100%;
+            margin-top: 22px;
+            padding: 10px;
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            background: none;
+            color: var(--text-main);
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .modal-close-x-bottom:hover { border-color: var(--danger); color: var(--danger); }
         .modal-box h2 { color: var(--primary); margin-bottom: 15px; font-size: 1.3rem; }
         .modal-box h3 { color: var(--primary); margin: 22px 0 12px; font-size: 1.05rem; }
         .modal-box p { margin-bottom: 12px; line-height: 1.6; font-size: 0.98rem; }
@@ -296,6 +334,12 @@
             display: block;
             opacity: 1;
             transform: translateY(0);
+        }
+        .lesson-container.active.settled {
+            /* A differenza di "translateY(0)", "none" non crea un nuovo riferimento di
+               posizionamento per i discendenti: necessario perché la foto "sticky" dei moduli
+               funzioni correttamente anche in Safari (vedi commento in activateModule()). */
+            transform: none;
         }
 
         h1 { font-size: 2.2rem; color: var(--primary); margin-top: 0; line-height: 1.2; }
@@ -575,18 +619,22 @@
 
         /* La foto resta visibile (sticky) mentre si scorre la descrizione accanto, così si può
            seguire il procedimento passo-passo continuando a guardare l'immagine di riferimento. */
-        .module-two-col { display: flex; gap: 30px; align-items: flex-start; }
+        .module-two-col { display: flex; gap: 24px; align-items: flex-start; }
         .module-two-col > .module-photo-frame {
-            flex: 0 0 340px;
+            /* La colonna della foto si restringe con gradualità (tra 220px e 340px) invece di avere
+               una larghezza fissa: così la foto resta agganciata anche su finestre più strette, non
+               solo a schermo intero, invece di passare bruscamente alla versione impilata. */
+            flex: 1 1 300px;
+            min-width: 220px;
             max-width: 340px;
             margin-top: 0;
             position: sticky;
             top: var(--sticky-photo-top, 90px);
         }
-        .module-two-col > .module-content-col { flex: 1; min-width: 0; }
-        @media (max-width: 900px) {
+        .module-two-col > .module-content-col { flex: 2 1 380px; min-width: 300px; }
+        @media (max-width: 680px) {
             .module-two-col { flex-direction: column; }
-            .module-two-col > .module-photo-frame { position: static; max-width: 100%; flex: none; width: 100%; }
+            .module-two-col > .module-photo-frame { position: static; max-width: 100%; flex: none; width: 100%; min-width: 0; }
         }
 
         /* Tabella pigmenti */
@@ -706,8 +754,7 @@
         <button class="theme-toggle sidebar-toggle-btn" id="sidebar-toggle-btn" onclick="toggleSidebar()" style="margin-right: auto;" aria-label="Mostra o nascondi il pannello laterale" title="Mostra o nascondi il pannello laterale">☰ Nascondi menu</button>
         <button class="theme-toggle" onclick="openBackupModal()" style="margin-right: 15px;">💾 Backup dati</button>
         <button class="theme-toggle" id="btnInstallaPWA" style="margin-right: 15px; display: none;">📲 Installa app</button>
-        <button class="theme-toggle" onclick="promptApiKey()" style="margin-right: 15px;">⚙️ Impostazioni</button>
-        <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()">🌓 Tema Scuro</button>
+        <button class="theme-toggle" onclick="promptApiKey()">⚙️ Impostazioni</button>
     </div>
 
     <div id="sidebar">
@@ -762,10 +809,10 @@
     <div id="main-content">
 
         <!-- Modulo 1: Teoria del Colore -->
-        <div id="modulo-1" class="lesson-container active">
+        <div id="modulo-1" class="lesson-container active settled">
             <h1>Teoria del Colore e Comportamento dei Pigmenti</h1>
             <figure class="module-photo-frame" data-photo-key="01-teoria-colore" data-default-src="images/01-teoria-colore.jpg">
-                <img src="images/01-teoria-colore.jpg" alt="Tavola-campionario di grigi e miscele di pigmenti" onerror="this.closest('.module-photo-frame').classList.add('img-missing')">
+                <img src="images/01-teoria-colore.jpg" alt="Tavola-campionario di grigi e miscele di pigmenti" onload="handlePhotoLoadSuccess(this)" onerror="handlePhotoLoadFailure(this)">
                 <div class="photo-placeholder-hint">
                     <span class="ph-icon">🖼️</span>
                     Nessuna foto impostata per questo modulo.
@@ -879,7 +926,7 @@
         <div id="modulo-2" class="lesson-container">
             <h1>Materiali e Attrezzatura da Studio</h1>
             <figure class="module-photo-frame" data-photo-key="02-materiali" data-default-src="images/02-materiali.jpg">
-                <img src="images/02-materiali.jpg" alt="Attrezzatura da studio: carte, pennelli, pigmenti" onerror="this.closest('.module-photo-frame').classList.add('img-missing')">
+                <img src="images/02-materiali.jpg" alt="Attrezzatura da studio: carte, pennelli, pigmenti" onload="handlePhotoLoadSuccess(this)" onerror="handlePhotoLoadFailure(this)">
                 <div class="photo-placeholder-hint">
                     <span class="ph-icon">🖼️</span>
                     Nessuna foto impostata per questo modulo.
@@ -1005,7 +1052,7 @@
         <div id="modulo-3" class="lesson-container">
             <h1>Ritratto: Proporzioni del Volto, Velature e Trasparenze</h1>
             <figure class="module-photo-frame" data-photo-key="03-corpo-umano" data-default-src="images/03-corpo-umano.jpg">
-                <img src="images/03-corpo-umano.jpg" alt="Ritratto dipinto ad acquerello, velature e trasparenze dell'incarnato" onerror="this.closest('.module-photo-frame').classList.add('img-missing')">
+                <img src="images/03-corpo-umano.jpg" alt="Ritratto dipinto ad acquerello, velature e trasparenze dell'incarnato" onload="handlePhotoLoadSuccess(this)" onerror="handlePhotoLoadFailure(this)">
                 <div class="photo-placeholder-hint">
                     <span class="ph-icon">🖼️</span>
                     Nessuna foto impostata per questo modulo.
@@ -1135,7 +1182,7 @@
         <div id="modulo-4" class="lesson-container">
             <h1>Montagne: Prospettiva Aerea e Atmosfera</h1>
             <figure class="module-photo-frame" data-photo-key="04-montagne" data-default-src="images/04-montagne.jpg">
-                <img src="images/04-montagne.jpg" alt="Paesaggio montano dipinto ad acquerello, prospettiva aerea" onerror="this.closest('.module-photo-frame').classList.add('img-missing')">
+                <img src="images/04-montagne.jpg" alt="Paesaggio montano dipinto ad acquerello, prospettiva aerea" onload="handlePhotoLoadSuccess(this)" onerror="handlePhotoLoadFailure(this)">
                 <div class="photo-placeholder-hint">
                     <span class="ph-icon">🖼️</span>
                     Nessuna foto impostata per questo modulo.
@@ -1231,7 +1278,7 @@
         <div id="modulo-5" class="lesson-container">
             <h1>Onde del Mare: Dry Brush e Movimento</h1>
             <figure class="module-photo-frame" data-photo-key="05-mare" data-default-src="images/05-mare.jpg">
-                <img src="images/05-mare.jpg" alt="Onde del mare dipinte ad acquerello, dry brush" onerror="this.closest('.module-photo-frame').classList.add('img-missing')">
+                <img src="images/05-mare.jpg" alt="Onde del mare dipinte ad acquerello, dry brush" onload="handlePhotoLoadSuccess(this)" onerror="handlePhotoLoadFailure(this)">
                 <div class="photo-placeholder-hint">
                     <span class="ph-icon">🖼️</span>
                     Nessuna foto impostata per questo modulo.
@@ -1315,7 +1362,7 @@
         <div id="modulo-6" class="lesson-container">
             <h1>Paesaggio Invernale: Dominare lo Spazio Negativo</h1>
             <figure class="module-photo-frame" data-photo-key="06-inverno" data-default-src="images/06-inverno.jpg">
-                <img src="images/06-inverno.jpg" alt="Paesaggio invernale dipinto ad acquerello, spazio negativo" onerror="this.closest('.module-photo-frame').classList.add('img-missing')">
+                <img src="images/06-inverno.jpg" alt="Paesaggio invernale dipinto ad acquerello, spazio negativo" onload="handlePhotoLoadSuccess(this)" onerror="handlePhotoLoadFailure(this)">
                 <div class="photo-placeholder-hint">
                     <span class="ph-icon">🖼️</span>
                     Nessuna foto impostata per questo modulo.
@@ -1411,7 +1458,7 @@
         <div id="modulo-7" class="lesson-container">
             <h1>Paesaggio Urbano: Prospettiva e Riflessi</h1>
             <figure class="module-photo-frame" data-photo-key="07-strada" data-default-src="images/07-strada.jpg">
-                <img src="images/07-strada.jpg" alt="Paesaggio urbano dipinto ad acquerello, riflessi sull'asfalto bagnato" onerror="this.closest('.module-photo-frame').classList.add('img-missing')">
+                <img src="images/07-strada.jpg" alt="Paesaggio urbano dipinto ad acquerello, riflessi sull'asfalto bagnato" onload="handlePhotoLoadSuccess(this)" onerror="handlePhotoLoadFailure(this)">
                 <div class="photo-placeholder-hint">
                     <span class="ph-icon">🖼️</span>
                     Nessuna foto impostata per questo modulo.
@@ -1496,7 +1543,7 @@
         <div id="modulo-8" class="lesson-container">
             <h1>Architettura: Pietra e Granulazione</h1>
             <figure class="module-photo-frame" data-photo-key="08-monumenti" data-default-src="images/08-monumenti.jpg">
-                <img src="images/08-monumenti.jpg" alt="Architettura dipinta ad acquerello, granulazione della pietra" onerror="this.closest('.module-photo-frame').classList.add('img-missing')">
+                <img src="images/08-monumenti.jpg" alt="Architettura dipinta ad acquerello, granulazione della pietra" onload="handlePhotoLoadSuccess(this)" onerror="handlePhotoLoadFailure(this)">
                 <div class="photo-placeholder-hint">
                     <span class="ph-icon">🖼️</span>
                     Nessuna foto impostata per questo modulo.
@@ -1581,7 +1628,7 @@
         <div id="modulo-9" class="lesson-container">
             <h1>Animali: Oche, Piume e Peli</h1>
             <figure class="module-photo-frame" data-photo-key="09-animali" data-default-src="images/09-animali.jpg">
-                <img src="images/09-animali.jpg" alt="Animale dipinto ad acquerello, piume e lost & found" onerror="this.closest('.module-photo-frame').classList.add('img-missing')">
+                <img src="images/09-animali.jpg" alt="Animale dipinto ad acquerello, piume e lost & found" onload="handlePhotoLoadSuccess(this)" onerror="handlePhotoLoadFailure(this)">
                 <div class="photo-placeholder-hint">
                     <span class="ph-icon">🖼️</span>
                     Nessuna foto impostata per questo modulo.
@@ -1677,7 +1724,7 @@
         <div id="modulo-10" class="lesson-container">
             <h1>Fiori e Piante: Trasparenze Floreali</h1>
             <figure class="module-photo-frame" data-photo-key="10-botanica" data-default-src="images/10-botanica.jpg">
-                <img src="images/10-botanica.jpg" alt="Fiori e piante dipinti ad acquerello, trasparenze floreali" onerror="this.closest('.module-photo-frame').classList.add('img-missing')">
+                <img src="images/10-botanica.jpg" alt="Fiori e piante dipinti ad acquerello, trasparenze floreali" onload="handlePhotoLoadSuccess(this)" onerror="handlePhotoLoadFailure(this)">
                 <div class="photo-placeholder-hint">
                     <span class="ph-icon">🖼️</span>
                     Nessuna foto impostata per questo modulo.
@@ -1762,7 +1809,7 @@
         <div id="modulo-11" class="lesson-container">
             <h1>Tramonto: Gradienti Caldi e Silhouette</h1>
             <figure class="module-photo-frame" data-photo-key="11-cielo" data-default-src="images/11-cielo.jpg">
-                <img src="images/11-cielo.jpg" alt="Tramonto dipinto ad acquerello, gradiente caldo e silhouette" onerror="this.closest('.module-photo-frame').classList.add('img-missing')">
+                <img src="images/11-cielo.jpg" alt="Tramonto dipinto ad acquerello, gradiente caldo e silhouette" onload="handlePhotoLoadSuccess(this)" onerror="handlePhotoLoadFailure(this)">
                 <div class="photo-placeholder-hint">
                     <span class="ph-icon">🖼️</span>
                     Nessuna foto impostata per questo modulo.
@@ -1863,7 +1910,7 @@
         <div id="modulo-12" class="lesson-container">
             <h1>Paesaggio Marino: Costa, Orizzonte e Atmosfera</h1>
             <figure class="module-photo-frame" data-photo-key="12-paesaggio-marino" data-default-src="images/12-paesaggio-marino.jpg">
-                <img src="images/12-paesaggio-marino.jpg" alt="Paesaggio marino dipinto ad acquerello, costa e orizzonte" onerror="this.closest('.module-photo-frame').classList.add('img-missing')">
+                <img src="images/12-paesaggio-marino.jpg" alt="Paesaggio marino dipinto ad acquerello, costa e orizzonte" onload="handlePhotoLoadSuccess(this)" onerror="handlePhotoLoadFailure(this)">
                 <div class="photo-placeholder-hint">
                     <span class="ph-icon">🖼️</span>
                     Nessuna foto impostata per questo modulo.
@@ -1948,7 +1995,7 @@
         <div id="modulo-13" class="lesson-container">
             <h1>Natura Morta: Luce Singola e Colori Riflessi</h1>
             <figure class="module-photo-frame" data-photo-key="13-natura-morta" data-default-src="images/13-natura-morta.jpg">
-                <img src="images/13-natura-morta.jpg" alt="Natura morta dipinta ad acquerello, luce singola e riflessi cromatici" onerror="this.closest('.module-photo-frame').classList.add('img-missing')">
+                <img src="images/13-natura-morta.jpg" alt="Natura morta dipinta ad acquerello, luce singola e riflessi cromatici" onload="handlePhotoLoadSuccess(this)" onerror="handlePhotoLoadFailure(this)">
                 <div class="photo-placeholder-hint">
                     <span class="ph-icon">🖼️</span>
                     Nessuna foto impostata per questo modulo.
@@ -2033,7 +2080,7 @@
         <div id="modulo-14" class="lesson-container">
             <h1>Paesaggio Collinare: Piani e Profondità Orizzontale</h1>
             <figure class="module-photo-frame" data-photo-key="14-paesaggio-collinare" data-default-src="images/14-paesaggio-collinare.jpg">
-                <img src="images/14-paesaggio-collinare.jpg" alt="Paesaggio collinare dipinto ad acquerello, piani digradanti" onerror="this.closest('.module-photo-frame').classList.add('img-missing')">
+                <img src="images/14-paesaggio-collinare.jpg" alt="Paesaggio collinare dipinto ad acquerello, piani digradanti" onload="handlePhotoLoadSuccess(this)" onerror="handlePhotoLoadFailure(this)">
                 <div class="photo-placeholder-hint">
                     <span class="ph-icon">🖼️</span>
                     Nessuna foto impostata per questo modulo.
@@ -2118,7 +2165,7 @@
         <div id="modulo-15" class="lesson-container">
             <h1>Animali con Pelo e Piumaggio: Texture e Direzione</h1>
             <figure class="module-photo-frame" data-photo-key="15-pelo-piumaggio" data-default-src="images/15-pelo-piumaggio.jpg">
-                <img src="images/15-pelo-piumaggio.jpg" alt="Animale con pelo o piumaggio dipinto ad acquerello, texture direzionale" onerror="this.closest('.module-photo-frame').classList.add('img-missing')">
+                <img src="images/15-pelo-piumaggio.jpg" alt="Animale con pelo o piumaggio dipinto ad acquerello, texture direzionale" onload="handlePhotoLoadSuccess(this)" onerror="handlePhotoLoadFailure(this)">
                 <div class="photo-placeholder-hint">
                     <span class="ph-icon">🖼️</span>
                     Nessuna foto impostata per questo modulo.
@@ -2203,7 +2250,7 @@
         <div id="modulo-16" class="lesson-container">
             <h1>Fiori Bianchi: Costruire la Forma Solo con l'Ombra</h1>
             <figure class="module-photo-frame" data-photo-key="16-fiori-bianchi" data-default-src="images/16-fiori-bianchi.jpg">
-                <img src="images/16-fiori-bianchi.jpg" alt="Fiori bianchi dipinti ad acquerello, valore tonale puro" onerror="this.closest('.module-photo-frame').classList.add('img-missing')">
+                <img src="images/16-fiori-bianchi.jpg" alt="Fiori bianchi dipinti ad acquerello, valore tonale puro" onload="handlePhotoLoadSuccess(this)" onerror="handlePhotoLoadFailure(this)">
                 <div class="photo-placeholder-hint">
                     <span class="ph-icon">🖼️</span>
                     Nessuna foto impostata per questo modulo.
@@ -2288,7 +2335,7 @@
         <div id="modulo-17" class="lesson-container">
             <h1>Komorebi: Luce Solare Filtrata dal Fogliame</h1>
             <figure class="module-photo-frame" data-photo-key="17-komorebi" data-default-src="images/17-komorebi.jpg">
-                <img src="images/17-komorebi.jpg" alt="Komorebi dipinto ad acquerello, luce filtrata dal fogliame" onerror="this.closest('.module-photo-frame').classList.add('img-missing')">
+                <img src="images/17-komorebi.jpg" alt="Komorebi dipinto ad acquerello, luce filtrata dal fogliame" onload="handlePhotoLoadSuccess(this)" onerror="handlePhotoLoadFailure(this)">
                 <div class="photo-placeholder-hint">
                     <span class="ph-icon">🖼️</span>
                     Nessuna foto impostata per questo modulo.
@@ -2373,7 +2420,7 @@
         <div id="modulo-18" class="lesson-container">
             <h1>Pittura in Negativo: Dipingere lo Spazio Intorno</h1>
             <figure class="module-photo-frame" data-photo-key="18-pittura-negativa" data-default-src="images/18-pittura-negativa.jpg">
-                <img src="images/18-pittura-negativa.jpg" alt="Pittura in negativo ad acquerello, forme sovrapposte per risparmio" onerror="this.closest('.module-photo-frame').classList.add('img-missing')">
+                <img src="images/18-pittura-negativa.jpg" alt="Pittura in negativo ad acquerello, forme sovrapposte per risparmio" onload="handlePhotoLoadSuccess(this)" onerror="handlePhotoLoadFailure(this)">
                 <div class="photo-placeholder-hint">
                     <span class="ph-icon">🖼️</span>
                     Nessuna foto impostata per questo modulo.
@@ -2463,7 +2510,7 @@
         <div id="modulo-19" class="lesson-container">
             <h1>Pittura con Colori Granulati: Texture Materica Deliberata</h1>
             <figure class="module-photo-frame" data-photo-key="19-colori-granulati" data-default-src="images/19-colori-granulati.jpg">
-                <img src="images/19-colori-granulati.jpg" alt="Pittura ad acquerello con colori granulati, texture materica" onerror="this.closest('.module-photo-frame').classList.add('img-missing')">
+                <img src="images/19-colori-granulati.jpg" alt="Pittura ad acquerello con colori granulati, texture materica" onload="handlePhotoLoadSuccess(this)" onerror="handlePhotoLoadFailure(this)">
                 <div class="photo-placeholder-hint">
                     <span class="ph-icon">🖼️</span>
                     Nessuna foto impostata per questo modulo.
@@ -2548,7 +2595,7 @@
         <div id="modulo-20" class="lesson-container">
             <h1>Le Cascate: Dipingere l'Acqua per Sottrazione</h1>
             <figure class="module-photo-frame" data-photo-key="20-cascate" data-default-src="images/20-cascate.jpg">
-                <img src="images/20-cascate.jpg" alt="Cascata dipinta ad acquerello, acqua per sottrazione" onerror="this.closest('.module-photo-frame').classList.add('img-missing')">
+                <img src="images/20-cascate.jpg" alt="Cascata dipinta ad acquerello, acqua per sottrazione" onload="handlePhotoLoadSuccess(this)" onerror="handlePhotoLoadFailure(this)">
                 <div class="photo-placeholder-hint">
                     <span class="ph-icon">🖼️</span>
                     Nessuna foto impostata per questo modulo.
@@ -2633,7 +2680,7 @@
         <div id="modulo-21" class="lesson-container">
             <h1>Dipingere i Tramonti: Varianti Atmosferiche</h1>
             <figure class="module-photo-frame" data-photo-key="21-varianti-tramonto" data-default-src="images/21-varianti-tramonto.jpg">
-                <img src="images/21-varianti-tramonto.jpg" alt="Varianti di tramonto dipinte ad acquerello, nuvoloso e tropicale" onerror="this.closest('.module-photo-frame').classList.add('img-missing')">
+                <img src="images/21-varianti-tramonto.jpg" alt="Varianti di tramonto dipinte ad acquerello, nuvoloso e tropicale" onload="handlePhotoLoadSuccess(this)" onerror="handlePhotoLoadFailure(this)">
                 <div class="photo-placeholder-hint">
                     <span class="ph-icon">🖼️</span>
                     Nessuna foto impostata per questo modulo.
@@ -2717,7 +2764,7 @@
         <div id="modulo-22" class="lesson-container">
             <h1>Prospettiva con l'Acquerello: Disciplina Operativa</h1>
             <figure class="module-photo-frame" data-photo-key="22-prospettiva" data-default-src="images/22-prospettiva.jpg">
-                <img src="images/22-prospettiva.jpg" alt="Scena con prospettiva lineare dipinta ad acquerello" onerror="this.closest('.module-photo-frame').classList.add('img-missing')">
+                <img src="images/22-prospettiva.jpg" alt="Scena con prospettiva lineare dipinta ad acquerello" onload="handlePhotoLoadSuccess(this)" onerror="handlePhotoLoadFailure(this)">
                 <div class="photo-placeholder-hint">
                     <span class="ph-icon">🖼️</span>
                     Nessuna foto impostata per questo modulo.
@@ -2803,7 +2850,7 @@
         <div id="modulo-23" class="lesson-container">
             <h1>Dipingere le Nuvole: Volume, non Contorno</h1>
             <figure class="module-photo-frame" data-photo-key="23-nuvole" data-default-src="images/23-nuvole.jpg">
-                <img src="images/23-nuvole.jpg" alt="Nuvole dipinte ad acquerello, volume e luce" onerror="this.closest('.module-photo-frame').classList.add('img-missing')">
+                <img src="images/23-nuvole.jpg" alt="Nuvole dipinte ad acquerello, volume e luce" onload="handlePhotoLoadSuccess(this)" onerror="handlePhotoLoadFailure(this)">
                 <div class="photo-placeholder-hint">
                     <span class="ph-icon">🖼️</span>
                     Nessuna foto impostata per questo modulo.
@@ -2888,7 +2935,7 @@
         <div id="modulo-24" class="lesson-container">
             <h1>Ombre e Riflessi: Temperatura e Rottura Speculare</h1>
             <figure class="module-photo-frame" data-photo-key="24-ombre-riflessi" data-default-src="images/24-ombre-riflessi.jpg">
-                <img src="images/24-ombre-riflessi.jpg" alt="Ombre e riflessi dipinti ad acquerello, temperatura complementare" onerror="this.closest('.module-photo-frame').classList.add('img-missing')">
+                <img src="images/24-ombre-riflessi.jpg" alt="Ombre e riflessi dipinti ad acquerello, temperatura complementare" onload="handlePhotoLoadSuccess(this)" onerror="handlePhotoLoadFailure(this)">
                 <div class="photo-placeholder-hint">
                     <span class="ph-icon">🖼️</span>
                     Nessuna foto impostata per questo modulo.
@@ -2986,7 +3033,7 @@
             </div>
 
             <figure class="module-photo-frame" data-photo-key="libero" data-default-src="images/libero.jpg">
-                <img src="images/libero.jpg" alt="Soggetto libero scelto dallo studente" onerror="this.closest('.module-photo-frame').classList.add('img-missing')">
+                <img src="images/libero.jpg" alt="Soggetto libero scelto dallo studente" onload="handlePhotoLoadSuccess(this)" onerror="handlePhotoLoadFailure(this)">
                 <div class="photo-placeholder-hint">
                     <span class="ph-icon">🖼️</span>
                     Nessuna foto impostata per questo modulo.
@@ -3043,6 +3090,7 @@
 
     <div class="modal-overlay" id="api-key-modal">
         <div class="modal-box">
+            <button type="button" class="modal-close-x" onclick="closeApiKeyModal()" aria-label="Chiudi">✕</button>
             <h2>⚙️ Impostazioni</h2>
             <h3>🔑 API Key di Gemini</h3>
             <p>Per usare l'analisi IA delle foto serve una chiave API gratuita di Google Gemini. Ecco come ottenerla in pochi minuti:</p>
@@ -3106,13 +3154,6 @@
             </details>
 
             <details class="manual-section">
-                <summary>🌓 Tema chiaro e scuro</summary>
-                <div class="manual-section-body">
-                    <p>Il pulsante in alto a destra alterna tra tema chiaro e scuro in base alla luce dell'ambiente o alle tue preferenze; la scelta viene ricordata per le visite successive.</p>
-                </div>
-            </details>
-
-            <details class="manual-section">
                 <summary>📲 Installare l'app sul dispositivo</summary>
                 <div class="manual-section-body">
                     <p>Quando il browser lo consente, in alto compare il pulsante <strong>"📲 Installa app"</strong>: toccalo per aggiungere Acquerello Pro alla schermata Home o al menu Start, con un'icona propria e a schermo intero, come un'app normale.</p>
@@ -3126,6 +3167,8 @@
                     <p>Dopo la prima visita, l'app resta consultabile anche senza connessione: puoi rivedere le schede accademiche già visitate, le tue note e le foto caricate. Serve invece una connessione internet per generare nuove analisi IA.</p>
                 </div>
             </details>
+
+            <button type="button" class="modal-close-x-bottom" onclick="closeApiKeyModal()">✕ Chiudi</button>
         </div>
     </div>
 
@@ -3151,21 +3194,6 @@
     </div>
 
     <script>
-        function toggleTheme() {
-            const html = document.documentElement;
-            const btn = document.getElementById('theme-btn');
-            if (html.getAttribute('data-theme') === 'light') {
-                html.setAttribute('data-theme', 'dark');
-                btn.innerHTML = '☀️ Tema Chiaro';
-                localStorage.setItem('themeAppPro', 'dark');
-            } else {
-                html.setAttribute('data-theme', 'light');
-                btn.innerHTML = '🌓 Tema Scuro';
-                localStorage.setItem('themeAppPro', 'light');
-            }
-        }
-
-        if (localStorage.getItem('themeAppPro') === 'dark') toggleTheme();
 
         /* ---------- Pannello laterale: mostra/nascondi per più spazio a schermo ---------- */
         function updateSidebarToggleLabel() {
@@ -3226,11 +3254,20 @@
                 nav.classList.toggle('active', isActive);
                 nav.setAttribute('aria-current', isActive ? 'page' : 'false');
             });
-            lessons.forEach(lesson => lesson.classList.remove('active'));
+            lessons.forEach(lesson => lesson.classList.remove('active', 'settled'));
 
             setTimeout(() => {
                 const target = document.getElementById(targetId);
-                if (target) target.classList.add('active');
+                if (target) {
+                    target.classList.add('active');
+                    // L'animazione di ingresso usa "transform" sul contenitore del modulo. Anche a
+                    // transizione conclusa (transform: translateY(0)) alcuni browser, in particolare
+                    // Safari, continuano a considerarlo un nuovo riferimento di posizionamento: questo
+                    // impedisce alla foto "sticky" del modulo di agganciarsi correttamente durante lo
+                    // scroll. Una volta finita l'animazione rimuoviamo del tutto il transform (non solo
+                    // azzerato) così la foto torna ad ancorarsi correttamente in ogni browser.
+                    setTimeout(() => target.classList.add('settled'), 420);
+                }
                 document.getElementById('main-content').scrollTop = 0;
             }, 50);
         }
@@ -3466,36 +3503,74 @@
         }
 
         /* ---------- Note personali per modulo ---------- */
-        /* ---------- Layout a due colonne: foto fissa (sticky) accanto alla descrizione ---------- */
-        function initStickyPhotoLayout() {
-            document.querySelectorAll('.lesson-container').forEach(container => {
-                const figure = Array.from(container.children).find(el => el.classList.contains('module-photo-frame'));
-                if (!figure) return;
-                if (figure.parentNode.classList.contains('module-two-col')) return; // già sistemata
+        /* ---------- Layout a due colonne: foto fissa (sticky) accanto alla descrizione ----------
+           Il layout a due colonne (con la foto agganciata mentre si scorre) ha senso solo quando
+           c'è davvero una foto da guardare: se il modulo non ha ancora una foto (né di default né
+           caricata dallo studente) resta nel normale layout a colonna singola. Lo stato viene quindi
+           aggiornato dinamicamente ogni volta che una foto compare o scompare (caricamento, rimozione,
+           ripristino da IndexedDB), non deciso una volta sola al caricamento della pagina. */
+        function wrapPhotoLayout(figure, container) {
+            if (figure.parentNode.classList.contains('module-two-col')) return; // già sistemata
 
-                // Sposta nella colonna di destra tutto ciò che segue la foto, fermandosi prima delle
-                // sezioni "di chiusura" del modulo (note personali, pulsanti di navigazione, completamento).
-                const stopClasses = ['module-notes', 'btn-complete', 'module-nav-buttons'];
-                const toMove = [];
-                let node = figure.nextElementSibling;
-                while (node) {
-                    const next = node.nextElementSibling;
-                    if (stopClasses.some(c => node.classList.contains(c))) break;
-                    toMove.push(node);
-                    node = next;
-                }
-                if (toMove.length === 0) return; // nessun contenuto da affiancare (es. laboratorio interattivo)
+            // Sposta nella colonna di destra tutto ciò che segue la foto, fermandosi prima delle
+            // sezioni "di chiusura" del modulo (note personali, pulsanti di navigazione, completamento).
+            const stopClasses = ['module-notes', 'btn-complete', 'module-nav-buttons'];
+            const toMove = [];
+            let node = figure.nextElementSibling;
+            while (node) {
+                const next = node.nextElementSibling;
+                if (stopClasses.some(c => node.classList.contains(c))) break;
+                toMove.push(node);
+                node = next;
+            }
+            if (toMove.length === 0) return; // nessun contenuto da affiancare (es. laboratorio interattivo)
 
-                const twoCol = document.createElement('div');
-                twoCol.className = 'module-two-col';
-                const contentCol = document.createElement('div');
-                contentCol.className = 'module-content-col';
+            const twoCol = document.createElement('div');
+            twoCol.className = 'module-two-col';
+            const contentCol = document.createElement('div');
+            contentCol.className = 'module-content-col';
 
-                figure.parentNode.insertBefore(twoCol, figure);
-                twoCol.appendChild(figure);
-                toMove.forEach(el => contentCol.appendChild(el));
-                twoCol.appendChild(contentCol);
-            });
+            figure.parentNode.insertBefore(twoCol, figure);
+            twoCol.appendChild(figure);
+            toMove.forEach(el => contentCol.appendChild(el));
+            twoCol.appendChild(contentCol);
+        }
+
+        function unwrapPhotoLayout(figure, container) {
+            const twoCol = figure.parentNode;
+            if (!twoCol.classList.contains('module-two-col')) return; // non era sistemata
+
+            const contentCol = twoCol.querySelector('.module-content-col');
+            container.insertBefore(figure, twoCol);
+            if (contentCol) {
+                Array.from(contentCol.children).forEach(el => container.insertBefore(el, twoCol));
+            }
+            twoCol.remove();
+        }
+
+        function applyStickyLayoutState(frame) {
+            const container = frame.closest('.lesson-container');
+            if (!container) return;
+            const hasRealPhoto = !frame.classList.contains('img-missing');
+            if (hasRealPhoto) {
+                wrapPhotoLayout(frame, container);
+            } else {
+                unwrapPhotoLayout(frame, container);
+            }
+        }
+
+        function handlePhotoLoadSuccess(img) {
+            const frame = img.closest('.module-photo-frame');
+            if (!frame) return;
+            frame.classList.remove('img-missing');
+            applyStickyLayoutState(frame);
+        }
+
+        function handlePhotoLoadFailure(img) {
+            const frame = img.closest('.module-photo-frame');
+            if (!frame) return;
+            frame.classList.add('img-missing');
+            applyStickyLayoutState(frame);
         }
 
         function initModuleNotes() {
@@ -3555,7 +3630,6 @@
 
         document.addEventListener('DOMContentLoaded', updateUI);
         updateUI();
-        initStickyPhotoLayout();
         initModuleNotes();
         initModuleNavButtons();
         initFreeSubjectDescriptions();
@@ -3628,6 +3702,7 @@
             photoObjectUrls[key] = url;
             frame.querySelector('img').src = url;
             frame.classList.remove('img-missing');
+            applyStickyLayoutState(frame);
             const removeBtn = frame.querySelector('.photo-remove-btn');
             if (removeBtn) removeBtn.style.display = '';
         }
