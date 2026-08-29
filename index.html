@@ -701,8 +701,37 @@
                 max-width: 100%; flex: none; width: 100%; min-width: 0;
                 z-index: 5;
             }
-            .module-two-col > .module-photo-frame img { max-height: 34vh; }
+            /* Altezza fissa in px (non "vh"): su mobile la barra degli indirizzi del browser si
+               nasconde e riappare durante lo scroll, cambiando l'altezza reale della finestra, quindi
+               un valore in "vh" risulterebbe più grande del previsto proprio quando la barra è
+               visibile. Le didascalie e i pulsanti sotto la foto vengono anche rimpiccioliti, per
+               lasciare il più possibile spazio al testo che scorre. */
+            .module-two-col > .module-photo-frame img { max-height: 150px; }
+            .module-two-col > .module-photo-frame figcaption { padding: 6px 14px; font-size: 0.78rem; }
+            .module-two-col > .module-photo-frame .photo-actions { padding: 6px 14px; gap: 6px; }
+            .module-two-col > .module-photo-frame .photo-upload-btn,
+            .module-two-col > .module-photo-frame .photo-remove-btn { padding: 5px 10px; font-size: 0.78rem; }
+
+            /* Pulsante per comprimere del tutto la foto (solo la striscia in alto) quando si vuole
+               il massimo spazio per leggere, o per riespanderla quando si vuole rivederla meglio. */
+            .module-two-col > .module-photo-frame .photo-collapse-toggle { display: flex; }
+            .module-two-col > .module-photo-frame.photo-collapsed img,
+            .module-two-col > .module-photo-frame.photo-collapsed figcaption,
+            .module-two-col > .module-photo-frame.photo-collapsed .photo-actions { display: none; }
+            /* min-height sufficiente a contenere il pulsante stesso: la cornice della foto ha
+               "overflow: hidden" (per gli angoli arrotondati), quindi senza questa altezza minima il
+               pulsante per riespandere finirebbe tagliato via insieme al resto quando compresso. */
+            .module-two-col > .module-photo-frame.photo-collapsed { padding-bottom: 4px; min-height: 44px; }
         }
+
+        .photo-collapse-toggle {
+            display: none; /* mostrato solo sotto i 680px, vedi media query qui sopra */
+            position: absolute; top: 6px; right: 6px; z-index: 6;
+            width: 30px; height: 30px; border-radius: 50%; border: none;
+            background: rgba(0,0,0,0.55); color: #fff; font-size: 0.85rem; line-height: 1;
+            align-items: center; justify-content: center; cursor: pointer;
+        }
+        .module-photo-frame { position: relative; }
 
         /* Tabella pigmenti */
         .table-scroll { overflow-x: auto; margin: 20px 0; }
@@ -4071,8 +4100,30 @@
            caricata dallo studente) resta nel normale layout a colonna singola. Lo stato viene quindi
            aggiornato dinamicamente ogni volta che una foto compare o scompare (caricamento, rimozione,
            ripristino da IndexedDB), non deciso una volta sola al caricamento della pagina. */
+        // Su schermi stretti la foto "sticky" resta sempre visibile in alto: aggiungiamo un piccolo
+        // pulsante per comprimerla a una striscia sottile (più spazio per leggere) e riespanderla a
+        // piacere, dato che una dimensione fissa unica non va bene per tutte le foto/preferenze.
+        function ensurePhotoCollapseToggle(figure) {
+            if (figure.querySelector('.photo-collapse-toggle')) return;
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'photo-collapse-toggle';
+            btn.setAttribute('aria-label', 'Riduci la foto per leggere con più spazio');
+            btn.textContent = '▾';
+            btn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                const collapsed = figure.classList.toggle('photo-collapsed');
+                btn.textContent = collapsed ? '▸' : '▾';
+                btn.setAttribute('aria-label', collapsed ? 'Espandi di nuovo la foto' : 'Riduci la foto per leggere con più spazio');
+            });
+            figure.insertBefore(btn, figure.firstChild);
+        }
+
         function wrapPhotoLayout(figure, container) {
-            if (figure.parentNode.classList.contains('module-two-col')) return; // già sistemata
+            if (figure.parentNode.classList.contains('module-two-col')) {
+                ensurePhotoCollapseToggle(figure); // già sistemata, ma assicuriamoci comunque che il pulsante ci sia
+                return;
+            }
 
             // Sposta nella colonna di destra tutto ciò che segue la foto, fermandosi prima delle
             // sezioni "di chiusura" del modulo (note personali, pulsanti di navigazione, completamento).
@@ -4096,6 +4147,7 @@
             twoCol.appendChild(figure);
             toMove.forEach(el => contentCol.appendChild(el));
             twoCol.appendChild(contentCol);
+            ensurePhotoCollapseToggle(figure);
         }
 
         function unwrapPhotoLayout(figure, container) {
