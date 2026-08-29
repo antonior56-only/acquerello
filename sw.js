@@ -12,7 +12,7 @@
  *    in background, dato che sono risorse statiche che cambiano raramente.
  */
 
-const CACHE_VERSION = 'v1';
+const CACHE_VERSION = 'v2';
 const CACHE_NAME = 'acquerello-pro-cache-' + CACHE_VERSION;
 
 self.addEventListener('install', (event) => {
@@ -80,7 +80,12 @@ async function cacheFirstWithRevalidate(request) {
 async function networkFirstWithCacheFallback(request) {
     const cache = await caches.open(CACHE_NAME);
     try {
-        const response = await fetch(request);
+        // 'no-store' ignora qualunque copia della pagina già nella cache HTTP del browser: senza
+        // questo, un semplice ricaricamento della pagina può mostrare silenziosamente una versione
+        // precedente dell'app già in cache HTTP, anche quando sul server è stata pubblicata una
+        // versione più recente (es. dopo un aggiornamento dell'app su GitHub Pages). Scarica sempre
+        // la versione più recente quando la connessione è disponibile.
+        const response = await fetch(request, { cache: 'no-store' });
         if (response && response.ok) cache.put(request, response.clone());
         return response;
     } catch (err) {
