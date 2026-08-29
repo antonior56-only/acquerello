@@ -688,8 +688,20 @@
         }
         .module-two-col > .module-content-col { flex: 2 1 380px; min-width: 300px; }
         @media (max-width: 680px) {
+            /* Sotto i 680px la foto e il testo non stanno più affiancati (mancherebbe spazio
+               orizzontale), ma la foto resta comunque "sticky": si aggancia in alto e rimane
+               visibile mentre il testo scorre sotto, esattamente come su schermi larghi - solo
+               impilata invece che affiancata. L'immagine viene anche resa più bassa in questa
+               modalità, altrimenti su un telefono occuperebbe da sola quasi tutto lo schermo e non
+               lascerebbe spazio per leggere il testo che scorre. */
             .module-two-col { flex-direction: column; }
-            .module-two-col > .module-photo-frame { position: static; max-width: 100%; flex: none; width: 100%; min-width: 0; }
+            .module-two-col > .module-photo-frame {
+                position: sticky;
+                top: var(--sticky-photo-top, 90px);
+                max-width: 100%; flex: none; width: 100%; min-width: 0;
+                z-index: 5;
+            }
+            .module-two-col > .module-photo-frame img { max-height: 34vh; }
         }
 
         /* Tabella pigmenti */
@@ -3422,13 +3434,21 @@
             setTimeout(syncMainContentTopPadding, 320);
         }
 
-        /* ---------- Gesti touch: apri/chiudi il pannello laterale con uno swipe (mobile) ---------- */
+        /* ---------- Gesti touch: apri/chiudi il pannello laterale con uno swipe (mobile) ----------
+           Nota tecnica: uno swipe che parte vicino al bordo sinistro dello schermo è esattamente lo
+           stesso gesto che iOS Safari e Chrome Android usano per la navigazione "indietro". Se non
+           lo gestiamo esplicitamente, il sistema operativo può "rubare" il gesto prima che arrivi
+           fino in fondo (touchend non parte mai, o arriva un touchcancel): per questo, appena capiamo
+           che il dito si sta muovendo orizzontalmente, chiamiamo preventDefault() sul touchmove per
+           dire esplicitamente al browser "il gesto lo gestisce la pagina", e ascoltiamo anche
+           touchcancel oltre a touchend come rete di sicurezza. */
         (function initSidebarSwipeGestures() {
             const EDGE_ZONE = 40; // px dal bordo sinistro entro cui deve partire lo swipe per APRIRE il pannello
             const MIN_SWIPE_DISTANCE = 60; // spostamento orizzontale minimo perché conti come uno swipe
             const MAX_VERTICAL_DRIFT = 60; // oltre questa soglia verticale è uno scroll, non uno swipe
+            const INTENT_THRESHOLD = 10; // spostamento minimo per capire se il gesto è orizzontale o verticale
 
-            let startX = 0, startY = 0, tracking = false;
+            let startX = 0, startY = 0, tracking = false, horizontalIntent = false;
 
             document.addEventListener('touchstart', (e) => {
                 if (e.touches.length !== 1) { tracking = false; return; }
@@ -3443,14 +3463,29 @@
                 startX = touch.clientX;
                 startY = touch.clientY;
                 tracking = true;
+                horizontalIntent = false;
             }, { passive: true });
 
-            document.addEventListener('touchend', (e) => {
-                if (!tracking) return;
-                tracking = false;
-                const touch = e.changedTouches[0];
+            document.addEventListener('touchmove', (e) => {
+                if (!tracking || e.touches.length !== 1) return;
+                const touch = e.touches[0];
                 const deltaX = touch.clientX - startX;
                 const deltaY = Math.abs(touch.clientY - startY);
+
+                if (!horizontalIntent && (Math.abs(deltaX) > INTENT_THRESHOLD || deltaY > INTENT_THRESHOLD)) {
+                    horizontalIntent = Math.abs(deltaX) > deltaY;
+                    if (!horizontalIntent) { tracking = false; return; } // è uno scroll verticale, lasciamo fare al browser
+                }
+                if (horizontalIntent && e.cancelable) {
+                    e.preventDefault(); // impedisce al browser di interpretarlo come swipe "indietro"
+                }
+            }, { passive: false });
+
+            function finishSwipe(clientX, clientY) {
+                if (!tracking) return;
+                tracking = false;
+                const deltaX = clientX - startX;
+                const deltaY = Math.abs(clientY - startY);
                 if (deltaY > MAX_VERTICAL_DRIFT) return; // era uno scroll verticale, non uno swipe
 
                 const sidebarHidden = document.body.classList.contains('sidebar-hidden');
@@ -3459,6 +3494,22 @@
                 } else if (!sidebarHidden && deltaX < -MIN_SWIPE_DISTANCE) {
                     toggleSidebar(); // swipe verso sinistra -> chiudi il pannello
                 }
+            }
+
+            document.addEventListener('touchend', (e) => {
+                if (!tracking) return;
+                const touch = e.changedTouches[0];
+                finishSwipe(touch.clientX, touch.clientY);
+            }, { passive: true });
+
+            // Rete di sicurezza: se il sistema operativo interrompe il gesto (es. lo riconosce come
+            // navigazione "indietro" nonostante il preventDefault, su alcune versioni di iOS), usiamo
+            // comunque l'ultima posizione nota per capire se contava come swipe valido.
+            document.addEventListener('touchcancel', (e) => {
+                if (!tracking) return;
+                const touch = e.changedTouches && e.changedTouches[0];
+                if (touch) finishSwipe(touch.clientX, touch.clientY);
+                tracking = false;
             }, { passive: true });
         })();
 
