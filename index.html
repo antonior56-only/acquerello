@@ -65,11 +65,21 @@
             background: var(--surface);
             border-bottom: 1px solid var(--border);
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
             align-items: center;
             padding: 0 30px;
             z-index: 10;
             transition: var(--transition);
+        }
+
+        /* Il pulsante del menu resta a sé (estremo sinistro) grazie a justify-content:space-between
+           sulla topbar; backup e impostazioni restano invece raggruppati insieme sulla destra come
+           un unico blocco, così anche quando lo spazio è poco i due gruppi non si separano in modo
+           incoerente su righe diverse. */
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
         .theme-toggle {
@@ -946,6 +956,7 @@
                 padding: 10px 15px;
             }
             .topbar .theme-toggle { padding: 6px 12px; font-size: 0.82rem; }
+            .topbar-actions { gap: 10px; }
             #main-content { padding: 80px 20px 20px; }
             body.sidebar-hidden #sidebar { width: 0; }
             body.sidebar-hidden .topbar { left: 0; }
@@ -954,6 +965,16 @@
                spazio verticale per il testo che scorre sotto. Un titolo più compatto qui riporta la
                foto più in alto senza perdere leggibilità. */
             h1 { font-size: 1.55rem; line-height: 1.25; }
+        }
+
+        /* Su smartphone stretti anche le etichette testuali ridotte non bastano a far stare i tre
+           pulsanti della topbar su una sola riga: sotto questa soglia si mostrano solo le icone
+           (già identificate da aria-label/title per lettori di schermo e tooltip), evitando che la
+           topbar vada a capo su due righe sprecando spazio verticale. */
+        @media (max-width: 480px) {
+            .topbar .tb-label { display: none; }
+            .topbar .theme-toggle { padding: 8px 10px; font-size: 1rem; }
+            .topbar-actions { gap: 8px; }
         }
 
     </style>
@@ -976,9 +997,11 @@
     </script>
 
     <div class="topbar">
-        <button class="theme-toggle sidebar-toggle-btn" id="sidebar-toggle-btn" onclick="toggleSidebar()" style="margin-right: auto;" aria-label="Mostra o nascondi il pannello laterale" title="Mostra o nascondi il pannello laterale">☰ Nascondi menu</button>
-        <button class="theme-toggle" onclick="openBackupModal()" style="margin-right: 15px;">💾 Backup dati</button>
-        <button class="theme-toggle" onclick="promptApiKey()">⚙️ Impostazioni</button>
+        <button class="theme-toggle sidebar-toggle-btn" id="sidebar-toggle-btn" onclick="toggleSidebar()" aria-label="Mostra o nascondi il pannello laterale" title="Mostra o nascondi il pannello laterale">☰ <span class="tb-label">Nascondi menu</span></button>
+        <div class="topbar-actions">
+            <button class="theme-toggle" onclick="openBackupModal()" aria-label="Backup dati" title="Backup dati">💾 <span class="tb-label">Backup dati</span></button>
+            <button class="theme-toggle" onclick="promptApiKey()" aria-label="Impostazioni" title="Impostazioni">⚙️ <span class="tb-label">Impostazioni</span></button>
+        </div>
     </div>
 
     <div id="sidebar">
@@ -3616,7 +3639,14 @@
         function updateSidebarToggleLabel() {
             const btn = document.getElementById('sidebar-toggle-btn');
             const hidden = document.body.classList.contains('sidebar-hidden');
-            btn.innerHTML = hidden ? '☰ Mostra menu' : '☰ Nascondi menu';
+            const label = hidden ? 'Mostra menu' : 'Nascondi menu';
+            // Aggiorniamo solo il testo dello span (non tutto il bottone con innerHTML), per non
+            // perdere l'icona "☰" davanti e per lasciare intatto lo span.tb-label che su schermi
+            // stretti viene nascosto via CSS mantenendo solo l'icona.
+            const labelEl = btn.querySelector('.tb-label');
+            if (labelEl) labelEl.textContent = label; else btn.innerHTML = '☰ <span class="tb-label">' + label + '</span>';
+            btn.setAttribute('aria-label', hidden ? 'Mostra il pannello laterale' : 'Nascondi il pannello laterale');
+            btn.setAttribute('title', hidden ? 'Mostra il pannello laterale' : 'Nascondi il pannello laterale');
         }
 
         function toggleSidebar() {
