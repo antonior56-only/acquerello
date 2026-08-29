@@ -481,6 +481,49 @@
             margin-bottom: 3px;
         }
 
+        /* Link al video tutorial YouTube del modulo */
+        .module-video-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-left: 4px solid #e02f2f;
+            border-radius: 0 8px 8px 0;
+            padding: 14px 20px;
+            margin: 0 0 30px 0;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        .module-video-link:hover {
+            border-color: #e02f2f;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+            transform: translateY(-1px);
+        }
+        .module-video-link .mvl-icon {
+            font-size: 1.6rem;
+            flex-shrink: 0;
+        }
+        .module-video-link .mvl-text {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .module-video-link .mvl-label {
+            font-weight: 700;
+            color: var(--text-main);
+            font-size: 0.98rem;
+        }
+        .module-video-link .mvl-title {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .module-video-link .mvl-note {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
         h3 { font-size: 1.3rem; color: var(--accent); margin-top: 2.5rem; }
         p { line-height: 1.8; font-size: 1.1rem; color: var(--text-main); margin-bottom: 1.5rem; }
 
@@ -722,6 +765,22 @@
                "overflow: hidden" (per gli angoli arrotondati), quindi senza questa altezza minima il
                pulsante per riespandere finirebbe tagliato via insieme al resto quando compresso. */
             .module-two-col > .module-photo-frame.photo-collapsed { padding-bottom: 4px; min-height: 44px; }
+            /* Da compressa, il pulsante non è più il piccolo cerchio nell'angolo (poco chiaro da
+               solo, senza la foto sotto): diventa una barra a piena larghezza con icona e scritta,
+               così è subito chiaro che lì c'è una foto nascosta e come farla ricomparire. */
+            .module-two-col > .module-photo-frame.photo-collapsed .photo-collapse-toggle {
+                position: static;
+                width: 100%; height: auto;
+                border-radius: 8px;
+                background: var(--border);
+                color: var(--text-main);
+                padding: 10px 14px;
+                justify-content: flex-start;
+                gap: 8px;
+                font-weight: 600;
+                font-size: 0.85rem;
+            }
+            .module-two-col > .module-photo-frame.photo-collapsed .photo-collapse-toggle-label { display: inline; }
         }
 
         .photo-collapse-toggle {
@@ -731,6 +790,7 @@
             background: rgba(0,0,0,0.55); color: #fff; font-size: 0.85rem; line-height: 1;
             align-items: center; justify-content: center; cursor: pointer;
         }
+        .photo-collapse-toggle-label { display: none; } /* visibile solo da compressa, vedi media query */
         .module-photo-frame { position: relative; }
 
         /* Tabella pigmenti */
@@ -868,6 +928,12 @@
         }
 
         .lab-hint { font-size: 0.88rem; color: var(--text-muted); margin-top: 15px; font-style: italic; line-height: 1.6; }
+        .lab-mode-instructions {
+            font-size: 0.85rem; color: var(--text-muted); line-height: 1.5;
+            margin: 0 0 18px; padding: 10px 12px; background: var(--surface);
+            border-left: 3px solid var(--accent); border-radius: 4px;
+        }
+        #glaze-controls .pigment-name { color: var(--accent); font-weight: 600; }
 
         @media (max-width: 768px) {
             #sidebar { width: 250px; }
@@ -883,6 +949,11 @@
             #main-content { padding: 80px 20px 20px; }
             body.sidebar-hidden #sidebar { width: 0; }
             body.sidebar-hidden .topbar { left: 0; }
+            /* Su schermi stretti i titoli dei moduli (spesso lunghi) vanno a capo su 2-3 righe con
+               il font pieno: questo spinge la foto "sticky" molto più in basso, lasciando meno
+               spazio verticale per il testo che scorre sotto. Un titolo più compatto qui riporta la
+               foto più in alto senza perdere leggibilità. */
+            h1 { font-size: 1.55rem; line-height: 1.25; }
         }
 
     </style>
@@ -1219,6 +1290,8 @@
                 <figcaption>Foto di riferimento: ritratto dipinto, velature e trasparenze dell'incarnato</figcaption>
             </figure>
 
+
+            <a class="module-video-link" href="https://www.youtube.com/watch?v=JKkY6CoZ4Jw" target="_blank" rel="noopener noreferrer"><span class="mvl-icon">🎬</span><span class="mvl-text"><span class="mvl-label">Video tutorial correlato (YouTube, italiano)</span><span class="mvl-title">Come DIPINGERE UN VOLTO ad acquerello 🎨 TUTORIAL</span><span class="mvl-note">Pertinenza al tema specifico non pienamente verificata: consigliata una verifica rapida.</span></span></a>
             <div class="tabs-header">
                 <button class="tab-button active" onclick="switchTab(this, 'accademica-3')">Descrizione Accademica</button>
                 <button class="tab-button" onclick="switchTab(this, 'ia-3')">Analisi IA della tua foto</button>
@@ -1349,6 +1422,8 @@
                 <figcaption>Foto di riferimento: paesaggio montano, prospettiva aerea</figcaption>
             </figure>
 
+
+            <a class="module-video-link" href="https://www.youtube.com/watch?v=TdTuml8EibM" target="_blank" rel="noopener noreferrer"><span class="mvl-icon">🎬</span><span class="mvl-text"><span class="mvl-label">Video tutorial correlato (YouTube, italiano)</span><span class="mvl-title">Dipingere le montagne - prospettiva aerea e spatola</span></span></a>
             <div class="tabs-header">
                 <button class="tab-button active" onclick="switchTab(this, 'accademica-4')">Descrizione Accademica</button>
                 <button class="tab-button" onclick="switchTab(this, 'ia-4')">Analisi IA della tua foto</button>
@@ -1445,6 +1520,8 @@
                 <figcaption>Foto di riferimento: onde del mare, dry brush</figcaption>
             </figure>
 
+
+            <a class="module-video-link" href="https://www.youtube.com/watch?v=O-9fLUwR6mM" target="_blank" rel="noopener noreferrer"><span class="mvl-icon">🎬</span><span class="mvl-text"><span class="mvl-label">Video tutorial correlato (YouTube, italiano)</span><span class="mvl-title">Dipingo onde in acquerello con una tecnica diversa</span><span class="mvl-note">Pertinenza al tema specifico non pienamente verificata: consigliata una verifica rapida.</span></span></a>
             <div class="tabs-header">
                 <button class="tab-button active" onclick="switchTab(this, 'accademica-5')">Descrizione Accademica</button>
                 <button class="tab-button" onclick="switchTab(this, 'ia-5')">Analisi IA della tua foto</button>
@@ -1529,6 +1606,8 @@
                 <figcaption>Foto di riferimento: paesaggio invernale, spazio negativo</figcaption>
             </figure>
 
+
+            <a class="module-video-link" href="https://www.youtube.com/watch?v=shffLIF-DfI" target="_blank" rel="noopener noreferrer"><span class="mvl-icon">🎬</span><span class="mvl-text"><span class="mvl-label">Video tutorial correlato (YouTube, italiano)</span><span class="mvl-title">Usare il bianco nell'acquerello - Paesaggio invernale</span></span></a>
             <div class="tabs-header">
                 <button class="tab-button active" onclick="switchTab(this, 'accademica-6')">Descrizione Accademica</button>
                 <button class="tab-button" onclick="switchTab(this, 'ia-6')">Analisi IA della tua foto</button>
@@ -1625,6 +1704,8 @@
                 <figcaption>Foto di riferimento: paesaggio urbano, riflessi sull'asfalto bagnato</figcaption>
             </figure>
 
+
+            <a class="module-video-link" href="https://www.youtube.com/watch?v=9PnBAAlqOi4" target="_blank" rel="noopener noreferrer"><span class="mvl-icon">🎬</span><span class="mvl-text"><span class="mvl-label">Video tutorial correlato (YouTube, italiano)</span><span class="mvl-title">Come creare un paesaggio urbano con l'acquerello: piazza del Duomo a Milano</span><span class="mvl-note">Pertinenza al tema specifico non pienamente verificata: consigliata una verifica rapida.</span></span></a>
             <div class="tabs-header">
                 <button class="tab-button active" onclick="switchTab(this, 'accademica-7')">Descrizione Accademica</button>
                 <button class="tab-button" onclick="switchTab(this, 'ia-7')">Analisi IA della tua foto</button>
@@ -1710,6 +1791,8 @@
                 <figcaption>Foto di riferimento: architettura, granulazione della pietra</figcaption>
             </figure>
 
+
+            <div class="module-video-link mvl-pending" style="border-left-color: var(--border); cursor:default;"><span class="mvl-icon">🎬</span><span class="mvl-text"><span class="mvl-label">Video tutorial correlato</span><span class="mvl-note">Nessun video italiano sufficientemente pertinente trovato per questo modulo specifico (pietra e granulazione in architettura). Ricerca manuale consigliata.</span></span></div>
             <div class="tabs-header">
                 <button class="tab-button active" onclick="switchTab(this, 'accademica-8')">Descrizione Accademica</button>
                 <button class="tab-button" onclick="switchTab(this, 'ia-8')">Analisi IA della tua foto</button>
@@ -1795,6 +1878,8 @@
                 <figcaption>Foto di riferimento: animale, piume e lost & found</figcaption>
             </figure>
 
+
+            <a class="module-video-link" href="https://www.youtube.com/watch?v=RbYVfpM9AuE" target="_blank" rel="noopener noreferrer"><span class="mvl-icon">🎬</span><span class="mvl-text"><span class="mvl-label">Video tutorial correlato (YouTube, italiano)</span><span class="mvl-title">Corso di Acquerello: Lezione n.35 Come Dipingere le PIUME in DUE MODI (ART Tv)</span><span class="mvl-note">Pertinenza al tema specifico non pienamente verificata: consigliata una verifica rapida.</span></span></a>
             <div class="tabs-header">
                 <button class="tab-button active" onclick="switchTab(this, 'accademica-9')">Descrizione Accademica</button>
                 <button class="tab-button" onclick="switchTab(this, 'ia-9')">Analisi IA della tua foto</button>
@@ -1891,6 +1976,8 @@
                 <figcaption>Foto di riferimento: fiori e piante, trasparenze floreali</figcaption>
             </figure>
 
+
+            <a class="module-video-link" href="https://www.youtube.com/watch?v=AR5Wp0r6Wv8" target="_blank" rel="noopener noreferrer"><span class="mvl-icon">🎬</span><span class="mvl-text"><span class="mvl-label">Video tutorial correlato (YouTube, italiano)</span><span class="mvl-title">Come dipingere dei fiori ad acquerello - Peonie Loose Watercolour</span></span></a>
             <div class="tabs-header">
                 <button class="tab-button active" onclick="switchTab(this, 'accademica-10')">Descrizione Accademica</button>
                 <button class="tab-button" onclick="switchTab(this, 'ia-10')">Analisi IA della tua foto</button>
@@ -1976,6 +2063,8 @@
                 <figcaption>Foto di riferimento: tramonto, gradiente caldo e silhouette</figcaption>
             </figure>
 
+
+            <a class="module-video-link" href="https://www.youtube.com/watch?v=uIAEWUQ_DH0" target="_blank" rel="noopener noreferrer"><span class="mvl-icon">🎬</span><span class="mvl-text"><span class="mvl-label">Video tutorial correlato (YouTube, italiano)</span><span class="mvl-title">Come DIPINGERE UN TRAMONTO AD ACQUERELLO</span></span></a>
             <div class="tabs-header">
                 <button class="tab-button active" onclick="switchTab(this, 'accademica-11')">Descrizione Accademica</button>
                 <button class="tab-button" onclick="switchTab(this, 'ia-11')">Analisi IA della tua foto</button>
@@ -2077,6 +2166,8 @@
                 <figcaption>Foto di riferimento: paesaggio marino, costa e orizzonte</figcaption>
             </figure>
 
+
+            <a class="module-video-link" href="https://www.youtube.com/watch?v=DlH4GZlYS08" target="_blank" rel="noopener noreferrer"><span class="mvl-icon">🎬</span><span class="mvl-text"><span class="mvl-label">Video tutorial correlato (YouTube, italiano)</span><span class="mvl-title">Dipingere un paesaggio marino con gli acquerelli</span></span></a>
             <div class="tabs-header">
                 <button class="tab-button active" onclick="switchTab(this, 'accademica-12')">Descrizione Accademica</button>
                 <button class="tab-button" onclick="switchTab(this, 'ia-12')">Analisi IA della tua foto</button>
@@ -2162,6 +2253,8 @@
                 <figcaption>Foto di riferimento: natura morta, luce singola e riflessi cromatici</figcaption>
             </figure>
 
+
+            <a class="module-video-link" href="https://www.youtube.com/watch?v=iQEvJTip_Mc" target="_blank" rel="noopener noreferrer"><span class="mvl-icon">🎬</span><span class="mvl-text"><span class="mvl-label">Video tutorial correlato (YouTube, italiano)</span><span class="mvl-title">Ettore Maiotti, video-lezione completa: Natura Morta ad Acquerello (49 min)</span><span class="mvl-note">Pertinenza al tema specifico non pienamente verificata: consigliata una verifica rapida.</span></span></a>
             <div class="tabs-header">
                 <button class="tab-button active" onclick="switchTab(this, 'accademica-13')">Descrizione Accademica</button>
                 <button class="tab-button" onclick="switchTab(this, 'ia-13')">Analisi IA della tua foto</button>
@@ -2247,6 +2340,8 @@
                 <figcaption>Foto di riferimento: paesaggio collinare, piani digradanti</figcaption>
             </figure>
 
+
+            <a class="module-video-link" href="https://www.youtube.com/watch?v=PrkqXQtIgqs" target="_blank" rel="noopener noreferrer"><span class="mvl-icon">🎬</span><span class="mvl-text"><span class="mvl-label">Video tutorial correlato (YouTube, italiano)</span><span class="mvl-title">Tutorial: come strutturare un paesaggio collinoso, acquarello (Adriana Buggino)</span></span></a>
             <div class="tabs-header">
                 <button class="tab-button active" onclick="switchTab(this, 'accademica-14')">Descrizione Accademica</button>
                 <button class="tab-button" onclick="switchTab(this, 'ia-14')">Analisi IA della tua foto</button>
@@ -2332,6 +2427,8 @@
                 <figcaption>Foto di riferimento: pelo o piumaggio, texture direzionale</figcaption>
             </figure>
 
+
+            <a class="module-video-link" href="https://www.youtube.com/watch?v=x0roXoot7sY" target="_blank" rel="noopener noreferrer"><span class="mvl-icon">🎬</span><span class="mvl-text"><span class="mvl-label">Video tutorial correlato (YouTube, italiano)</span><span class="mvl-title">Tutorial Acquerello: come creare l'effetto di pelo morbido dipingere un gatto</span><span class="mvl-note">Pertinenza al tema specifico non pienamente verificata: consigliata una verifica rapida.</span></span></a>
             <div class="tabs-header">
                 <button class="tab-button active" onclick="switchTab(this, 'accademica-15')">Descrizione Accademica</button>
                 <button class="tab-button" onclick="switchTab(this, 'ia-15')">Analisi IA della tua foto</button>
@@ -2417,6 +2514,8 @@
                 <figcaption>Foto di riferimento: fiori bianchi, valore tonale puro</figcaption>
             </figure>
 
+
+            <a class="module-video-link" href="https://www.youtube.com/watch?v=Prg1fXLod2c" target="_blank" rel="noopener noreferrer"><span class="mvl-icon">🎬</span><span class="mvl-text"><span class="mvl-label">Video tutorial correlato (YouTube, italiano)</span><span class="mvl-title">Fiori bianchi in acquerello: orchidea bianca</span><span class="mvl-note">Pertinenza al tema specifico non pienamente verificata: consigliata una verifica rapida.</span></span></a>
             <div class="tabs-header">
                 <button class="tab-button active" onclick="switchTab(this, 'accademica-16')">Descrizione Accademica</button>
                 <button class="tab-button" onclick="switchTab(this, 'ia-16')">Analisi IA della tua foto</button>
@@ -2502,6 +2601,8 @@
                 <figcaption>Foto di riferimento: komorebi, luce filtrata dal fogliame</figcaption>
             </figure>
 
+
+            <a class="module-video-link" href="https://www.youtube.com/watch?v=CUCxCOa_EzA" target="_blank" rel="noopener noreferrer"><span class="mvl-icon">🎬</span><span class="mvl-text"><span class="mvl-label">Video tutorial correlato (YouTube, italiano)</span><span class="mvl-title">Dipingere il sole tra gli alberi ad acquerello</span></span></a>
             <div class="tabs-header">
                 <button class="tab-button active" onclick="switchTab(this, 'accademica-17')">Descrizione Accademica</button>
                 <button class="tab-button" onclick="switchTab(this, 'ia-17')">Analisi IA della tua foto</button>
@@ -2587,6 +2688,8 @@
                 <figcaption>Foto di riferimento: pittura in negativo, forme sovrapposte per risparmio</figcaption>
             </figure>
 
+
+            <a class="module-video-link" href="https://www.youtube.com/watch?v=vvN34K3n89c" target="_blank" rel="noopener noreferrer"><span class="mvl-icon">🎬</span><span class="mvl-text"><span class="mvl-label">Video tutorial correlato (YouTube, italiano)</span><span class="mvl-title">Cos'è la tecnica al negativo e come usarla! Fogliame ad acquerello</span></span></a>
             <div class="tabs-header">
                 <button class="tab-button active" onclick="switchTab(this, 'accademica-18')">Descrizione Accademica</button>
                 <button class="tab-button" onclick="switchTab(this, 'ia-18')">Analisi IA della tua foto</button>
@@ -2677,6 +2780,8 @@
                 <figcaption>Foto di riferimento: colori granulati, texture materica</figcaption>
             </figure>
 
+
+            <a class="module-video-link" href="https://www.youtube.com/watch?v=ZmuYxwk82lk" target="_blank" rel="noopener noreferrer"><span class="mvl-icon">🎬</span><span class="mvl-text"><span class="mvl-label">Video tutorial correlato (YouTube, italiano)</span><span class="mvl-title">Acquerello: foglie facili e veloci con i colori granulati</span></span></a>
             <div class="tabs-header">
                 <button class="tab-button active" onclick="switchTab(this, 'accademica-19')">Descrizione Accademica</button>
                 <button class="tab-button" onclick="switchTab(this, 'ia-19')">Analisi IA della tua foto</button>
@@ -2762,6 +2867,8 @@
                 <figcaption>Foto di riferimento: cascata, acqua per sottrazione</figcaption>
             </figure>
 
+
+            <a class="module-video-link" href="https://www.youtube.com/watch?v=hH_2GXcJ3ck" target="_blank" rel="noopener noreferrer"><span class="mvl-icon">🎬</span><span class="mvl-text"><span class="mvl-label">Video tutorial correlato (YouTube, italiano)</span><span class="mvl-title">Cascata in acquerello senza uso di mascherante</span></span></a>
             <div class="tabs-header">
                 <button class="tab-button active" onclick="switchTab(this, 'accademica-20')">Descrizione Accademica</button>
                 <button class="tab-button" onclick="switchTab(this, 'ia-20')">Analisi IA della tua foto</button>
@@ -2847,6 +2954,8 @@
                 <figcaption>Foto di riferimento: variante di tramonto (nuvoloso, nebbioso, tropicale o urbano)</figcaption>
             </figure>
 
+
+            <a class="module-video-link" href="https://www.youtube.com/watch?v=kp4WJWdBfcM" target="_blank" rel="noopener noreferrer"><span class="mvl-icon">🎬</span><span class="mvl-text"><span class="mvl-label">Video tutorial correlato (YouTube, italiano)</span><span class="mvl-title">3 idee per paesaggi al tramonto semplicissimi ad acquerello</span></span></a>
             <div class="tabs-header">
                 <button class="tab-button active" onclick="switchTab(this, 'accademica-21')">Descrizione Accademica</button>
                 <button class="tab-button" onclick="switchTab(this, 'ia-21')">Analisi IA della tua foto</button>
@@ -2931,6 +3040,8 @@
                 <figcaption>Foto di riferimento: scena con forte componente prospettica</figcaption>
             </figure>
 
+
+            <a class="module-video-link" href="https://www.youtube.com/watch?v=LcF3mGIZO9A" target="_blank" rel="noopener noreferrer"><span class="mvl-icon">🎬</span><span class="mvl-text"><span class="mvl-label">Video tutorial correlato (YouTube, italiano)</span><span class="mvl-title">La prospettiva aerea nel paesaggio ad acquarello</span><span class="mvl-note">Pertinenza al tema specifico non pienamente verificata: consigliata una verifica rapida.</span></span></a>
             <div class="tabs-header">
                 <button class="tab-button active" onclick="switchTab(this, 'accademica-22')">Descrizione Accademica</button>
                 <button class="tab-button" onclick="switchTab(this, 'ia-22')">Analisi IA della tua foto</button>
@@ -3017,6 +3128,8 @@
                 <figcaption>Foto di riferimento: nuvole, volume e luce</figcaption>
             </figure>
 
+
+            <a class="module-video-link" href="https://www.youtube.com/watch?v=I2o-c5xGjOI" target="_blank" rel="noopener noreferrer"><span class="mvl-icon">🎬</span><span class="mvl-text"><span class="mvl-label">Video tutorial correlato (YouTube, italiano)</span><span class="mvl-title">Tutorial Acquerello: come dipingere le nuvole</span><span class="mvl-note">Pertinenza al tema specifico non pienamente verificata: consigliata una verifica rapida.</span></span></a>
             <div class="tabs-header">
                 <button class="tab-button active" onclick="switchTab(this, 'accademica-23')">Descrizione Accademica</button>
                 <button class="tab-button" onclick="switchTab(this, 'ia-23')">Analisi IA della tua foto</button>
@@ -3102,6 +3215,8 @@
                 <figcaption>Foto di riferimento: ombre e riflessi, temperatura complementare</figcaption>
             </figure>
 
+
+            <a class="module-video-link" href="https://www.youtube.com/watch?v=ADCmhpLFKc8" target="_blank" rel="noopener noreferrer"><span class="mvl-icon">🎬</span><span class="mvl-text"><span class="mvl-label">Video tutorial correlato (YouTube, italiano)</span><span class="mvl-title">Mare, riflessi e barche - Tutorial acquerello</span><span class="mvl-note">Pertinenza al tema specifico non pienamente verificata: consigliata una verifica rapida.</span></span></a>
             <div class="tabs-header">
                 <button class="tab-button active" onclick="switchTab(this, 'accademica-24')">Descrizione Accademica</button>
                 <button class="tab-button" onclick="switchTab(this, 'ia-24')">Analisi IA della tua foto</button>
@@ -3215,14 +3330,26 @@
                 <div class="canvas-container">
                     <canvas id="watercolorCanvas" width="450" height="350"></canvas>
                     <div class="controls">
+                        <label for="lab-mode-select">Esercizio guidato</label>
+                        <select id="lab-mode-select" class="palette-preset-select" style="width: 100%; margin-bottom: 6px;">
+                            <option value="libera">🖌️ Pennellata libera</option>
+                            <option value="valori">📊 Scala di valori</option>
+                            <option value="bordi">◐ Bordi duri e morbidi</option>
+                            <option value="velature">🪟 Sovrapposizione di velature</option>
+                            <option value="lifting">🧽 Lifting (schiarimento)</option>
+                        </select>
+                        <p class="lab-mode-instructions" id="lab-mode-instructions"></p>
+
                         <label>Pigmento selezionato</label>
                         <div class="lab-palette" id="lab-palette"></div>
                         <p class="pigment-name" id="pigment-name-label">Blu Oltremare Francese — granulante</p>
 
-                        <label>Foglio</label>
-                        <div class="wet-toggle">
-                            <button id="btn-dry" class="active" onclick="setWetMode(false)">Asciutto</button>
-                            <button id="btn-wet" onclick="setWetMode(true)">Bagnato</button>
+                        <div id="wet-toggle-row">
+                            <label>Foglio</label>
+                            <div class="wet-toggle">
+                                <button id="btn-dry" class="active" onclick="setWetMode(false)">Asciutto</button>
+                                <button id="btn-wet" onclick="setWetMode(true)">Bagnato</button>
+                            </div>
                         </div>
 
                         <label for="waterAmount">Umidità del pennello: <span id="waterValue">50</span>%</label>
@@ -3230,7 +3357,12 @@
 
                         <label for="pigmentLoad">Carico di Pigmento: <span id="pigmentValue">60</span>%</label>
                         <input type="range" id="pigmentLoad" min="10" max="100" value="60">
-                        <br>
+
+                        <div id="glaze-controls" hidden style="margin-bottom: 18px;">
+                            <button type="button" class="btn-clear" id="btn-freeze-glaze">🧊 Congela strato</button>
+                            <span id="glaze-layer-counter" class="pigment-name" style="margin: 8px 0 0; display: block;">Strato 1</span>
+                        </div>
+
                         <div class="lab-toolbar">
                             <button class="btn-clear" onclick="clearCanvas()">Pulisci Foglio</button>
                             <button type="button" class="btn-clear" id="btn-undo-canvas" onclick="undoStroke()" disabled title="Annulla l'ultima pennellata">↩️ Annulla</button>
@@ -3299,6 +3431,13 @@
         <div class="modal-box">
             <button type="button" class="modal-close-x" onclick="closeApiKeyModal()" aria-label="Chiudi">✕</button>
             <h2>⚙️ Impostazioni</h2>
+
+            <div class="settings-install-box" id="settings-install-box">
+                <button type="button" class="ai-generate-btn" id="btnInstallaPWA-settings" style="width: 100%; justify-content: center; display: none;">📲 Installa l'app sul dispositivo</button>
+                <p id="settings-install-hint" style="font-size: 0.85rem; color: var(--text-muted); margin: 8px 0 0;">Installa Acquerello Pro per aprirla in qualsiasi momento con un'icona propria, anche senza connessione. Su iPhone/iPad: apri il menu Condividi (icona con la freccia verso l'alto) e scegli "Aggiungi a Home".</p>
+            </div>
+            <hr style="border: none; border-top: 1px solid var(--border); margin: 18px 0 22px;">
+
             <h3>🔑 API Key di Gemini</h3>
             <p>Per usare l'analisi IA delle foto serve una chiave API gratuita di Google Gemini. Ecco come ottenerla in pochi minuti:</p>
             <ol>
@@ -3331,6 +3470,28 @@
             </details>
 
             <details class="manual-section">
+                <summary>🎬 Video tutorial per ogni modulo</summary>
+                <div class="manual-section-body">
+                    <p>Nella Scheda Accademica di ogni modulo avanzato (dal Ritratto in poi) trovi un riquadro <strong>"🎬 Video tutorial correlato"</strong>: un link a un video YouTube in italiano che approfondisce la tecnica specifica del modulo, utile da guardare prima o dopo aver letto la scheda. Si apre in una nuova scheda del browser.</p>
+                    <p>Per alcuni moduli il video copre bene il tema generale ma non tutti i dettagli tecnici del titolo del modulo: in questi casi trovi una piccola nota "Pertinenza al tema specifico non pienamente verificata" sotto al titolo del video, come promemoria a valutarlo con occhio critico. Per il modulo Architettura non è stato trovato un video adatto e compare invece una nota esplicativa al posto del link.</p>
+                </div>
+            </details>
+
+            <details class="manual-section">
+                <summary>🧪 Esercizi guidati del Laboratorio Interattivo</summary>
+                <div class="manual-section-body">
+                    <p>Nell'ultimo modulo, <strong>Laboratorio Interattivo</strong>, il menu a tendina in alto al canvas permette di passare dalla pittura libera a quattro esercizi mirati, ciascuno con istruzioni dedicate che compaiono sopra il canvas:</p>
+                    <ul>
+                        <li><strong>📊 Scala di valori:</strong> dipingi diluendo progressivamente lo stesso pigmento per allenare l'occhio a distinguere i toni chiari dagli scuri.</li>
+                        <li><strong>◐ Bordi duri e morbidi:</strong> confronta una pennellata su carta asciutta (bordo netto) con una su carta bagnata (bordo sfumato), sullo stesso canvas.</li>
+                        <li><strong>🪟 Sovrapposizione di velature:</strong> stendi una velatura, tocca "Congela strato" per fissarla, e sovrapponine altre per vedere come si costruisce la profondità cromatica; il contatore in alto tiene traccia degli strati.</li>
+                        <li><strong>🧽 Lifting (schiarimento):</strong> parte da un fondo già dipinto e ti fa "asportare" colore con il pennello per schiarire e creare luci, invece di aggiungerne.</li>
+                    </ul>
+                    <p>Puoi tornare in qualsiasi momento alla modalità "Pittura libera" dallo stesso menu.</p>
+                </div>
+            </details>
+
+            <details class="manual-section">
                 <summary>🖼️ Analisi IA delle tue foto</summary>
                 <div class="manual-section-body">
                     <p>In ogni modulo puoi caricare una foto (tua o di riferimento) e toccare <strong>"✨ Genera analisi specifica per la tua foto"</strong>: Gemini restituisce una guida tecnica su misura, con valutazione tonale, palette consigliata e passaggi da seguire.</p>
@@ -3350,6 +3511,14 @@
                 <summary>◀️ ▶️ Navigazione tra i moduli</summary>
                 <div class="manual-section-body">
                     <p>Puoi spostarti tra i moduli dal pannello laterale, oppure con i pulsanti "Modulo precedente" / "Modulo successivo" in fondo a ogni scheda, per seguire l'ordine consigliato della masterclass.</p>
+                </div>
+            </details>
+
+            <details class="manual-section">
+                <summary>👆 Gesti touch da smartphone</summary>
+                <div class="manual-section-body">
+                    <p>Da smartphone puoi aprire il pannello laterale facendo uno <strong>swipe verso destra</strong> partendo dal bordo sinistro dello schermo, e chiuderlo con uno <strong>swipe verso sinistra</strong>: un'alternativa più naturale al pulsante "☰ Nascondi menu".</p>
+                    <p>Quando carichi una foto in un modulo, questa resta ancorata in alto mentre scorri il testo. Se occupa troppo spazio, tocca il pulsante sopra la foto per comprimerla in una barra compatta; toccalo di nuovo (<strong>"📷 Mostra di nuovo la foto"</strong>) per riespanderla.</p>
                 </div>
             </details>
 
@@ -3929,12 +4098,129 @@
                 ctx.fillStyle = 'rgba(180, 200, 220, 0.15)';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
             }
+            drawModeGuideOverlay();
         }
 
         function clearCanvasBase() {
             if(!ctx) return;
             ctx.fillStyle = "#ffffff";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        /* ---------- Esercizi guidati del laboratorio ----------
+           Oltre alla pennellata libera, il laboratorio offre alcuni esercizi mirati che un
+           insegnante di acquerello assegna prima di affrontare un soggetto: allenano una singola
+           abilità alla volta invece di un dipinto finito. Ogni esercizio riusa gli stessi controlli
+           (pigmenti, acqua, bagnato/asciutto) ma guida l'uso con una sovrapposizione sul foglio e
+           istruzioni dedicate. */
+        let labMode = 'libera';
+        let glazeLayerCount = 1;
+
+        const LAB_MODE_INSTRUCTIONS = {
+            libera: 'Dipingi liberamente per sperimentare con pigmenti, acqua e carta bagnata o asciutta.',
+            valori: 'Scegli un pigmento e dipingi una casella per ogni colonna, aumentando il "Carico di Pigmento" via via che procedi da sinistra (più diluito) a destra (più concentrato). Allena il controllo del tono, non la scelta del colore.',
+            bordi: 'Dipingi la stessa forma nelle due metà del foglio: a sinistra il bordo resterà netto (carta asciutta), a destra si sfumerà (carta bagnata) — qui bagnato/asciutto è deciso automaticamente da dove dipingi, non dai pulsanti "Foglio".',
+            velature: 'Dipingi una prima campitura leggera, poi premi "Congela strato" e dipingi sopra con un pigmento diverso a bassa concentrazione: è così che l\'acquerello costruisce profondità per trasparenza, senza mai coprire con colori opachi.',
+            lifting: 'Sul fondo già dipinto, trascina il pennello per schiarire il colore: è la tecnica che si usa per un riflesso sull\'acqua, una nuvola o per correggere un eccesso di colore. Il "Carico di Pigmento" qui controlla quanto colore viene tolto a ogni passata.'
+        };
+
+        function drawValueScaleGuide() {
+            const cols = 6;
+            ctx.save();
+            ctx.strokeStyle = 'rgba(0,0,0,0.15)';
+            ctx.lineWidth = 1;
+            for (let i = 1; i < cols; i++) {
+                const x = (canvas.width / cols) * i;
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+            ctx.font = '11px sans-serif';
+            ctx.fillStyle = 'rgba(0,0,0,0.35)';
+            ctx.textAlign = 'center';
+            for (let i = 0; i < cols; i++) {
+                const x = (canvas.width / cols) * (i + 0.5);
+                ctx.fillText(String(i + 1), x, canvas.height - 8);
+            }
+            ctx.textAlign = 'left';
+            ctx.fillText('più diluito', 6, 14);
+            ctx.textAlign = 'right';
+            ctx.fillText('più concentrato', canvas.width - 6, 14);
+            ctx.restore();
+        }
+
+        function drawEdgesGuide() {
+            ctx.save();
+            ctx.strokeStyle = 'rgba(0,0,0,0.15)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(canvas.width / 2, 0);
+            ctx.lineTo(canvas.width / 2, canvas.height);
+            ctx.stroke();
+            ctx.font = 'bold 11px sans-serif';
+            ctx.fillStyle = 'rgba(0,0,0,0.4)';
+            ctx.textAlign = 'center';
+            ctx.fillText('ASCIUTTO · bordo netto', canvas.width * 0.25, 16);
+            ctx.fillText('BAGNATO · bordo sfumato', canvas.width * 0.75, 16);
+            ctx.restore();
+        }
+
+        function drawLiftingSampleWash() {
+            // Un fondo di prova già dipinto, per avere subito qualcosa da schiarire senza dover
+            // prima dipingere manualmente un'area a tinta piena.
+            const gradient = ctx.createLinearGradient(0, canvas.height * 0.28, 0, canvas.height * 0.72);
+            gradient.addColorStop(0, 'rgba(52,52,140,0.05)');
+            gradient.addColorStop(0.5, 'rgba(52,52,140,0.55)');
+            gradient.addColorStop(1, 'rgba(52,52,140,0.05)');
+            ctx.save();
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, canvas.height * 0.28, canvas.width, canvas.height * 0.44);
+            ctx.restore();
+        }
+
+        function drawModeGuideOverlay() {
+            if (labMode === 'valori') drawValueScaleGuide();
+            else if (labMode === 'bordi') drawEdgesGuide();
+            else if (labMode === 'lifting') drawLiftingSampleWash();
+        }
+
+        function updateGlazeLayerLabel() {
+            const counter = document.getElementById('glaze-layer-counter');
+            if (counter) counter.textContent = 'Strato ' + glazeLayerCount;
+        }
+
+        function freezeGlazeLayer() {
+            glazeLayerCount++;
+            pushUndoSnapshot(); // congelare uno strato è anche un buon punto a cui tornare con "Annulla"
+            updateGlazeLayerLabel();
+            showToast('Strato congelato. Dipingi sopra con un colore diverso, a bassa concentrazione, per vedere come si sovrappone.', 'success');
+        }
+
+        function applyLabMode(mode) {
+            labMode = mode;
+            const instructionsEl = document.getElementById('lab-mode-instructions');
+            if (instructionsEl) instructionsEl.textContent = LAB_MODE_INSTRUCTIONS[mode] || '';
+
+            const glazeControls = document.getElementById('glaze-controls');
+            if (glazeControls) glazeControls.hidden = mode !== 'velature';
+
+            const wetToggleRow = document.getElementById('wet-toggle-row');
+            if (wetToggleRow) wetToggleRow.style.display = mode === 'bordi' ? 'none' : '';
+
+            glazeLayerCount = 1;
+            updateGlazeLayerLabel();
+
+            clearCanvas(false);
+        }
+
+        const labModeSelect = document.getElementById('lab-mode-select');
+        if (labModeSelect) {
+            labModeSelect.addEventListener('change', function () { applyLabMode(this.value); });
+        }
+        const btnFreezeGlaze = document.getElementById('btn-freeze-glaze');
+        if (btnFreezeGlaze) {
+            btnFreezeGlaze.addEventListener('click', freezeGlazeLayer);
         }
 
         /* ---------- Annulla / Ripeti (Undo/Redo) per le pennellate del laboratorio ---------- */
@@ -3988,7 +4274,7 @@
             if (recordForUndo !== false && ctx) pushUndoSnapshot();
             drawPaperTint();
         }
-        clearCanvas(false); // impostazione iniziale del foglio: non deve comparire nella cronologia annulla
+        applyLabMode('libera'); // impostazione iniziale del foglio e delle istruzioni: non deve comparire nella cronologia annulla
 
         const waterSlider = document.getElementById('waterAmount');
         const pigmentSlider = document.getElementById('pigmentLoad');
@@ -4023,22 +4309,54 @@
             ctx.fill();
         }
 
+        function liftColorAt(x, y) {
+            if (!waterSlider || !pigmentSlider) return;
+            const pigment = parseInt(pigmentSlider.value);
+            const water = parseInt(waterSlider.value);
+            const radius = (water / 11) + 4;
+            const strength = 0.12 + (pigment / 100) * 0.35; // quanto colore viene tolto a ogni passata
+
+            ctx.save();
+            ctx.globalCompositeOperation = 'destination-out';
+            const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
+            gradient.addColorStop(0, `rgba(0,0,0,${strength})`);
+            gradient.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.beginPath();
+            ctx.arc(x, y, radius, 0, Math.PI * 2);
+            ctx.fillStyle = gradient;
+            ctx.fill();
+            ctx.restore();
+        }
+
         function drawWatercolorPoint(x, y) {
             if(!waterSlider) return;
+
+            // Nell'esercizio "Lifting" il pennello toglie colore invece di aggiungerlo: qui non ha
+            // senso far scattare anche la granulazione o il "bleed" del bagnato, che riguardano la
+            // stesura del colore, non la sua rimozione.
+            if (labMode === 'lifting') {
+                liftColorAt(x, y);
+                return;
+            }
+
             const water = parseInt(waterSlider.value);
             const pigment = parseInt(pigmentSlider.value);
+            // Nell'esercizio "Bordi duri e morbidi" bagnato/asciutto non si sceglie con i pulsanti
+            // "Foglio" (nascosti in questa modalità): dipende da dove si dipinge sul foglio, metà
+            // asciutta e metà bagnata, per confrontare i due risultati fianco a fianco.
+            const wetHere = labMode === 'bordi' ? (x > canvas.width / 2) : isWet;
 
             const baseRadius = (water / 12) + (Math.random() * 4);
-            const radius = isWet ? baseRadius * 1.6 : baseRadius;
+            const radius = wetHere ? baseRadius * 1.6 : baseRadius;
             const opacity = (pigment / 100) * (1 - (water / 160));
 
-            paintDab(x, y, radius, opacity, isWet);
+            paintDab(x, y, radius, opacity, wetHere);
 
             if (currentPigment.tag === 'granulante' || currentPigment.tag === 'semi-granulante') {
                 if (pigment > 40) drawGranulation(x, y, radius, opacity);
             }
 
-            if (isWet) {
+            if (wetHere) {
                 let step = 0;
                 const bleed = setInterval(() => {
                     step++;
@@ -4109,11 +4427,20 @@
             btn.type = 'button';
             btn.className = 'photo-collapse-toggle';
             btn.setAttribute('aria-label', 'Riduci la foto per leggere con più spazio');
-            btn.textContent = '▾';
+
+            const icon = document.createElement('span');
+            icon.className = 'photo-collapse-toggle-icon';
+            icon.textContent = '▾';
+
+            const label = document.createElement('span');
+            label.className = 'photo-collapse-toggle-label';
+            label.textContent = '📷 Mostra di nuovo la foto';
+
+            btn.append(icon, label);
             btn.addEventListener('click', function (e) {
                 e.stopPropagation();
                 const collapsed = figure.classList.toggle('photo-collapsed');
-                btn.textContent = collapsed ? '▸' : '▾';
+                icon.textContent = collapsed ? '▸' : '▾';
                 btn.setAttribute('aria-label', collapsed ? 'Espandi di nuovo la foto' : 'Riduci la foto per leggere con più spazio');
             });
             figure.insertBefore(btn, figure.firstChild);
@@ -4882,28 +5209,40 @@
 
         let deferredInstallPrompt = null;
         const installPwaBtn = document.getElementById('btnInstallaPWA');
+        const installPwaBtnSettings = document.getElementById('btnInstallaPWA-settings');
+        const installHintSettings = document.getElementById('settings-install-hint');
+
+        async function runPwaInstallPrompt(triggerBtn) {
+            if (!deferredInstallPrompt) return;
+            triggerBtn.disabled = true;
+            deferredInstallPrompt.prompt();
+            await deferredInstallPrompt.userChoice;
+            deferredInstallPrompt = null;
+            if (installPwaBtn) installPwaBtn.style.display = 'none';
+            if (installPwaBtnSettings) installPwaBtnSettings.style.display = 'none';
+            if (installHintSettings) installHintSettings.textContent = 'App installata: la trovi nella schermata Home o nel menu Start del dispositivo.';
+            triggerBtn.disabled = false;
+        }
 
         window.addEventListener('beforeinstallprompt', (event) => {
             event.preventDefault();
             deferredInstallPrompt = event;
             if (installPwaBtn) installPwaBtn.style.display = 'inline-flex';
+            if (installPwaBtnSettings) installPwaBtnSettings.style.display = 'flex';
         });
 
         if (installPwaBtn) {
-            installPwaBtn.addEventListener('click', async () => {
-                if (!deferredInstallPrompt) return;
-                installPwaBtn.disabled = true;
-                deferredInstallPrompt.prompt();
-                await deferredInstallPrompt.userChoice;
-                deferredInstallPrompt = null;
-                installPwaBtn.style.display = 'none';
-                installPwaBtn.disabled = false;
-            });
+            installPwaBtn.addEventListener('click', () => runPwaInstallPrompt(installPwaBtn));
+        }
+        if (installPwaBtnSettings) {
+            installPwaBtnSettings.addEventListener('click', () => runPwaInstallPrompt(installPwaBtnSettings));
         }
 
         window.addEventListener('appinstalled', () => {
             deferredInstallPrompt = null;
             if (installPwaBtn) installPwaBtn.style.display = 'none';
+            if (installPwaBtnSettings) installPwaBtnSettings.style.display = 'none';
+            if (installHintSettings) installHintSettings.textContent = 'App già installata su questo dispositivo.';
         });
     </script>
 </body>
