@@ -978,7 +978,6 @@
     <div class="topbar">
         <button class="theme-toggle sidebar-toggle-btn" id="sidebar-toggle-btn" onclick="toggleSidebar()" style="margin-right: auto;" aria-label="Mostra o nascondi il pannello laterale" title="Mostra o nascondi il pannello laterale">☰ Nascondi menu</button>
         <button class="theme-toggle" onclick="openBackupModal()" style="margin-right: 15px;">💾 Backup dati</button>
-        <button class="theme-toggle" id="btnInstallaPWA" style="margin-right: 15px; display: none;">📲 Installa app</button>
         <button class="theme-toggle" onclick="promptApiKey()">⚙️ Impostazioni</button>
     </div>
 
@@ -3433,7 +3432,7 @@
             <h2>⚙️ Impostazioni</h2>
 
             <div class="settings-install-box" id="settings-install-box">
-                <button type="button" class="ai-generate-btn" id="btnInstallaPWA-settings" style="width: 100%; justify-content: center; display: none;">📲 Installa l'app sul dispositivo</button>
+                <button type="button" class="ai-generate-btn" id="btnInstallaPWA-settings" style="width: 100%; justify-content: center;">📲 Installa l'app sul dispositivo</button>
                 <p id="settings-install-hint" style="font-size: 0.85rem; color: var(--text-muted); margin: 8px 0 0;">Installa Acquerello Pro per aprirla in qualsiasi momento con un'icona propria, anche senza connessione. Su iPhone/iPad: apri il menu Condividi (icona con la freccia verso l'alto) e scegli "Aggiungi a Home".</p>
             </div>
             <hr style="border: none; border-top: 1px solid var(--border); margin: 18px 0 22px;">
@@ -3532,8 +3531,8 @@
             <details class="manual-section">
                 <summary>📲 Installare l'app sul dispositivo</summary>
                 <div class="manual-section-body">
-                    <p>Quando il browser lo consente, in alto compare il pulsante <strong>"📲 Installa app"</strong>: toccalo per aggiungere Acquerello Pro alla schermata Home o al menu Start, con un'icona propria e a schermo intero, come un'app normale.</p>
-                    <p>Su iPhone e iPad, Safari non mostra questo pulsante: apri il menu Condividi (l'icona con la freccia verso l'alto) e scegli <strong>"Aggiungi a Home"</strong>.</p>
+                    <p>In cima alle Impostazioni (⚙️) trovi il pulsante <strong>"📲 Installa l'app sul dispositivo"</strong>: toccalo per aggiungere Acquerello Pro alla schermata Home o al menu Start, con un'icona propria e a schermo intero, come un'app normale.</p>
+                    <p>Su iPhone e iPad, Safari non consente l'installazione automatica: il pulsante te lo segnala e ti indica di aprire il menu Condividi (l'icona con la freccia verso l'alto) e scegliere <strong>"Aggiungi a Home"</strong>.</p>
                 </div>
             </details>
 
@@ -5193,7 +5192,7 @@
             });
         });
 
-        /* ---------- PWA: Service Worker per l'uso offline + pulsante di installazione ---------- */
+        /* ---------- PWA: Service Worker per l'uso offline + installazione ---------- */
         // Il Service Worker deve vivere in un file .js separato (sw.js), pubblicato nella STESSA
         // cartella di questa pagina: i browser non permettono di registrarne uno incorporato via
         // blob:/data: URI direttamente da questo file, per motivi di sicurezza dello standard.
@@ -5207,42 +5206,56 @@
             });
         }
 
+        // Il pulsante "Installa" (nelle Impostazioni) resta SEMPRE visibile, invece di comparire
+        // solo quando il browser scatena l'evento beforeinstallprompt: quell'evento in pratica non
+        // è affidabile al 100% (Chrome lo scatena solo se soddisfa propri euristiche interne di
+        // "engagement", e Safari/iOS non lo scatena mai). Un pulsante che appare e scompare da solo,
+        // apparentemente senza motivo, confonde più che aiutare: meglio un pulsante sempre presente
+        // che, se il browser non è ancora pronto per l'installazione automatica, spiega chiaramente
+        // il perché e cosa fare.
         let deferredInstallPrompt = null;
-        const installPwaBtn = document.getElementById('btnInstallaPWA');
         const installPwaBtnSettings = document.getElementById('btnInstallaPWA-settings');
-        const installHintSettings = document.getElementById('settings-install-hint');
+        const isAppleMobile = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+        function isRunningAsInstalledApp() {
+            return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
+        }
 
         async function runPwaInstallPrompt(triggerBtn) {
-            if (!deferredInstallPrompt) return;
-            triggerBtn.disabled = true;
-            deferredInstallPrompt.prompt();
-            await deferredInstallPrompt.userChoice;
-            deferredInstallPrompt = null;
-            if (installPwaBtn) installPwaBtn.style.display = 'none';
-            if (installPwaBtnSettings) installPwaBtnSettings.style.display = 'none';
-            if (installHintSettings) installHintSettings.textContent = 'App installata: la trovi nella schermata Home o nel menu Start del dispositivo.';
-            triggerBtn.disabled = false;
+            if (deferredInstallPrompt) {
+                triggerBtn.disabled = true;
+                deferredInstallPrompt.prompt();
+                const choice = await deferredInstallPrompt.userChoice.catch(() => null);
+                deferredInstallPrompt = null;
+                triggerBtn.disabled = false;
+                if (choice && choice.outcome === 'accepted') {
+                    showToast('Installazione avviata: segui le indicazioni del dispositivo per completarla.', 'success');
+                }
+                return;
+            }
+            if (isRunningAsInstalledApp()) {
+                showToast('Stai già usando Acquerello Pro come app installata su questo dispositivo.', 'info');
+                return;
+            }
+            if (isAppleMobile) {
+                showToast('Su iPhone/iPad apri il menu Condividi (icona con la freccia verso l\'alto) e scegli "Aggiungi a Home".', 'info');
+                return;
+            }
+            showToast('Installazione automatica non ancora disponibile in questo browser. Se l\'hai già installata, cercala nella schermata Home o nel menu Start; altrimenti prova a ricaricare la pagina (serve una connessione attiva, non un file aperto direttamente dal disco).', 'info');
         }
 
         window.addEventListener('beforeinstallprompt', (event) => {
             event.preventDefault();
             deferredInstallPrompt = event;
-            if (installPwaBtn) installPwaBtn.style.display = 'inline-flex';
-            if (installPwaBtnSettings) installPwaBtnSettings.style.display = 'flex';
         });
 
-        if (installPwaBtn) {
-            installPwaBtn.addEventListener('click', () => runPwaInstallPrompt(installPwaBtn));
-        }
         if (installPwaBtnSettings) {
             installPwaBtnSettings.addEventListener('click', () => runPwaInstallPrompt(installPwaBtnSettings));
         }
 
         window.addEventListener('appinstalled', () => {
             deferredInstallPrompt = null;
-            if (installPwaBtn) installPwaBtn.style.display = 'none';
-            if (installPwaBtnSettings) installPwaBtnSettings.style.display = 'none';
-            if (installHintSettings) installHintSettings.textContent = 'App già installata su questo dispositivo.';
+            showToast('App installata con successo!', 'success');
         });
     </script>
 </body>
