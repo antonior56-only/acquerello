@@ -446,6 +446,40 @@
         .free-subject-desc-box textarea { width: 100%; min-height: 70px; resize: vertical; padding: 12px 14px; border: 2px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text-main); font-family: inherit; font-size: 0.98rem; line-height: 1.5; }
         .free-subject-desc-box textarea:focus { outline: none; border-color: var(--accent); }
 
+        /* Le due "card" del modulo Soggetto Libero (analisi da foto / analisi solo da testo):
+           stessa cornice grafica dell'art-spec-box, per far percepire le due opzioni come scelte
+           equivalenti e allo stesso livello, non una principale e una secondaria. */
+        .free-subject-option-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--accent);
+            padding: 20px 25px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 20px;
+        }
+        .free-subject-option-title { margin-top: 0; color: var(--accent); font-size: 1.05rem; }
+        .free-subject-option-desc { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 18px; }
+        .free-subject-option-card .ai-result-box { margin-top: 15px; }
+
+        .free-subject-option-divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 4px 0 20px;
+        }
+        .free-subject-option-divider::before,
+        .free-subject-option-divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid var(--border);
+        }
+        .free-subject-option-divider span { padding: 0 14px; }
+
         .module-nav-buttons { display: flex; justify-content: space-between; gap: 15px; margin-top: 25px; padding-top: 20px; border-top: 1px solid var(--border); }
         .module-nav-btn { background: none; border: 2px solid var(--border); color: var(--text-main); padding: 10px 20px; border-radius: 20px; font-weight: 600; cursor: pointer; transition: var(--transition); max-width: 47%; text-align: left; }
         .module-nav-btn.next { text-align: right; margin-left: auto; }
@@ -3315,7 +3349,7 @@
         <!-- Modulo 25: Soggetto Libero -->
         <div id="modulo-25" class="lesson-container">
             <h1>Soggetto Libero: Analisi Guidata dall'IA</h1>
-            <p>Uno spazio aperto per qualunque soggetto non coperto dagli altri moduli: descrivi cosa vuoi dipingere, carica la foto di riferimento e ricevi un'analisi tecnica generata sulla tua immagine specifica, con lo stesso strumento IA usato negli altri moduli — qui senza una scheda teorica fissa alle spalle, solo l'analisi sul tuo soggetto.</p>
+            <p>Uno spazio aperto per qualunque soggetto non coperto dagli altri moduli, con due modi per usare l'IA: <strong>con una foto di riferimento</strong> (come negli altri moduli) oppure <strong>solo a parole, senza caricare nessuna foto</strong>. Scegli quello più comodo per te qui sotto — puoi anche usarli entrambi.</p>
 
             <div class="free-subject-desc-box">
                 <label for="free-subject-desc-25">✏️ Descrivi cosa vuoi dipingere</label>
@@ -3323,23 +3357,39 @@
                 <span class="notes-saved-hint" id="free-subject-hint-25">Salvato ✓</span>
             </div>
 
-            <figure class="module-photo-frame" data-photo-key="libero" data-default-src="images/libero.jpg">
-                <img src="images/libero.jpg" alt="Soggetto libero scelto dallo studente" onload="handlePhotoLoadSuccess(this)" onerror="handlePhotoLoadFailure(this)">
-                <div class="photo-placeholder-hint">
-                    <span class="ph-icon">🖼️</span>
-                    Nessuna foto impostata per questo modulo.
-                </div>
-                <div class="photo-actions">
-                    <label class="photo-upload-btn">📤 Carica la tua foto<input type="file" accept="image/*" class="photo-input" hidden></label>
-                    <button type="button" class="photo-remove-btn" style="display:none;">🗑️ Rimuovi</button>
-                    <span class="photo-hint-text">Resta salvata solo in questo browser</span>
-                </div>
-                <figcaption>Il soggetto che hai scelto di dipingere</figcaption>
-            </figure>
+            <div class="free-subject-option-card">
+                <h3 class="free-subject-option-title">📷 Opzione 1 — Analisi da una foto</h3>
+                <p class="free-subject-option-desc">Carica una foto di riferimento del tuo soggetto: l'IA la analizzerà nel dettaglio (se hai scritto anche una descrizione qui sopra, ne terrà conto).</p>
 
-            <button class="ai-generate-btn" onclick="analyzePhoto(25, 'libero')">✨ Genera analisi specifica per la tua foto</button>
-            <div class="ai-loading" id="ai-loading-25">Analisi in corso con Gemini... ⏳</div>
-            <div class="ai-result-box" id="ai-result-25"></div>
+                <figure class="module-photo-frame" data-photo-key="libero" data-default-src="images/libero.jpg">
+                    <img src="images/libero.jpg" alt="Soggetto libero scelto dallo studente" onload="handlePhotoLoadSuccess(this)" onerror="handlePhotoLoadFailure(this)">
+                    <div class="photo-placeholder-hint">
+                        <span class="ph-icon">🖼️</span>
+                        Nessuna foto impostata per questo modulo.
+                    </div>
+                    <div class="photo-actions">
+                        <label class="photo-upload-btn">📤 Carica la tua foto<input type="file" accept="image/*" class="photo-input" hidden></label>
+                        <button type="button" class="photo-remove-btn" style="display:none;">🗑️ Rimuovi</button>
+                        <span class="photo-hint-text">Resta salvata solo in questo browser</span>
+                    </div>
+                    <figcaption>Il soggetto che hai scelto di dipingere</figcaption>
+                </figure>
+
+                <button class="ai-generate-btn" onclick="analyzePhoto(25, 'libero')">✨ Genera analisi dalla foto</button>
+                <div class="ai-loading" id="ai-loading-25">Analisi in corso con Gemini... ⏳</div>
+                <div class="ai-result-box" id="ai-result-25"></div>
+            </div>
+
+            <div class="free-subject-option-divider"><span>oppure</span></div>
+
+            <div class="free-subject-option-card">
+                <h3 class="free-subject-option-title">✍️ Opzione 2 — Analisi solo dal testo, senza foto</h3>
+                <p class="free-subject-option-desc">Non hai (o non vuoi caricare) una foto? Scrivi la descrizione qui sopra e genera comunque una guida tecnica, basata sulla tua descrizione a parole.</p>
+
+                <button class="ai-generate-btn" onclick="analyzeFreeTextOnly(25)">✨ Genera analisi dal testo</button>
+                <div class="ai-loading" id="ai-loading-25-text">Analisi in corso con Gemini... ⏳</div>
+                <div class="ai-result-box" id="ai-result-25-text"></div>
+            </div>
 
             <button class="btn-complete" onclick="markCompleted('modulo-25')">✓ Segna come completato</button>
         </div>
@@ -3517,7 +3567,7 @@
                 <summary>🖼️ Analisi IA delle tue foto</summary>
                 <div class="manual-section-body">
                     <p>In ogni modulo puoi caricare una foto (tua o di riferimento) e toccare <strong>"✨ Genera analisi specifica per la tua foto"</strong>: Gemini restituisce una guida tecnica su misura, con valutazione tonale, palette consigliata e passaggi da seguire.</p>
-                    <p>Nel modulo <strong>Soggetto Libero</strong> puoi anche scrivere a parole cosa vuoi realizzare (es. "Voglio dipingere un prato in fiore"), anche senza caricare una foto: l'IA userà la tua descrizione per costruire la guida.</p>
+                    <p>Nel modulo <strong>Soggetto Libero</strong> trovi due modi distinti per usare l'IA: <strong>"✨ Genera analisi dalla foto"</strong>, come negli altri moduli, oppure <strong>"✨ Genera analisi dal testo"</strong>, che funziona anche senza aver caricato nessuna foto — basta scrivere a parole cosa vuoi realizzare (es. "Voglio dipingere un prato in fiore") nel campo in alto. Puoi usare una sola delle due opzioni o entrambe.</p>
                     <p>Serve una API Key di Gemini configurata qui sopra, e una connessione internet attiva al momento della richiesta.</p>
                 </div>
             </details>
@@ -5043,6 +5093,99 @@
             }
         }
 
+        // Chiamata a Gemini condivisa da entrambe le modalità di analisi IA (da foto, e solo da
+        // testo senza foto): incapsula la logica di tentativo con il modello già noto per
+        // funzionare e, in caso di fallimento, la ricerca automatica di un modello alternativo
+        // compatibile con la API Key dello studente. imagePart è opzionale: se omesso, la richiesta
+        // a Gemini contiene solo testo (nessuna immagine allegata).
+        async function callGeminiAnalysis(apiKey, promptText, imagePart) {
+            const parts = [{ text: promptText }];
+            if (imagePart) parts.push(imagePart);
+            const payload = { contents: [{ parts }] };
+
+            // Prova prima il modello già noto per funzionare: se c'è, un'unica chiamata basta,
+            // senza dover interrogare ogni volta l'elenco completo dei modelli dell'account.
+            const MAX_FALLBACK_ATTEMPTS = 3; // tetto ai tentativi quando serve cercare un'alternativa
+            const STATIC_FALLBACKS = ['gemini-2.5-flash', 'gemini-2.0-flash'];
+
+            async function tryModel(model) {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const json = await response.json();
+                if (!response.ok || json.error) {
+                    throw new Error(json.error ? json.error.message : 'Errore HTTP ' + response.status);
+                }
+                return json;
+            }
+
+            let data = null;
+            let success = false;
+            let lastError = '';
+            const attemptedModels = [];
+            const savedModel = localStorage.getItem('workingGeminiModel');
+
+            if (savedModel) {
+                attemptedModels.push(savedModel);
+                try {
+                    data = await tryModel(savedModel);
+                    success = true;
+                } catch (e) {
+                    lastError = e.message;
+                }
+            }
+
+            // Solo se non c'era un modello salvato, o ha smesso di funzionare, cerca alternative:
+            // qui interroghiamo l'elenco modelli dell'account, ma proviamo al massimo poche opzioni.
+            if (!success) {
+                let candidates = [];
+                try {
+                    const modelsRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
+                    if (modelsRes.ok) {
+                        const modelsData = await modelsRes.json();
+                        if (modelsData && modelsData.models) {
+                            candidates = modelsData.models
+                                .filter(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes('generateContent'))
+                                .map(m => m.name.replace('models/', ''))
+                                // privilegia i modelli "flash", più rapidi ed economici, per questo tipo di analisi
+                                .sort((a, b) => (b.includes('flash') ? 1 : 0) - (a.includes('flash') ? 1 : 0));
+                        }
+                    }
+                } catch (e) {
+                    console.warn("Impossibile recuperare la lista dinamica dei modelli, uso il fallback standard.", e);
+                }
+
+                STATIC_FALLBACKS.forEach(m => { if (!candidates.includes(m)) candidates.push(m); });
+                const toTry = candidates
+                    .filter(m => !attemptedModels.includes(m))
+                    .slice(0, MAX_FALLBACK_ATTEMPTS);
+
+                for (const model of toTry) {
+                    attemptedModels.push(model);
+                    try {
+                        data = await tryModel(model);
+                        success = true;
+                        break;
+                    } catch (e) {
+                        lastError = e.message;
+                    }
+                }
+            }
+
+            if (success) {
+                localStorage.setItem('workingGeminiModel', attemptedModels[attemptedModels.length - 1]);
+            } else {
+                throw new Error(`Nessun modello API compatibile trovato per questa chiave (provati: ${attemptedModels.join(', ') || 'nessuno'}). Dettaglio ultimo errore: ${lastError}`);
+            }
+
+            return data.candidates[0].content.parts[0].text;
+        }
+
+        // Opzione 1: analisi generata a partire da una foto caricata dallo studente (usata da tutti
+        // i moduli, incluso il Soggetto Libero). Se nel modulo è presente anche una descrizione a
+        // parole, viene usata per affinare l'analisi ma resta comunque necessaria una foto.
         async function analyzePhoto(moduleId, photoKey) {
             const apiKey = localStorage.getItem('geminiApiKey');
             if (!apiKey) {
@@ -5053,13 +5196,13 @@
 
             const blob = await getPhotoBlob(photoKey);
             if (!blob) {
-                showToast('Per favore, carica prima una foto per questo modulo per poterla analizzare.', 'error');
+                showToast('Per favore, carica prima una foto per questo modulo per poterla analizzare (oppure, nel modulo Soggetto Libero, usa l\'opzione "Genera analisi dal testo" per procedere senza foto).', 'error');
                 return;
             }
 
             const loadingEl = document.getElementById('ai-loading-' + moduleId);
             const resultEl = document.getElementById('ai-result-' + moduleId);
-            
+
             loadingEl.style.display = 'block';
             resultEl.style.display = 'none';
 
@@ -5077,93 +5220,7 @@
                     ? `Lo studente vuole realizzare questo soggetto: "${freeDescription}". Tienine conto nell'analisi, adattando i consigli tecnici a questo obiettivo specifico oltre che al contenuto della foto. ` + basePrompt
                     : basePrompt;
 
-                const payload = {
-                    contents: [{
-                        parts: [
-                            { text: promptText },
-                            { inline_data: { mime_type: blob.type, data: base64data } }
-                        ]
-                    }]
-                };
-
-                // Prova prima il modello già noto per funzionare: se c'è, un'unica chiamata basta,
-                // senza dover interrogare ogni volta l'elenco completo dei modelli dell'account.
-                const MAX_FALLBACK_ATTEMPTS = 3; // tetto ai tentativi quando serve cercare un'alternativa
-                const STATIC_FALLBACKS = ['gemini-2.5-flash', 'gemini-2.0-flash'];
-
-                async function tryModel(model) {
-                    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-                    const json = await response.json();
-                    if (!response.ok || json.error) {
-                        throw new Error(json.error ? json.error.message : 'Errore HTTP ' + response.status);
-                    }
-                    return json;
-                }
-
-                let data = null;
-                let success = false;
-                let lastError = '';
-                const attemptedModels = [];
-                const savedModel = localStorage.getItem('workingGeminiModel');
-
-                if (savedModel) {
-                    attemptedModels.push(savedModel);
-                    try {
-                        data = await tryModel(savedModel);
-                        success = true;
-                    } catch (e) {
-                        lastError = e.message;
-                    }
-                }
-
-                // Solo se non c'era un modello salvato, o ha smesso di funzionare, cerca alternative:
-                // qui interroghiamo l'elenco modelli dell'account, ma proviamo al massimo poche opzioni.
-                if (!success) {
-                    let candidates = [];
-                    try {
-                        const modelsRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
-                        if (modelsRes.ok) {
-                            const modelsData = await modelsRes.json();
-                            if (modelsData && modelsData.models) {
-                                candidates = modelsData.models
-                                    .filter(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes('generateContent'))
-                                    .map(m => m.name.replace('models/', ''))
-                                    // privilegia i modelli "flash", più rapidi ed economici, per questo tipo di analisi
-                                    .sort((a, b) => (b.includes('flash') ? 1 : 0) - (a.includes('flash') ? 1 : 0));
-                            }
-                        }
-                    } catch (e) {
-                        console.warn("Impossibile recuperare la lista dinamica dei modelli, uso il fallback standard.", e);
-                    }
-
-                    STATIC_FALLBACKS.forEach(m => { if (!candidates.includes(m)) candidates.push(m); });
-                    const toTry = candidates
-                        .filter(m => !attemptedModels.includes(m))
-                        .slice(0, MAX_FALLBACK_ATTEMPTS);
-
-                    for (const model of toTry) {
-                        attemptedModels.push(model);
-                        try {
-                            data = await tryModel(model);
-                            success = true;
-                            break;
-                        } catch (e) {
-                            lastError = e.message;
-                        }
-                    }
-                }
-
-                if (success) {
-                    localStorage.setItem('workingGeminiModel', attemptedModels[attemptedModels.length - 1]);
-                } else {
-                    throw new Error(`Nessun modello API compatibile trovato per questa chiave (provati: ${attemptedModels.join(', ') || 'nessuno'}). Dettaglio ultimo errore: ${lastError}`);
-                }
-
-                const text = data.candidates[0].content.parts[0].text;
+                const text = await callGeminiAnalysis(apiKey, promptText, { inline_data: { mime_type: blob.type, data: base64data } });
 
                 resultEl.classList.remove('error');
                 resultEl.textContent = text;
@@ -5171,7 +5228,49 @@
                 localStorage.setItem('ai-analysis-' + photoKey, text);
 
             } catch (error) {
-                showAnalysisError(resultEl, error, moduleId, photoKey);
+                showAnalysisError(resultEl, error, moduleId, photoKey, false);
+            } finally {
+                loadingEl.style.display = 'none';
+            }
+        }
+
+        // Opzione 2: analisi generata solo dalla descrizione scritta a parole, senza alcuna foto
+        // allegata (per ora usata solo nel modulo Soggetto Libero). Utile quando lo studente non ha
+        // ancora una foto di riferimento, o preferisce semplicemente descrivere l'idea a parole.
+        async function analyzeFreeTextOnly(moduleId) {
+            const apiKey = localStorage.getItem('geminiApiKey');
+            if (!apiKey) {
+                showToast('Per usare questa funzione devi prima configurare la tua API Key di Gemini usando il pulsante "Impostazioni" in alto.', 'error');
+                promptApiKey();
+                return;
+            }
+
+            const freeDescEl = document.querySelector('#modulo-' + moduleId + ' .free-subject-textarea');
+            const freeDescription = freeDescEl ? freeDescEl.value.trim() : '';
+            if (!freeDescription) {
+                showToast('Descrivi prima a parole cosa vuoi dipingere nel campo qui sopra, poi genera l\'analisi.', 'error');
+                if (freeDescEl) freeDescEl.focus();
+                return;
+            }
+
+            const loadingEl = document.getElementById('ai-loading-' + moduleId + '-text');
+            const resultEl = document.getElementById('ai-result-' + moduleId + '-text');
+
+            loadingEl.style.display = 'block';
+            resultEl.style.display = 'none';
+
+            try {
+                const promptText = `Sei un esperto insegnante di acquerello. Uno studente vuole dipingere questo soggetto, descritto solo a parole e SENZA alcuna foto di riferimento: "${freeDescription}". Crea comunque una guida tecnica step-by-step per dipingerlo ad acquerello, basandoti sulla tua conoscenza generale di questo tipo di soggetto. Includi: 1. Come impostare probabilmente la composizione e i valori tonali per un soggetto di questo tipo. 2. Palette cromatica consigliata. 3. Guida step-by-step. 4. Suggerimenti per la gestione dei bordi e dell'umidità della carta. Se la descrizione è troppo generica per essere specifico su alcuni punti, dillo esplicitamente e fornisci comunque indicazioni utili basate sui casi più comuni. Formatta la risposta in testo semplice, con paragrafi ed elenchi leggibili. Non usare HTML o markdown.`;
+
+                const text = await callGeminiAnalysis(apiKey, promptText, null);
+
+                resultEl.classList.remove('error');
+                resultEl.textContent = text;
+                resultEl.style.display = 'block';
+                localStorage.setItem('ai-analysis-text-' + moduleId, text);
+
+            } catch (error) {
+                showAnalysisError(resultEl, error, moduleId, null, true);
             } finally {
                 loadingEl.style.display = 'none';
             }
@@ -5192,7 +5291,7 @@
             return 'Si è verificato un errore imprevisto durante l\'analisi. Dettaglio tecnico: ' + (msg || 'sconosciuto');
         }
 
-        function showAnalysisError(resultEl, error, moduleId, photoKey) {
+        function showAnalysisError(resultEl, error, moduleId, photoKey, isTextOnly) {
             const friendlyMsg = classifyGeminiError(error);
             resultEl.classList.add('error');
             resultEl.replaceChildren();
@@ -5202,7 +5301,7 @@
             retry.type = 'button';
             retry.className = 'ai-retry-btn';
             retry.textContent = '🔄 Riprova';
-            retry.addEventListener('click', () => analyzePhoto(moduleId, photoKey));
+            retry.addEventListener('click', () => isTextOnly ? analyzeFreeTextOnly(moduleId) : analyzePhoto(moduleId, photoKey));
             resultEl.append(title, document.createElement('br'), document.createTextNode(friendlyMsg), document.createElement('br'), retry);
             resultEl.style.display = 'block';
         }
@@ -5214,10 +5313,21 @@
                 const savedAnalysis = localStorage.getItem('ai-analysis-' + key);
                 const moduleId = frame.closest('.lesson-container').id.split('-')[1];
                 const resultBox = document.getElementById('ai-result-' + moduleId);
-                
+
                 if (savedAnalysis && resultBox) {
                     resultBox.textContent = savedAnalysis;
                     resultBox.style.display = 'block';
+                }
+            });
+
+            // Analisi generate solo dal testo, senza foto (Opzione 2 del Soggetto Libero)
+            document.querySelectorAll('.free-subject-textarea').forEach(textarea => {
+                const moduleId = textarea.closest('.lesson-container').id.split('-')[1];
+                const savedTextAnalysis = localStorage.getItem('ai-analysis-text-' + moduleId);
+                const textResultBox = document.getElementById('ai-result-' + moduleId + '-text');
+                if (savedTextAnalysis && textResultBox) {
+                    textResultBox.textContent = savedTextAnalysis;
+                    textResultBox.style.display = 'block';
                 }
             });
         });
