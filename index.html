@@ -671,8 +671,10 @@
         .module-photo-frame img {
             width: 100%;
             height: auto;
-            max-height: none;
+            max-height: 480px;
             object-fit: contain;
+            object-position: center top;
+            background: var(--bg-color);
             display: block;
         }
         .module-photo-frame figcaption {
@@ -750,7 +752,7 @@
                un valore in "vh" risulterebbe più grande del previsto proprio quando la barra è
                visibile. Le didascalie e i pulsanti sotto la foto vengono anche rimpiccioliti, per
                lasciare il più possibile spazio al testo che scorre. */
-            .module-two-col > .module-photo-frame img { max-height: none; }
+            .module-two-col > .module-photo-frame img { max-height: 150px; }
             .module-two-col > .module-photo-frame figcaption { padding: 6px 14px; font-size: 0.78rem; }
             .module-two-col > .module-photo-frame .photo-actions { padding: 6px 14px; gap: 6px; }
             .module-two-col > .module-photo-frame .photo-upload-btn,
