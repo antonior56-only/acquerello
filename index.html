@@ -942,21 +942,25 @@
             #sidebar { width: 250px; }
             .topbar {
                 left: 250px;
-                height: auto;
-                min-height: 60px;
-                flex-wrap: wrap;
-                row-gap: 8px;
-                padding: 10px 15px;
+                height: 50px;
+                min-height: 50px;
+                flex-wrap: nowrap;
+                gap: 4px;
+                justify-content: space-between;
+                padding: 6px 8px;
+                overflow: hidden;
             }
-            .topbar .theme-toggle { padding: 6px 12px; font-size: 0.82rem; }
-            #main-content { padding: 80px 20px 20px; }
+            .topbar .theme-toggle { flex: 0 0 auto; padding: 5px 8px; font-size: 0.76rem; white-space: nowrap; }
+            .topbar .sidebar-toggle-btn,
+            .topbar button[onclick="openBackupModal()"] { margin-right: 0 !important; }
+            #main-content { padding: 58px 16px 20px; }
             body.sidebar-hidden #sidebar { width: 0; }
             body.sidebar-hidden .topbar { left: 0; }
             /* Su schermi stretti i titoli dei moduli (spesso lunghi) vanno a capo su 2-3 righe con
                il font pieno: questo spinge la foto "sticky" molto più in basso, lasciando meno
                spazio verticale per il testo che scorre sotto. Un titolo più compatto qui riporta la
                foto più in alto senza perdere leggibilità. */
-            h1 { font-size: 1.55rem; line-height: 1.25; }
+            h1 { font-size: 1.3rem; line-height: 1.15; margin: 0 0 14px; }
         }
 
     </style>
@@ -979,9 +983,9 @@
     </script>
 
     <div class="topbar">
-        <button class="theme-toggle sidebar-toggle-btn" id="sidebar-toggle-btn" onclick="toggleSidebar()" style="margin-right: auto;" aria-label="Mostra o nascondi il pannello laterale" title="Mostra o nascondi il pannello laterale">☰ Nascondi menu</button>
-        <button class="theme-toggle" onclick="openBackupModal()" style="margin-right: 15px;">💾 Backup dati</button>
-        <button class="theme-toggle" onclick="promptApiKey()">⚙️ Impostazioni</button>
+        <button class="theme-toggle sidebar-toggle-btn" id="sidebar-toggle-btn" onclick="toggleSidebar()" style="margin-right: auto;" aria-label="Mostra o nascondi il pannello laterale" title="Mostra o nascondi il pannello laterale">☰ Menu</button>
+        <button class="theme-toggle" onclick="openBackupModal()" style="margin-right: 15px;">💾 Backup</button>
+        <button class="theme-toggle" onclick="promptApiKey()">⚙️ IA</button>
     </div>
 
     <div id="sidebar">
@@ -3618,8 +3622,7 @@
         /* ---------- Pannello laterale: mostra/nascondi per più spazio a schermo ---------- */
         function updateSidebarToggleLabel() {
             const btn = document.getElementById('sidebar-toggle-btn');
-            const hidden = document.body.classList.contains('sidebar-hidden');
-            btn.innerHTML = hidden ? '☰ Mostra menu' : '☰ Nascondi menu';
+            btn.innerHTML = '☰ Menu';
         }
 
         function toggleSidebar() {
@@ -3729,11 +3732,11 @@
             const mainContent = document.getElementById('main-content');
             if (!topbar || !mainContent) return;
             const height = topbar.getBoundingClientRect().height;
-            mainContent.style.paddingTop = (height + 25) + 'px';
+            mainContent.style.paddingTop = (height + 8) + 'px';
             // La foto "sticky" (vedi .module-two-col) si aggancia relativa allo scroll container, non
             // alla topbar fissa: il suo offset "top" deve quindi tenere conto della stessa altezza,
             // altrimenti la foto finirebbe a scorrere sotto la barra in alto invece di fermarsi sopra.
-            document.documentElement.style.setProperty('--sticky-photo-top', (height + 20) + 'px');
+            document.documentElement.style.setProperty('--sticky-photo-top', (height + 6) + 'px');
         }
         syncMainContentTopPadding();
         let resizeSyncTimeout = null;
