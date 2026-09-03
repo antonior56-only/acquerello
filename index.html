@@ -747,14 +747,22 @@
                 position: sticky;
                 top: var(--sticky-photo-top, 90px);
                 max-width: 100%; flex: none; width: 100%; min-width: 0;
+                margin: 0;
                 z-index: 5;
             }
+            .module-two-col { gap: 10px; }
+            .module-two-col > .module-content-col { flex: none; width: 100%; min-width: 0; }
             /* Altezza fissa in px (non "vh"): su mobile la barra degli indirizzi del browser si
                nasconde e riappare durante lo scroll, cambiando l'altezza reale della finestra, quindi
                un valore in "vh" risulterebbe più grande del previsto proprio quando la barra è
                visibile. Le didascalie e i pulsanti sotto la foto vengono anche rimpiccioliti, per
                lasciare il più possibile spazio al testo che scorre. */
-            .module-two-col > .module-photo-frame img { max-height: 150px; }
+            .module-two-col > .module-photo-frame img {
+                width: auto;
+                max-width: 100%;
+                max-height: 136px;
+                margin: 0 auto;
+            }
             .module-two-col > .module-photo-frame figcaption { padding: 6px 14px; font-size: 0.78rem; }
             .module-two-col > .module-photo-frame .photo-actions { padding: 6px 14px; gap: 6px; }
             .module-two-col > .module-photo-frame .photo-upload-btn,
@@ -786,6 +794,7 @@
                 font-size: 0.85rem;
             }
             .module-two-col > .module-photo-frame.photo-collapsed .photo-collapse-toggle-label { display: inline; }
+            .module-two-col > .module-content-col .tabs-header { margin-top: 12px; }
         }
 
         .photo-collapse-toggle {
