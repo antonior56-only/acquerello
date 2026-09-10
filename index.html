@@ -3844,6 +3844,28 @@
         document.getElementById('main-content').insertAdjacentHTML('beforeend', evaluationModule('evaluation-watercolor', 'Acquerello') + evaluationModule('evaluation-pastel', 'Pastello secco'));
         pastelNav.insertAdjacentHTML('beforeend', '<div class="nav-item" data-course="watercolor" data-target="evaluation-watercolor"><span>🔎 Valutazione opera</span><div class="status-icon">✓</div></div><div class="nav-item" data-course="pastel" data-target="evaluation-pastel"><span>🔎 Valutazione opera</span><div class="status-icon">✓</div></div>');
 
+        const pastelFreeSubjectMarkup = `<div id="pastel-free-subject" class="lesson-container" data-course="pastel" data-ai-id="pastel-free-subject">
+            <h1>🖍️ Soggetto libero: guida IA</h1>
+            <p>Uno spazio per qualsiasi idea personale: descrivi il soggetto, carica la foto di riferimento e ricevi una guida passo-passo pensata per chi lavora a pastello secco.</p>
+            <div class="free-subject-desc-box">
+                <label for="free-subject-desc-pastel">✏️ Descrivi cosa vuoi realizzare</label>
+                <textarea id="free-subject-desc-pastel" class="free-subject-textarea" placeholder="Es. Un fiore in primo piano, il ritratto del mio cane, un tramonto sul mare..."></textarea>
+                <span class="notes-saved-hint" id="free-subject-hint-pastel">Salvato ✓</span>
+            </div>
+            <figure class="module-photo-frame img-missing" data-photo-key="pastel-free-subject" data-default-src="images/pastel-soggetto-libero.jpg">
+                <img src="images/pastel-soggetto-libero.jpg" alt="Soggetto libero scelto per il pastello secco" onload="handlePhotoLoadSuccess(this)" onerror="handlePhotoLoadFailure(this)">
+                <div class="photo-placeholder-hint"><span class="ph-icon">🖼️</span>Carica la foto del soggetto che vuoi realizzare.</div>
+                <div class="photo-actions"><label class="photo-upload-btn">📤 Carica la tua foto<input type="file" accept="image/*" class="photo-input" hidden></label><button type="button" class="photo-remove-btn" style="display:none;">🗑️ Rimuovi</button><span class="photo-hint-text">Resta salvata solo in questo browser</span></div>
+                <figcaption>Il tuo soggetto libero a pastello secco</figcaption>
+            </figure>
+            <button class="ai-generate-btn" onclick="analyzePhoto('pastel-free-subject', 'pastel-free-subject', 'pastel')">✨ Genera la guida per il mio soggetto</button>
+            <div class="ai-loading" id="ai-loading-pastel-free-subject">Analisi in corso con Gemini... ⏳</div>
+            <div class="ai-result-box" id="ai-result-pastel-free-subject"></div>
+            <button class="btn-complete" onclick="markCompleted('pastel-free-subject')">✓ Segna come completato</button>
+        </div>`;
+        document.getElementById('main-content').insertAdjacentHTML('beforeend', pastelFreeSubjectMarkup);
+        pastelNav.insertAdjacentHTML('beforeend', '<div class="nav-item" data-course="pastel" data-target="pastel-free-subject"><span>🖍️ Soggetto libero</span><div class="status-icon">✓</div></div>');
+
         document.querySelectorAll('.nav-item').forEach(item => { if (!item.dataset.course) item.dataset.course = 'watercolor'; });
         let currentCourse = localStorage.getItem('selectedArtCourse') || 'watercolor';
         function setCourseView(course, persist = true) {
@@ -3851,7 +3873,7 @@
             document.body.dataset.course = currentCourse;
             document.querySelectorAll('[data-course-choice]').forEach(btn => btn.classList.toggle('active', btn.dataset.courseChoice === currentCourse));
             document.getElementById('course-title').textContent = currentCourse === 'pastel' ? 'Pastello secco' : 'Acquerello Pro';
-            document.getElementById('course-subtitle').textContent = currentCourse === 'pastel' ? '10 moduli per iniziare' : '27 Moduli Advanced';
+            document.getElementById('course-subtitle').textContent = currentCourse === 'pastel' ? '11 moduli per iniziare' : '27 Moduli Advanced';
             if (persist) localStorage.setItem('selectedArtCourse', currentCourse);
         }
         function selectCourse(course) {
@@ -5169,7 +5191,8 @@
                     reader.readAsDataURL(blob);
                 });
 
-                const freeDescEl = document.querySelector('#modulo-' + moduleId + ' .free-subject-textarea');
+                const lessonElement = document.getElementById(String(moduleId).startsWith('pastel-') ? moduleId : 'modulo-' + moduleId);
+                const freeDescEl = lessonElement ? lessonElement.querySelector('.free-subject-textarea') : null;
                 const freeDescription = freeDescEl ? freeDescEl.value.trim() : '';
                 const evaluationPrompt = medium === 'pastel'
                     ? "Agisci come un insegnante d'arte esperto, con oltre vent'anni di esperienza specifica nell'insegnamento del pastello a secco. La foto allegata mostra una realizzazione di un mio allievo. Analizza l'opera con occhio critico, onesto e costruttivo. Struttura obbligatoriamente la risposta in quattro sezioni numerate: 1. Analisi generale: composizione, armonia cromatica, equilibrio dei valori tonali e resa della luce. 2. Carenze e punti deboli: individua con precisione tecnica gli errori o le aree meno riuscite; osserva in particolare pulizia delle stesure, qualità della stratificazione, controllo di segno e pressione, sfumature, saturazione della carta e uso delle luci. 3. Suggerimenti di miglioramento: indica soluzioni pratiche e azioni mirate, applicabili a quest'opera e ai lavori futuri. 4. Esercizio assegnato: proponi un breve esercizio tecnico per allenare esattamente le carenze riscontrate. Mantieni un tono rigoroso ma incoraggiante. Non inventare dettagli non visibili nella foto: se un aspetto non è valutabile, dichiaralo. Usa testo semplice, titoli numerati e paragrafi leggibili; non usare HTML o markdown."
